@@ -10,7 +10,11 @@ export const config: ThemeConfig = {
     colorWhite: '#FFFFFF',
     'blue-1': '#010626',
     'blue-2': '#395BBF',
-    'blue-3': '#1374F2'
+    'blue-3': '#1374F2',
+    'green-1': '#29b475',
+    'red-1': '#dc3545',
+    'yellow-1': '#ffc107',
+    'purple-1': '#685efc'
   },
   components: {
     Layout: {
