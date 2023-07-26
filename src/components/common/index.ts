@@ -1,1 +1,2 @@
-export * from 'components/common/Layout'
+export * from '@/components/common/NavLayout'
+export * from '@/components/common/AppNav'
