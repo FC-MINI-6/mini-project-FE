@@ -46,6 +46,6 @@ const DayOffCount = styled.div<TMyDayOffCountProps>`
     color: ${({ type, day }) => (day !== 0 ? type.color : '#999')};
     font-size: 18px;
     font-weight: 700;
-    padding: 4px 10px 0;
+    padding: 4px 10px 16px;
   }
 `

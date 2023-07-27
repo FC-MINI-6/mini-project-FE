@@ -1,4 +1,4 @@
-import { DayOffSummary, DayOffRequestItem } from 'components/index'
+import { DayOffSummary, DayOffRequestItem, DayOffHistorytItem } from 'components/index'
 import { styled } from 'styled-components'
 
 import { List } from 'antd'
@@ -48,18 +48,26 @@ export const DayOff = () => {
       </Wapper>
 
       <Wapper>
-        <h2>연차 사용 내역</h2>
+        <h2>
+          연차 사용 내역 <span>{requestData.length}</span>
+        </h2>
+        <List
+          pagination={{ position: 'bottom', align: 'end' }}
+          dataSource={requestData}
+          renderItem={item => <DayOffHistorytItem item={item} />}
+        />
       </Wapper>
     </Container>
   )
 }
 
-const Container = styled.section`
+const Container = styled.div`
   padding: 40px;
   display: flex;
   flex-direction: column;
   gap: 40px;
-  height: 100%;
+  justify-content: space-between;
+  min-height: calc(100vh - 62px);
 `
 
 const Wapper = styled.div`
@@ -69,7 +77,7 @@ const Wapper = styled.div`
   flex-grow: 1;
 
   &:first-child {
-    flex-grow: 0.3;
+    flex-grow: 0;
   }
 
   h2 {

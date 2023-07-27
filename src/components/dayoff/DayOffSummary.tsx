@@ -7,7 +7,13 @@ import { globalToken } from '@/GlobalThemeConfig'
 
 export const DayOffSummary = React.memo(() => {
   return (
-    <Row style={{ flexGrow: 0.7, border: `1px solid ${globalToken.colorBorder}`, borderRadius: 6 }}>
+    <Row
+      style={{
+        flexGrow: 0.7,
+        border: `1px solid ${globalToken.colorBorder}`,
+        borderRadius: 6,
+        flexShrink: 0
+      }}>
       <Col span={8}>
         <MyDayOffCount type={dayOffTypes.AVAILABLE} day={11} />
       </Col>
