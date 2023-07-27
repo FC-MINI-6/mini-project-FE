@@ -8,8 +8,6 @@ import { config } from '@/GlobalThemeConfig'
 import locale from 'antd/lib/locale/ko_KR'
 
 export const App = () => {
-  // getDesignToken(config)
-
   return (
     <>
       <GlobalStyle />
