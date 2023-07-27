@@ -62,12 +62,11 @@ export const DayOff = () => {
 }
 
 const Container = styled.div`
-  padding: 40px;
   display: flex;
   flex-direction: column;
   gap: 40px;
   justify-content: space-between;
-  min-height: calc(100vh - 62px);
+  min-height: calc(100% - 62px);
 `
 
 const Wapper = styled.div`
