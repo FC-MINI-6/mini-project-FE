@@ -6,7 +6,7 @@ const { Sider, Content, Footer } = Layout
 export const NavLayout = () => {
   return (
     <>
-      <Layout hasSider>
+      <Layout hasSider style={{ minWidth: 1024 }}>
         <Sider
           style={{
             overflow: 'auto',
@@ -23,7 +23,7 @@ export const NavLayout = () => {
         <Layout
           className="site-layout"
           style={{ marginLeft: 200, display: 'flex', flexDirection: 'column', height: '100vh' }}>
-          <Content style={{ flexGrow: 1 }}>
+          <Content style={{ flexGrow: 1, padding: 40 }}>
             <Outlet />
           </Content>
           <Footer style={{ textAlign: 'center' }}>
