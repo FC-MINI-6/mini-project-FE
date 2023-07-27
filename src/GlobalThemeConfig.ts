@@ -5,7 +5,7 @@ const { getDesignToken } = theme
 export const config: ThemeConfig = {
   token: {
     colorPrimary: '#0554F2',
-    colorBorder: '#EEE',
+    colorBorder: '#DDD',
     colorBgLayout: '#F2F2F2',
     colorWhite: '#FFFFFF',
     'blue-1': '#010626',

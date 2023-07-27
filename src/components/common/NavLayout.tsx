@@ -22,8 +22,14 @@ export const NavLayout = () => {
         </Sider>
         <Layout
           className="site-layout"
-          style={{ marginLeft: 200, display: 'flex', flexDirection: 'column', height: '100vh' }}>
-          <Content style={{ flexGrow: 1, padding: 40 }}>
+          style={{
+            marginLeft: 200,
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: '100vh',
+            height: '100%'
+          }}>
+          <Content style={{ flexGrow: 1, flexShrink: 0, padding: 40 }}>
             <Outlet />
           </Content>
           <Footer style={{ textAlign: 'center' }}>
