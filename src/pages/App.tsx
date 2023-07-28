@@ -6,6 +6,7 @@ import GlobalStyle from '@/GlobalStyle'
 import { ConfigProvider } from 'antd'
 import { config } from '@/GlobalThemeConfig'
 import locale from 'antd/lib/locale/ko_KR'
+import { SignUp } from '@/components/signup'
 
 export const App = () => {
   return (
@@ -19,6 +20,7 @@ export const App = () => {
             <Route path="/day_off" element={<DayOff />} />
           </Route>
           {/* Nav 필요없는 페이지는 아래 바로 Route 추가 */}
+          <Route path="/signup" element={<SignUp />} />
         </Routes>
       </ConfigProvider>
     </>
