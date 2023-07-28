@@ -25,7 +25,7 @@ export const DayOffRequestItem = React.memo(({ item }: { item: DummyDayOffItem }
           <Tag bordered={false}>{item.status}</Tag>
         </StatusBox>
         <Type>
-          <span>{item.type}</span>
+          <Tag color="green">{item.type}</Tag>
         </Type>
         <Date>{item.startDate}</Date>
         <Tag bordered={false}>1일</Tag>
@@ -63,7 +63,7 @@ const StatusBox = styled.div`
 `
 
 const Type = styled.div`
-  min-width: 60px;
+  min-width: 80px;
 `
 
 const Date = styled.div`

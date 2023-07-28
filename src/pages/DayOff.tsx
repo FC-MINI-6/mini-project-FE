@@ -11,6 +11,7 @@ export interface DummyDayOffItem {
   type: string
   startDate: string
   endDate: string
+  reason: string
 }
 
 const requestData: DummyDayOffItem[] = [
@@ -18,15 +19,17 @@ const requestData: DummyDayOffItem[] = [
     id: 1,
     status: '승인대기',
     type: '연차',
-    startDate: new Date('2023-07-29').toDateString(),
-    endDate: new Date('2023-07-29').toDateString()
+    startDate: new Date('2023-07-29').toLocaleDateString(),
+    endDate: new Date('2023-07-29').toLocaleDateString(),
+    reason: '가족 모임'
   },
   {
     id: 2,
     status: '승인대기',
     type: '오후반차',
-    startDate: new Date('2023-07-30').toDateString(),
-    endDate: new Date('2023-07-30').toDateString()
+    startDate: new Date('2023-07-30').toLocaleDateString(),
+    endDate: new Date('2023-07-30').toLocaleDateString(),
+    reason: '개인 사정'
   }
 ]
 
@@ -76,6 +79,7 @@ const Container = styled.div`
   gap: 40px;
   justify-content: space-between;
   min-height: calc(100% - 62px);
+  position: relative;
 `
 
 const Wapper = styled.div`
@@ -102,5 +106,5 @@ const Wapper = styled.div`
 `
 const ButtonBox = styled.div`
   position: absolute;
-  right: 40px;
+  right: 0;
 `
