@@ -1,5 +1,10 @@
-import { useCallback } from 'react'
-import { DayOffSummary, DayOffRequestItem, DayOffHistorytItem } from 'components/index'
+import { useCallback, useState } from 'react'
+import {
+  DayOffSummary,
+  DayOffRequestItem,
+  DayOffHistorytItem,
+  DayOffRequestModal
+} from 'components/index'
 import { styled } from 'styled-components'
 
 import { List, Button } from 'antd'
@@ -34,7 +39,18 @@ const requestData: DummyDayOffItem[] = [
 ]
 
 export const DayOff = () => {
-  const handleClickAdd = useCallback(() => {}, [])
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const handleOk = () => {
+    setIsModalOpen(false)
+  }
+
+  const handleCancel = () => {
+    setIsModalOpen(false)
+  }
+  const handleClickAdd = useCallback(() => {
+    setIsModalOpen(true)
+  }, [])
 
   return (
     <Container>
@@ -69,6 +85,11 @@ export const DayOff = () => {
           renderItem={item => <DayOffHistorytItem item={item} />}
         />
       </Wapper>
+      <DayOffRequestModal
+        isModalOpen={isModalOpen}
+        onClickOk={handleOk}
+        onClickCancel={handleCancel}
+      />
     </Container>
   )
 }
