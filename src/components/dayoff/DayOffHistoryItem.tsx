@@ -7,7 +7,7 @@ export const DayOffHistorytItem = React.memo(({ item }: { item: DummyDayOffItem 
     <List.Item>
       <ItemWrapper>
         <IconBox>🏖️</IconBox>
-        <span>{item.type}</span>
+        <Type>{item.type}</Type>
         <Date>{item.startDate}</Date>
         <Tag bordered={false}>1일</Tag>
       </ItemWrapper>
@@ -32,6 +32,9 @@ const IconBox = styled.div`
   justify-content: center;
   align-items: center;
   background-color: var(--color-white);
+`
+const Type = styled.div`
+  min-width: 60px;
 `
 
 const Date = styled.div`
