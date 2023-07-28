@@ -1,5 +1,5 @@
 import { DUMMY_DUTY_REQUEST_LIST } from 'constants/index'
-import { DutyRequestItem } from 'components/index'
+import { DutyRequestItem, DutyHistoryItem } from 'components/index'
 import { styled } from 'styled-components'
 
 import { useCallback } from 'react'
@@ -27,16 +27,16 @@ export const Duty = () => {
         />
       </Wapper>
 
-      {/* <Wapper>
+      <Wapper>
         <h2>
-          연차 사용 내역 <span>{requestData.length}</span>
+          나의 당직 내역 <span>{DUMMY_DUTY_REQUEST_LIST.length}</span>
         </h2>
         <List
           pagination={{ position: 'bottom', align: 'end', pageSize: 5 }}
-          dataSource={requestData}
-          renderItem={item => <DayOffHistorytItem item={item} />}
+          dataSource={DUMMY_DUTY_REQUEST_LIST}
+          renderItem={item => <DutyHistoryItem item={item} />}
         />
-      </Wapper> */}
+      </Wapper>
     </Container>
   )
 }
@@ -47,6 +47,7 @@ const Container = styled.div`
   gap: 40px;
   justify-content: space-between;
   min-height: calc(100% - 62px);
+  position: relative;
 `
 
 const Wapper = styled.div`
@@ -73,5 +74,5 @@ const Wapper = styled.div`
 `
 const ButtonBox = styled.div`
   position: absolute;
-  right: 40px;
+  right: 0;
 `
