@@ -23,6 +23,8 @@ export const StyledFormItemWrapper = styled.div`
 `
 
 export const StyledFormItem = styled(Form.Item)`
+  display: flex;
+  justify-content: flex-end;
   margin-bottom: 24px;
 `
 
