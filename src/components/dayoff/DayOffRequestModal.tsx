@@ -1,12 +1,13 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
-import { Modal, Radio, DatePicker } from 'antd'
+import { Modal, Radio, DatePicker, Input } from 'antd'
 import type { RadioChangeEvent } from 'antd'
 import type { RangePickerProps } from 'antd/es/date-picker'
 import dayjs from 'dayjs'
 import type { Dayjs } from 'dayjs'
 
 const { RangePicker } = DatePicker
+const { TextArea } = Input
 
 type TDayOffRequestModalProps = {
   isModalOpen: boolean
@@ -19,10 +20,15 @@ export const DayOffRequestModal = React.memo(
   ({ isModalOpen, onClickOk, onClickCancel }: TDayOffRequestModalProps) => {
     const [type, setType] = useState<number>(0)
     const [dates, setDates] = useState<RangeValue>(null)
+    const [reason, setReason] = useState<string>('')
     const [isSingle, setIsSingle] = useState<boolean>(false)
+    const [isValid, setIsValid] = useState<boolean>(false)
+
+    useEffect(() => {
+      setIsValid(dates !== null && reason !== '')
+    }, [type, dates, reason])
 
     const disabledDate: RangePickerProps['disabledDate'] = current => {
-      // Can not select days before today and today
       return current < dayjs().endOf('day')
     }
 
@@ -35,11 +41,11 @@ export const DayOffRequestModal = React.memo(
 
     const handleClickOk = useCallback(() => {
       onClickOk()
-    }, [])
+    }, [onClickOk])
 
     const handleClickCancel = useCallback(() => {
       onClickCancel()
-    }, [])
+    }, [onClickCancel])
 
     return (
       <>
@@ -50,7 +56,8 @@ export const DayOffRequestModal = React.memo(
           onOk={handleClickOk}
           onCancel={handleClickCancel}
           okText="등록하기"
-          cancelText="닫기">
+          cancelText="닫기"
+          okButtonProps={{ disabled: !isValid }}>
           <Radio.Group
             size="middle"
             buttonStyle="solid"
@@ -79,6 +86,18 @@ export const DayOffRequestModal = React.memo(
             allowEmpty={[false, isSingle]}
             allowClear={true}
             inputReadOnly={true}
+          />
+
+          <TextArea
+            value={reason}
+            onChange={e => setReason(e.target.value)}
+            rows={4}
+            placeholder="연차 사유를 작성해주세요."
+            maxLength={30}
+            autoSize={false}
+            allowClear={true}
+            showCount={true}
+            style={{ marginTop: 20, marginBottom: 20, resize: 'none' }}
           />
         </Modal>
       </>
