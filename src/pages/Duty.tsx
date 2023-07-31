@@ -1,72 +1,40 @@
-import { useCallback } from 'react'
-import { DayOffSummary, DayOffRequestItem, DayOffHistorytItem } from 'components/index'
+import { DUMMY_DUTY_REQUEST_LIST } from 'constants/index'
+import { DutyRequestItem, DutyHistoryItem } from 'components/index'
 import { styled } from 'styled-components'
 
+import { useCallback } from 'react'
 import { List, Button } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
-export interface DummyDayOffItem {
-  id: number
-  status: string
-  type: string
-  startDate: string
-  endDate: string
-  reason: string
-}
-
-const requestData: DummyDayOffItem[] = [
-  {
-    id: 1,
-    status: '승인대기',
-    type: '연차',
-    startDate: new Date('2023-07-29').toLocaleDateString(),
-    endDate: new Date('2023-07-29').toLocaleDateString(),
-    reason: '가족 모임'
-  },
-  {
-    id: 2,
-    status: '승인대기',
-    type: '오후반차',
-    startDate: new Date('2023-07-30').toLocaleDateString(),
-    endDate: new Date('2023-07-30').toLocaleDateString(),
-    reason: '개인 사정'
-  }
-]
-
-export const DayOff = () => {
+export const Duty = () => {
   const handleClickAdd = useCallback(() => {}, [])
 
   return (
     <Container>
       <ButtonBox>
         <Button type="primary" icon={<PlusOutlined />} onClick={handleClickAdd}>
-          연차 등록하기
+          당직 등록하기
         </Button>
       </ButtonBox>
       <Wapper>
-        <h2>나의 연차</h2>
-        <DayOffSummary />
-      </Wapper>
-
-      <Wapper>
         <h2>
-          연차 신청 내역 <span>{requestData.length}</span>
+          당직 신청 내역 <span>{DUMMY_DUTY_REQUEST_LIST.length}</span>
         </h2>
         <List
           pagination={{ position: 'bottom', align: 'end', pageSize: 5 }}
-          dataSource={requestData}
-          renderItem={item => <DayOffRequestItem item={item} />}
+          dataSource={DUMMY_DUTY_REQUEST_LIST}
+          renderItem={item => <DutyRequestItem item={item} />}
         />
       </Wapper>
 
       <Wapper>
         <h2>
-          연차 사용 내역 <span>{requestData.length}</span>
+          나의 당직 내역 <span>{DUMMY_DUTY_REQUEST_LIST.length}</span>
         </h2>
         <List
           pagination={{ position: 'bottom', align: 'end', pageSize: 5 }}
-          dataSource={requestData}
-          renderItem={item => <DayOffHistorytItem item={item} />}
+          dataSource={DUMMY_DUTY_REQUEST_LIST}
+          renderItem={item => <DutyHistoryItem item={item} />}
         />
       </Wapper>
     </Container>

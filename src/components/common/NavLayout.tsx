@@ -15,7 +15,8 @@ export const NavLayout = () => {
             left: 0,
             top: 0,
             bottom: 0,
-            color: '#fff'
+            color: '#fff',
+            zIndex: 100
           }}>
           {/* Menu 컴포넌트 */}
           <AppNav />

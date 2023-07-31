@@ -1,35 +1,27 @@
 import React from 'react'
-import { DummyDayOffItem } from 'pages/index'
-import { List, Tag, Dropdown } from 'antd'
+import { DUTY_MENU_ITEMS, REQUEST_STATUS, IDummyDutyRequest } from 'constants/index'
+import { List, Tag, Dropdown, Typography } from 'antd'
 import { styled } from 'styled-components'
 import { EllipsisOutlined } from '@ant-design/icons'
 import type { MenuProps } from 'antd'
 
-export const DayOffRequestItem = React.memo(({ item }: { item: DummyDayOffItem }) => {
+const { Text } = Typography
+
+export const DutyRequestItem = React.memo(({ item }: { item: IDummyDutyRequest }) => {
   const onClickCancel: MenuProps['onClick'] = ({ key }) => {
     console.log(`Click on item ${key}`)
   }
 
-  const items: MenuProps['items'] = [
-    {
-      label: '연차 취소하기',
-      key: '1'
-    }
-  ]
-
   return (
     <List.Item>
       <ItemWrapper>
-        <IconBox>🏖️</IconBox>
+        <IconBox>⏰</IconBox>
         <StatusBox>
-          <Tag bordered={false}>{item.status}</Tag>
+          <Tag bordered={false}>{REQUEST_STATUS[item.status]}</Tag>
         </StatusBox>
-        <Type>
-          <Tag color="green">{item.type}</Tag>
-        </Type>
-        <Date>{item.startDate}</Date>
-        <Tag bordered={false}>1일</Tag>
-        <Dropdown menu={{ items, onClick: onClickCancel }} trigger={['click']}>
+        <Date>{item.date}</Date>
+        <Text style={{ flexGrow: 1 }}>{item.reason}</Text>
+        <Dropdown menu={{ items: DUTY_MENU_ITEMS, onClick: onClickCancel }} trigger={['click']}>
           <EllipsisOutlined />
         </Dropdown>
       </ItemWrapper>
@@ -62,10 +54,6 @@ const StatusBox = styled.div`
   justify-content: center;
 `
 
-const Type = styled.div`
-  min-width: 80px;
-`
-
 const Date = styled.div`
-  flex-grow: 1;
+  min-width: 100px;
 `

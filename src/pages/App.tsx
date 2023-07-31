@@ -1,6 +1,6 @@
 import { Route, Routes } from 'react-router-dom'
 import { NavLayout } from 'components/index'
-import { Home, DayOff } from 'pages/index'
+import { Home, DayOff, Duty } from 'pages/index'
 
 import GlobalStyle from '@/GlobalStyle'
 import { ConfigProvider } from 'antd'
@@ -19,6 +19,7 @@ export const App = () => {
             <Route path="/" element={<Home />} />
             {/* 아래 Route Page 추가 */}
             <Route path="/day_off" element={<DayOff />} />
+            <Route path="/duty" element={<Duty />} />
           </Route>
           {/* Nav 필요없는 페이지는 아래 바로 Route 추가 */}
           <Route path="/signup" element={<SignUp />} />

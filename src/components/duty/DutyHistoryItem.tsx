@@ -1,21 +1,17 @@
 import React from 'react'
-import { DummyDayOffItem } from 'pages/index'
-import { List, Tag, Typography } from 'antd'
+import { IDummyDutyRequest } from 'constants/index'
+import { List, Typography } from 'antd'
 import { styled } from 'styled-components'
 
 const { Text } = Typography
 
-export const DayOffHistorytItem = React.memo(({ item }: { item: DummyDayOffItem }) => {
+export const DutyHistoryItem = React.memo(({ item }: { item: IDummyDutyRequest }) => {
   return (
     <List.Item>
       <ItemWrapper>
-        <IconBox>🏖️</IconBox>
-        <Type>
-          <Tag color="green">{item.type}</Tag>
-        </Type>
-        <Date>{item.startDate}</Date>
+        <IconBox>⏰</IconBox>
+        <Date>{item.date}</Date>
         <Text style={{ flexGrow: 1 }}>{item.reason}</Text>
-        <Tag bordered={false}>1일</Tag>
       </ItemWrapper>
     </List.Item>
   )
@@ -38,9 +34,6 @@ const IconBox = styled.div`
   justify-content: center;
   align-items: center;
   background-color: var(--color-white);
-`
-const Type = styled.div`
-  min-width: 80px;
 `
 
 const Date = styled.div`
