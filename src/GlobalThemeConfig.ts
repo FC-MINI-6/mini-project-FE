@@ -19,6 +19,10 @@ export const config: ThemeConfig = {
   components: {
     Layout: {
       colorBgHeader: '#010626'
+    },
+    Calendar: {
+      colorPrimary: '#29b475',
+      itemActiveBg: '#d4f0e3'
     }
   }
 }
