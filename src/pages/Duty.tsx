@@ -1,13 +1,24 @@
 import { DUMMY_DUTY_REQUEST_LIST } from 'constants/index'
-import { DutyRequestItem, DutyHistoryItem } from 'components/index'
+import { DutyRequestItem, DutyHistoryItem, DutyRequestModal } from 'components/index'
 import { styled } from 'styled-components'
 
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 import { List, Button } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
 export const Duty = () => {
-  const handleClickAdd = useCallback(() => {}, [])
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const handleOk = () => {
+    setIsModalOpen(false)
+  }
+
+  const handleCancel = () => {
+    setIsModalOpen(false)
+  }
+  const handleClickAdd = useCallback(() => {
+    setIsModalOpen(true)
+  }, [])
 
   return (
     <Container>
@@ -37,6 +48,12 @@ export const Duty = () => {
           renderItem={item => <DutyHistoryItem item={item} />}
         />
       </Wapper>
+
+      <DutyRequestModal
+        isModalOpen={isModalOpen}
+        onClickOk={handleOk}
+        onClickCancel={handleCancel}
+      />
     </Container>
   )
 }
