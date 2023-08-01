@@ -7,7 +7,7 @@ import {
   StyledFormItemWrapper,
   StyledFormItem,
   StyledButton
-} from './styled'
+} from '@/components/signup/styled'
 
 interface SignUpData {
   name: string

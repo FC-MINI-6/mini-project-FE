@@ -1,1 +1,1 @@
-export * from '@/components/login/Login'
+export * from '@/pages/Login'

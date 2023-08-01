@@ -1,1 +1,1 @@
-export * from '@/components/signup/SignUp'
+export * from '@/pages/SignUp'

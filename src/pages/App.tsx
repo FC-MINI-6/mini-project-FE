@@ -7,7 +7,7 @@ import { ConfigProvider } from 'antd'
 import { config } from '@/GlobalThemeConfig'
 import locale from 'antd/lib/locale/ko_KR'
 import { SignUp } from '@/components/signup'
-import { Login } from '@/components/login/Login'
+import { Login } from '@/pages/Login'
 
 export const App = () => {
   return (
