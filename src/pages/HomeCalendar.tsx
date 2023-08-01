@@ -1,10 +1,11 @@
-import { useEffect } from 'react'
-import { ScheduleCalendar } from 'components/index'
+import { useEffect, useState } from 'react'
+import { DummyScheduleData, ScheduleCalendar, ScheduleList } from 'components/index'
 import { userListStore } from 'stores/index'
 import { Col, Row } from 'antd'
 
 export const HomeCalendar = () => {
   const { setUserList } = userListStore()
+  const [selectedSchedule, setSelectedSchedule] = useState<DummyScheduleData[]>([])
 
   useEffect(() => {
     const dummyUserList = [
@@ -34,12 +35,19 @@ export const HomeCalendar = () => {
     setUserList(dummyUserList)
   }, [])
 
+  const onClickDate = (schedule: DummyScheduleData[]) => {
+    console.log(schedule)
+    setSelectedSchedule(schedule)
+  }
+
   return (
-    <Row>
-      <Col flex={2}>
-        <ScheduleCalendar />
+    <Row wrap={false} gutter={[16, 0]}>
+      <Col span={20}>
+        <ScheduleCalendar onClickDate={onClickDate} />
       </Col>
-      <Col flex={1}></Col>
+      <Col span={4}>
+        <ScheduleList schedules={selectedSchedule} />
+      </Col>
     </Row>
   )
 }

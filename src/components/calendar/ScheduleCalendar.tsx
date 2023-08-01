@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { CalendarHeader } from 'components/index'
 import { userSelectedStore } from 'stores/index'
 
@@ -9,44 +9,63 @@ import locale from 'antd/es/calendar/locale/ko_KR'
 import { Dayjs } from 'dayjs'
 import { styled } from 'styled-components'
 
-const getListData = (value: Dayjs) => {
-  let listData
-  switch (value.date()) {
-    case 8:
-      listData = [
-        { color: 'geekblue', type: '연차', user: '홍길동' },
-        { color: 'green', type: '오후반차', user: '홍길동' }
-      ]
-      break
-    case 10:
-      listData = [
-        { color: 'lime', type: '오전반차', user: '홍길동' },
-        { color: 'geekblue', type: '연차', user: '홍길동' }
-      ]
-      break
-    case 15:
-      listData = [
-        { color: 'orange', type: '당직', user: '홍길동' },
-        { color: 'geekblue', type: '연차', user: '홍길동' },
-        { color: 'orange', type: '당직', user: '홍길동' },
-        { color: 'green', type: '오후반차', user: '홍길동' }
-      ]
-      break
-    default:
+// 추후 삭제
+const dummySchedule = [
+  {
+    date: 8,
+    datas: [
+      { color: 'geekblue', type: '연차', user: '홍길동' },
+      { color: 'green', type: '오후반차', user: '홍길동' }
+    ]
+  },
+  {
+    date: 11,
+    datas: [
+      { color: 'lime', type: '오전반차', user: '홍길동' },
+      { color: 'geekblue', type: '연차', user: '홍길동' }
+    ]
+  },
+  {
+    date: 26,
+    datas: [
+      { color: 'orange', type: '당직', user: '홍길동' },
+      { color: 'geekblue', type: '연차', user: '홍길동' },
+      { color: 'orange', type: '당직', user: '홍길동' },
+      { color: 'green', type: '오후반차', user: '홍길동' }
+    ]
   }
-  return listData || []
+]
+
+// 추후 삭제
+export interface DummyScheduleData {
+  color: string
+  type: string
+  user: string
 }
 
-export const ScheduleCalendar = React.memo(() => {
-  const { selectedId } = userSelectedStore()
+type ScheduleCalendar = {
+  onClickDate: (schedules: DummyScheduleData[]) => void
+}
 
-  const filteredData = useMemo(() => {
-    // TODO : 사용자 ID 값으로 캘린더 데이터 필터링
-    console.log(selectedId)
-  }, [selectedId])
+export const ScheduleCalendar = React.memo(({ onClickDate }: ScheduleCalendar) => {
+  // const { selectedId } = userSelectedStore()
+
+  // TODO : 사용자 ID 값으로 캘린더 데이터 필터링
+  // const filteredData = useMemo(() => {
+  //   console.log(selectedId)
+  // }, [selectedId])
+
+  const handleSelecteDate = useCallback(
+    (date: Dayjs) => {
+      const selectedDateSchedules =
+        dummySchedule.find(schedule => schedule.date === date.date())?.datas ?? []
+      onClickDate(selectedDateSchedules)
+    },
+    [onClickDate]
+  )
 
   const dateCellRender = (value: Dayjs) => {
-    const listData = getListData(value)
+    const listData = dummySchedule.find(schedule => schedule.date === value.date())?.datas ?? []
     return (
       <EventUl>
         {listData.map((item, index) => (
@@ -71,6 +90,7 @@ export const ScheduleCalendar = React.memo(() => {
       locale={locale}
       cellRender={cellRender}
       headerRender={({ value, onChange }) => <CalendarHeader value={value} onChange={onChange} />}
+      onSelect={handleSelecteDate}
     />
   )
 })

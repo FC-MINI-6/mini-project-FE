@@ -26,7 +26,7 @@ export const UserDropdown = React.memo(() => {
       style={{ minWidth: 100 }}
       showSearch
       popupMatchSelectWidth={100}
-      defaultValue={options[0].value}
+      defaultValue={options[0]?.value ?? ''}
       value={selectedId}
       optionFilterProp="children"
       onChange={onChange}
