@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { CalendarHeader } from 'components/index'
+import { userSelectedStore } from 'stores/index'
 
 import type { TagProps } from 'antd'
 import { Tag, Calendar } from 'antd'
@@ -37,6 +38,13 @@ const getListData = (value: Dayjs) => {
 }
 
 export const ScheduleCalendar = React.memo(() => {
+  const { selectedId } = userSelectedStore()
+
+  const filteredData = useMemo(() => {
+    // TODO : 사용자 ID 값으로 캘린더 데이터 필터링
+    console.log(selectedId)
+  }, [selectedId])
+
   const dateCellRender = (value: Dayjs) => {
     const listData = getListData(value)
     return (

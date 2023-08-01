@@ -37,7 +37,8 @@
       "types/*": ["src/types/*"],
       "utils/*": ["src/utils/*"],
       "apis/*": ["src/apis/*"],
-      "constants/*": ["src/constants/*"]
+      "constants/*": ["src/constants/*"],
+      "stores/*": ["src/stores/*"]
     }
   },
   "include": ["src", "src/**/*.ts", "src/**/*.tsx", "src/**/*.js", "src/**/*.d.ts"], //컴파일할 파일 경로 목록

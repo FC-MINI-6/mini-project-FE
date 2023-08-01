@@ -1,5 +1,5 @@
 import React from 'react'
-
+import { UserDropdown } from 'components/index'
 import { Col, Row, Select, Typography } from 'antd'
 
 import dayjs from 'dayjs'
@@ -69,6 +69,9 @@ export const CalendarHeader = React.memo(
               }}>
               {monthOptions}
             </Select>
+          </Col>
+          <Col>
+            <UserDropdown />
           </Col>
         </Row>
       </div>
