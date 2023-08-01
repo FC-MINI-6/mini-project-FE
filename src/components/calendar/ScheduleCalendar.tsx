@@ -84,7 +84,7 @@ export const ScheduleCalendar = React.memo(({ onClickDate }: ScheduleCalendar) =
   }
 
   return (
-    <Calendar
+    <StyledCalendar
       style={{ padding: 20, borderRadius: 6 }}
       mode={'month'}
       locale={locale}
@@ -94,6 +94,16 @@ export const ScheduleCalendar = React.memo(({ onClickDate }: ScheduleCalendar) =
     />
   )
 })
+
+const StyledCalendar = styled(Calendar)`
+  table tbody tr > td.ant-picker-cell-in-view:nth-child(1) {
+    color: var(--color-red-1);
+  }
+
+  table tbody tr > td.ant-picker-cell-in-view:nth-child(7) {
+    color: var(--color-blue-3);
+  }
+`
 
 const EventUl = styled.ul`
   display: flex;
