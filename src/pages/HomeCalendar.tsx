@@ -42,12 +42,14 @@ export const HomeCalendar = () => {
 
   return (
     <Row wrap={false} gutter={[16, 0]}>
-      <Col span={20}>
+      <Col span={selectedSchedule.length !== 0 ? 20 : 24}>
         <ScheduleCalendar onClickDate={onClickDate} />
       </Col>
-      <Col span={4}>
-        <ScheduleList schedules={selectedSchedule} />
-      </Col>
+      {selectedSchedule.length !== 0 ? (
+        <Col span={4}>
+          <ScheduleList schedules={selectedSchedule} />
+        </Col>
+      ) : null}
     </Row>
   )
 }
