@@ -1,14 +1,13 @@
 import React from 'react'
-import { DAYOFF_MENU_ITEMS, DUMMY_DAYOFF_REQUEST_LIST } from 'constants/index'
+import { DUMMY_DAYOFF_REQUEST_LIST } from 'constants/index'
 import { IDayOffResponse } from 'types/index'
-
-import { EllipsisOutlined } from '@ant-design/icons'
-import { Table, Tag, Dropdown } from 'antd'
-import type { MenuProps } from 'antd'
+import { Table, Tag, Typography } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { styled } from 'styled-components'
 
-const getDayOffRequestColumns = (menuClick: MenuProps['onClick']): ColumnsType<IDayOffResponse> => [
+const { Text } = Typography
+
+const getDayOffHistoryColumns = (): ColumnsType<IDayOffResponse> => [
   {
     width: '15%',
     title: '신청 상태',
@@ -66,38 +65,40 @@ const getDayOffRequestColumns = (menuClick: MenuProps['onClick']): ColumnsType<I
     onFilter: (value, { type }) => type === value
   },
   {
-    width: '70%',
+    width: '30%',
     title: '휴가 일자',
     dataIndex: ['startDate', 'endDate'],
     key: 'date',
     render: (_, { startDate, endDate }) => (
-      <DateCellWrapper>
-        <DateWrapper>
-          {startDate}
-          {endDate ? ` ~ ${endDate}` : ''}
-        </DateWrapper>
-        <Tag bordered={false}>1일</Tag>
-        <Dropdown menu={{ items: DAYOFF_MENU_ITEMS, onClick: menuClick }} trigger={['click']}>
-          <EllipsisOutlined />
-        </Dropdown>
-      </DateCellWrapper>
+      <span>
+        {startDate}
+        {endDate ? ` ~ ${endDate}` : ''}
+      </span>
     ),
     sorter: (a, b) => {
       return new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
     }
+  },
+  {
+    width: '40%',
+    title: '사유',
+    dataIndex: 'reason',
+    key: 'reason',
+    render: (_, { reason }) => (
+      <ReasonCellWrapper>
+        <ReasonText>{reason}</ReasonText>
+        <Tag bordered={false}>1일</Tag>
+      </ReasonCellWrapper>
+    )
   }
 ]
 
-type DayOffRequestTableProps = {
-  requestList: IDayOffResponse[]
+type DayOffHistorytTableProps = {
+  historyList: IDayOffResponse[]
 }
 
-export const DayOffRequestTable = React.memo(({ requestList }: DayOffRequestTableProps) => {
-  const onClickCancel: MenuProps['onClick'] = ({ key }) => {
-    // TODO : 신청 취소 기능
-  }
-
-  const columns = getDayOffRequestColumns(onClickCancel)
+export const DayOffHistorytTable = React.memo(({ historyList }: DayOffHistorytTableProps) => {
+  const columns = getDayOffHistoryColumns()
 
   return <Table columns={columns} dataSource={DUMMY_DAYOFF_REQUEST_LIST} />
 })
@@ -129,11 +130,11 @@ const Type = styled.div`
   min-width: 80px;
 `
 
-const DateCellWrapper = styled.div`
+const ReasonCellWrapper = styled.div`
   display: flex;
   gap: 10px;
 `
 
-const DateWrapper = styled.div`
+const ReasonText = styled(Text)`
   flex-grow: 1;
 `

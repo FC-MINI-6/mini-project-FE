@@ -1,5 +1,5 @@
 export * from 'components/dayoff/DayOffSummary'
 export * from 'components/dayoff/MyDayOffCount'
-export * from 'components/dayoff/DayOffHistoryItem'
 export * from 'components/dayoff/DayOffRequestModal'
 export * from 'components/dayoff/DayOffRequestTable'
+export * from 'components/dayoff/DayOffHistoryTable'

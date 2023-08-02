@@ -1,5 +1,10 @@
 import { useCallback, useState } from 'react'
-import { DayOffSummary, DayOffRequestModal, DayOffRequestTable } from 'components/index'
+import {
+  DayOffSummary,
+  DayOffRequestModal,
+  DayOffRequestTable,
+  DayOffHistorytTable
+} from 'components/index'
 import { styled } from 'styled-components'
 
 import { Button } from 'antd'
@@ -43,11 +48,7 @@ export const DayOff = () => {
         <h2>
           연차 사용 내역 <span>{DUMMY_DAYOFF_REQUEST_LIST.length}</span>
         </h2>
-        {/* <List
-          pagination={{ position: 'bottom', align: 'end', pageSize: 5 }}
-          dataSource={requestData}
-          renderItem={item => <DayOffHistorytItem item={item} />}
-        /> */}
+        <DayOffHistorytTable historyList={DUMMY_DAYOFF_REQUEST_LIST} />
       </Wapper>
       <DayOffRequestModal
         isModalOpen={isModalOpen}
