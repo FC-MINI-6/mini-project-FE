@@ -1,9 +1,9 @@
 import { DUMMY_DUTY_REQUEST_LIST } from 'constants/index'
-import { DutyRequestItem, DutyHistoryItem, DutyRequestModal } from 'components/index'
+import { DutyRequestTable, DutyHistoryTable, DutyRequestModal } from 'components/index'
 import { styled } from 'styled-components'
 
 import { useCallback, useState } from 'react'
-import { List, Button } from 'antd'
+import { Button } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
 export const Duty = () => {
@@ -31,22 +31,14 @@ export const Duty = () => {
         <h2>
           당직 신청 내역 <span>{DUMMY_DUTY_REQUEST_LIST.length}</span>
         </h2>
-        <List
-          pagination={{ position: 'bottom', align: 'end', pageSize: 5 }}
-          dataSource={DUMMY_DUTY_REQUEST_LIST}
-          renderItem={item => <DutyRequestItem item={item} />}
-        />
+        <DutyRequestTable requestList={DUMMY_DUTY_REQUEST_LIST} />
       </Wapper>
 
       <Wapper>
         <h2>
           나의 당직 내역 <span>{DUMMY_DUTY_REQUEST_LIST.length}</span>
         </h2>
-        <List
-          pagination={{ position: 'bottom', align: 'end', pageSize: 5 }}
-          dataSource={DUMMY_DUTY_REQUEST_LIST}
-          renderItem={item => <DutyHistoryItem item={item} />}
-        />
+        <DutyHistoryTable historyList={DUMMY_DUTY_REQUEST_LIST} />
       </Wapper>
 
       <DutyRequestModal
