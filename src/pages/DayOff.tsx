@@ -1,42 +1,10 @@
 import { useCallback, useState } from 'react'
-import {
-  DayOffSummary,
-  DayOffRequestItem,
-  DayOffHistorytItem,
-  DayOffRequestModal
-} from 'components/index'
+import { DayOffSummary, DayOffRequestModal, DayOffRequestTable } from 'components/index'
 import { styled } from 'styled-components'
 
-import { List, Button } from 'antd'
+import { Button } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
-
-export interface DummyDayOffItem {
-  id: number
-  status: string
-  type: string
-  startDate: string
-  endDate: string
-  reason: string
-}
-
-const requestData: DummyDayOffItem[] = [
-  {
-    id: 1,
-    status: '승인대기',
-    type: '연차',
-    startDate: new Date('2023-07-29').toLocaleDateString(),
-    endDate: new Date('2023-07-29').toLocaleDateString(),
-    reason: '가족 모임'
-  },
-  {
-    id: 2,
-    status: '승인대기',
-    type: '오후반차',
-    startDate: new Date('2023-07-30').toLocaleDateString(),
-    endDate: new Date('2023-07-30').toLocaleDateString(),
-    reason: '개인 사정'
-  }
-]
+import { DUMMY_DAYOFF_REQUEST_LIST } from '@/constants'
 
 export const DayOff = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -66,24 +34,20 @@ export const DayOff = () => {
 
       <Wapper>
         <h2>
-          연차 신청 내역 <span>{requestData.length}</span>
+          연차 신청 내역 <span>{DUMMY_DAYOFF_REQUEST_LIST.length}</span>
         </h2>
-        <List
-          pagination={{ position: 'bottom', align: 'end', pageSize: 5 }}
-          dataSource={requestData}
-          renderItem={item => <DayOffRequestItem item={item} />}
-        />
+        <DayOffRequestTable requestList={DUMMY_DAYOFF_REQUEST_LIST} />
       </Wapper>
 
       <Wapper>
         <h2>
-          연차 사용 내역 <span>{requestData.length}</span>
+          연차 사용 내역 <span>{DUMMY_DAYOFF_REQUEST_LIST.length}</span>
         </h2>
-        <List
+        {/* <List
           pagination={{ position: 'bottom', align: 'end', pageSize: 5 }}
           dataSource={requestData}
           renderItem={item => <DayOffHistorytItem item={item} />}
-        />
+        /> */}
       </Wapper>
       <DayOffRequestModal
         isModalOpen={isModalOpen}
