@@ -1,3 +1,3 @@
-export * from 'components/duty/DutyRequestItem'
-export * from 'components/duty/DutyHistoryItem'
 export * from 'components/duty/DutyRequestModal'
+export * from 'components/duty/DutyRequestTable'
+export * from 'components/duty/DutyHistoryTable'
