@@ -11,8 +11,13 @@ import {
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 
+interface LoginData {
+  email: string
+  password: string
+}
+
 export const Login = () => {
-  const [loginData, setLoginData] = useState({ email: '', password: '' })
+  const [loginData, setLoginData] = useState<LoginData>({ email: '', password: '' })
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target

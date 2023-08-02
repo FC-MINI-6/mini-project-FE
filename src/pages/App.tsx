@@ -8,6 +8,7 @@ import { config } from '@/GlobalThemeConfig'
 import locale from 'antd/lib/locale/ko_KR'
 import { SignUp } from '@/components/signup'
 import { Login } from '@/pages/Login'
+import MyPage from './MyPage'
 
 export const App = () => {
   return (
@@ -18,6 +19,7 @@ export const App = () => {
           <Route element={<NavLayout />}>
             {/* 아래 Route Page 추가 */}
             <Route path="/" element={<HomeCalendar />} />
+            <Route path='/mypage' element={<MyPage/>}/>
             <Route path="/day_off" element={<DayOff />} />
             <Route path="/duty" element={<Duty />} />
             <Route path="/admin/schedule" element={<AdminSchedule />} />
