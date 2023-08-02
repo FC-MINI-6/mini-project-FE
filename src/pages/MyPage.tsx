@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Form, Input, Button, Modal } from 'antd'
 import { StyledButton, StyledForm, StyledFormItem, StyledFormItemWrapper } from '@/components/mypage/styled'
 
-const MyPage = () => {
+export const MyPage = () => {
   const [form] = Form.useForm()
   const [showModal, setShowModal] = useState(false)
   const [editablePhoneNumber, setEditablePhoneNumber] = useState('010-1234-1234')//
@@ -114,5 +114,3 @@ const MyPage = () => {
     </>
   )
 }
-
-export default MyPage
