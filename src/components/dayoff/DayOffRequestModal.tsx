@@ -51,7 +51,7 @@ export const DayOffRequestModal = React.memo(
       <>
         <Modal
           centered={true}
-          title="🏖️ 연차 등록"
+          title="🏖️ 휴가 등록"
           open={isModalOpen}
           onOk={handleClickOk}
           onCancel={handleClickCancel}
@@ -92,7 +92,7 @@ export const DayOffRequestModal = React.memo(
             value={reason}
             onChange={e => setReason(e.target.value)}
             rows={4}
-            placeholder="연차 사유를 작성해주세요."
+            placeholder="휴가 사유를 작성해주세요."
             maxLength={30}
             autoSize={false}
             allowClear={true}

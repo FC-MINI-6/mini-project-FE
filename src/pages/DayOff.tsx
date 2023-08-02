@@ -29,24 +29,24 @@ export const DayOff = () => {
     <Container>
       <ButtonBox>
         <Button type="primary" icon={<PlusOutlined />} onClick={handleClickAdd}>
-          연차 등록하기
+          휴가 등록하기
         </Button>
       </ButtonBox>
       <Wapper>
-        <h2>나의 연차</h2>
+        <h2>나의 휴가</h2>
         <DayOffSummary />
       </Wapper>
 
       <Wapper>
         <h2>
-          연차 신청 내역 <span>{DUMMY_DAYOFF_REQUEST_LIST.length}</span>
+          휴가 신청 내역 <span>{DUMMY_DAYOFF_REQUEST_LIST.length}</span>
         </h2>
         <DayOffRequestTable requestList={DUMMY_DAYOFF_REQUEST_LIST} />
       </Wapper>
 
       <Wapper>
         <h2>
-          연차 사용 내역 <span>{DUMMY_DAYOFF_REQUEST_LIST.length}</span>
+          휴가 사용 내역 <span>{DUMMY_DAYOFF_REQUEST_LIST.length}</span>
         </h2>
         <DayOffHistorytTable historyList={DUMMY_DAYOFF_REQUEST_LIST} />
       </Wapper>
