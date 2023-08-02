@@ -6,3 +6,10 @@ export const DUTY_MENU_ITEMS: MenuProps['items'] = [
     key: '1'
   }
 ]
+
+export const DAYOFF_MENU_ITEMS: MenuProps['items'] = [
+  {
+    label: '연차 취소하기',
+    key: '1'
+  }
+]

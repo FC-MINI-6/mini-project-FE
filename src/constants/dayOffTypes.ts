@@ -1,13 +1,13 @@
 export const dayOffTypes = {
   AVAILABLE: {
     type: 'AVAILABLE',
-    title: '남은 연차',
+    title: '남은 휴가',
     color: 'var(--color-green-1)',
     operator: '+'
   },
   EXTINCTION: {
     type: 'EXTINCTION',
-    title: '소멸 연차',
+    title: '소멸 휴가',
     color: 'var(--color-red-1)',
     operator: '-'
   },
