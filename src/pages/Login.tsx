@@ -10,6 +10,7 @@ import {
 } from 'components/index'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
+import { useUserStore } from '@/stores/userStore'
 
 interface LoginData {
   email: string
@@ -40,6 +41,10 @@ export const Login = () => {
       const response = await axios.post(api, loginData)
       console.log('API 호출 성공!')
       console.log(response.data)
+
+      //유저 데이터 업데이트
+      const userData = response.data
+      useUserStore.setState(userData)
     } catch (error) {
       console.error('API 호출 실패!')
       console.error(error)
