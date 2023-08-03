@@ -1,4 +1,4 @@
-import { useState,useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { DatePicker, Input, Select, Space } from 'antd'
 import axios from 'axios'
 import {
@@ -7,7 +7,7 @@ import {
   StyledFormItemWrapper,
   StyledFormItem,
   StyledButton
-} from './styled'
+} from 'components/index'
 
 interface SignUpData {
   name: string
@@ -18,9 +18,7 @@ interface SignUpData {
 }
 
 export const SignUp = () => {
-
-  
-  const [loginData, setLoginData] = useState<SignUpData>({
+  const [signUpData, setSignUpData] = useState<SignUpData>({
     name: '',
     position: '',
     email: '',
@@ -28,22 +26,22 @@ export const SignUp = () => {
     password: ''
   })
   useEffect(() => {
-    console.log(loginData);
-  }, [loginData]);
-  
+    console.log(signUpData)
+  }, [signUpData])
+
   const [passwordConfirm, setPasswordConfirm] = useState<string>('')
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
-    setLoginData({
-      ...loginData,
+    setSignUpData({
+      ...signUpData,
       [name]: value
     })
   }
 
   const handlePositionChange = (value: string) => {
-    setLoginData({
-      ...loginData,
+    setSignUpData({
+      ...signUpData,
       position: value
     })
   }
@@ -54,9 +52,9 @@ export const SignUp = () => {
   }
 
   const handleSubmit = async () => {
-    if (loginData.password === passwordConfirm) {
+    if (signUpData.password === passwordConfirm) {
       try {
-        const response = await axios.post(api, loginData)
+        const response = await axios.post(api, signUpData)
         console.log('API 호출 성공!')
         console.log(response.data)
       } catch (error) {
@@ -80,7 +78,7 @@ export const SignUp = () => {
               style={{ width: 250 }}
               name="name"
               onChange={handleChange}
-              value={loginData.name}
+              value={signUpData.name}
             />
           </StyledFormItem>
 
@@ -111,7 +109,7 @@ export const SignUp = () => {
               style={{ width: 250 }}
               name="email"
               onChange={handleChange}
-              value={loginData.email}
+              value={signUpData.email}
             />
           </StyledFormItem>
           <StyledFormItem
@@ -129,7 +127,7 @@ export const SignUp = () => {
             style={{ width: 400 }}
             name="password"
             onChange={handleChange}
-            value={loginData.password}
+            value={signUpData.password}
           />
         </StyledFormItem>
 

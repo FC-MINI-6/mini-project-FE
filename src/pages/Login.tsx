@@ -7,7 +7,9 @@ import {
   StyledFormItem,
   StyledCheckbox,
   StyledButton
-} from './styled'
+} from 'components/index'
+import { Link } from 'react-router-dom'
+import axios from 'axios'
 
 export const Login = () => {
   const [loginData, setLoginData] = useState({ email: '', password: '' })
@@ -21,12 +23,20 @@ export const Login = () => {
     console.log(event.target)
   }
 
+  const handleSubmit = async () => {
+    try {
+      const response = await axios.post(api, loginData)
+      console.log('API 호출 성공!')
+      console.log(response.data)
+    } catch (error) {
+      console.error('API 호출 실패!')
+      console.error(error)
+    }
+  }
+
   return (
     <Styleddiv>
-      <StyledForm
-        name="basic"
-        initialValues={{ remember: true }}
-        autoComplete="off">
+      <StyledForm name="basic" autoComplete="off" onFinish={handleSubmit}>
         <StyledFormItem
           label="이메일"
           name="이메일"
@@ -54,6 +64,11 @@ export const Login = () => {
         <StyledFormItemWrapper>
           <StyledFormItem name="remember" valuePropName="checked">
             <StyledCheckbox>Remember me</StyledCheckbox>
+          </StyledFormItem>
+          <StyledFormItem>
+            <p>
+              <Link to="/signup">회원가입</Link>
+            </p>
           </StyledFormItem>
           <StyledButton type="primary" htmlType="submit">
             로그인
