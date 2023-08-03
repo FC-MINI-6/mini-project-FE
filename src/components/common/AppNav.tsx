@@ -1,5 +1,10 @@
+import { useEffect, useMemo, useState } from 'react'
+import { NotificationPopup } from 'components/index'
+import { notificationRef } from '@/firebase'
+import { collection, getDocs, onSnapshot } from 'firebase/firestore'
+import { INotificationData } from 'types/index'
 import { styled } from 'styled-components'
-import { Image, Menu, Button } from 'antd'
+import { Image, Menu, Button, Popover, Badge } from 'antd'
 import type { MenuProps } from 'antd'
 import {
   BellOutlined,
@@ -40,9 +45,49 @@ const items: MenuItem[] = [
 ]
 
 export const AppNav = () => {
+  const [newNotifications, setNewNotifications] = useState<INotificationData[]>([])
+  const newNotificationCount = useMemo(() => newNotifications.length, [newNotifications])
+
+  // 실시간 알림 변경사항 구독
+  useEffect(() => {
+    onSnapshot(collection(notificationRef, 'userid1', 'notiList'), snapshot => {
+      const updateNotifications = snapshot.docs
+        .map(doc => {
+          return { ...(doc.data() as INotificationData), id: doc.id }
+        })
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+        .filter(noti => !noti.read)
+      setNewNotifications(updateNotifications)
+    })
+  }, [])
+
+  const fetchNoti = async () => {
+    try {
+      // TODO : userId1 > 실제 사용자 ID 값으로 대체
+      await getDocs(collection(notificationRef, 'userid1', 'notiList'))
+        .then(res => {
+          return res.docs
+            .map(doc => {
+              return { ...(doc.data() as INotificationData), id: doc.id }
+            })
+            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+            .filter(noti => !noti.read)
+        })
+        .then(newNotifications => {
+          setNewNotifications(newNotifications)
+        })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    fetchNoti()
+  }, [])
+
   return (
     <Container>
-      <Logo>LOGO</Logo>
+      <Logo>{/* <Image src={logo} /> */}</Logo>
       <Profile>
         <Image
           alt="profileImage"
@@ -55,7 +100,15 @@ export const AppNav = () => {
           <p>홍길동님</p>
           <p>직급/관리자</p>
         </span>
-        <BellOutlined />
+        <Popover
+          placement="rightTop"
+          title={'알림'}
+          content={<NotificationPopup datas={newNotifications} />}
+          trigger="click">
+          <Badge count={newNotificationCount} size="small" offset={[-2, 4]}>
+            <BellOutlined style={{ fontSize: 24, color: '#fff' }} />
+          </Badge>
+        </Popover>
       </Profile>
       <Menu defaultSelectedKeys={['1']} defaultOpenKeys={['sub1']} theme="dark" items={items} />
       <Button
@@ -74,15 +127,17 @@ export const AppNav = () => {
 }
 
 const Container = styled.div`
-  margin: 20px;
+  padding: 20px;
   height: 90%;
   overflow: hidden;
   position: relative;
 `
 
 const Logo = styled.div`
-  height: 45px;
-  background-color: white;
+  height: 70px;
+  background-image: url('logo.png');
+  background-size: contain;
+  background-repeat: no-repeat;
   color: black;
 `
 const Profile = styled.div`

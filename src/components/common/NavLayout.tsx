@@ -8,6 +8,7 @@ export const NavLayout = () => {
     <>
       <Layout hasSider style={{ minWidth: 1024 }}>
         <Sider
+          width={250}
           style={{
             overflow: 'auto',
             height: '100vh',
@@ -24,7 +25,7 @@ export const NavLayout = () => {
         <Layout
           className="site-layout"
           style={{
-            marginLeft: 200,
+            marginLeft: 250,
             display: 'flex',
             flexDirection: 'column',
             minHeight: '100vh',

@@ -1,7 +1,12 @@
 import React, { useEffect } from 'react'
 import type { ColumnsType } from 'antd/es/table'
 import { Table, Button } from 'antd'
-import axios from 'node_modules/axios/index'
+import axios from 'axios'
+
+import { addDoc, collection } from 'firebase/firestore'
+import { notificationRef } from '@/firebase'
+import dayjs from 'dayjs'
+
 interface DataType {
   key: React.Key
   name: string
@@ -82,6 +87,19 @@ export const ScheduleMgt = () => {
   useEffect(() => {
     getScheduleList()
   }, [])
+
+  // 휴가 승인 반려 알림 푸시
+  // *  호출 예시 >> pushDayOffStatusNotification('오후반차', 'APPROVE')
+  const pushDayOffStatusNotification = async (type: string, status: string) => {
+    const userNotiRef = collection(notificationRef, 'userid1', 'notiList')
+    await addDoc(userNotiRef, {
+      date: dayjs().format('YYYY-MM-DD'),
+      message: `${type} 신청이 ${status === 'APPROVE' ? '승인' : '반려'}되었습니다.`,
+      status: status,
+      type: type,
+      read: false
+    })
+  }
 
   // const body = {
 
