@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { NotificationPopup } from 'components/index'
 import { notificationRef } from '@/firebase'
-import { collection, getDocs } from 'firebase/firestore'
+import { collection, getDocs, onSnapshot } from 'firebase/firestore'
 import { INotificationData } from 'types/index'
 import { styled } from 'styled-components'
 import { Image, Menu, Button, Popover, Badge } from 'antd'
@@ -45,12 +45,21 @@ const items: MenuItem[] = [
 ]
 
 export const AppNav = () => {
-  const [notifications, setNotifications] = useState<INotificationData[]>([])
   const [newNotifications, setNewNotifications] = useState<INotificationData[]>([])
-  const newNotificationCount = useMemo(
-    () => notifications.filter(noti => !noti.read).length,
-    [notifications]
-  )
+  const newNotificationCount = useMemo(() => newNotifications.length, [newNotifications])
+
+  // 실시간 알림 변경사항 구독
+  useEffect(() => {
+    onSnapshot(collection(notificationRef, 'userid1', 'notiList'), snapshot => {
+      const updateNotifications = snapshot.docs
+        .map(doc => {
+          return { ...(doc.data() as INotificationData), id: doc.id }
+        })
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+        .filter(noti => !noti.read)
+      setNewNotifications(updateNotifications)
+    })
+  }, [])
 
   const fetchNoti = async () => {
     try {
@@ -58,12 +67,14 @@ export const AppNav = () => {
       await getDocs(collection(notificationRef, 'userid1', 'notiList'))
         .then(res => {
           return res.docs
-            .map(doc => doc.data() as INotificationData)
+            .map(doc => {
+              return { ...(doc.data() as INotificationData), id: doc.id }
+            })
             .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+            .filter(noti => !noti.read)
         })
-        .then(allNotis => {
-          setNotifications(allNotis)
-          setNewNotifications(allNotis.filter(noti => !noti.read))
+        .then(newNotifications => {
+          setNewNotifications(newNotifications)
         })
     } catch (error) {
       console.log(error)
@@ -76,7 +87,7 @@ export const AppNav = () => {
 
   return (
     <Container>
-      <Logo>LOGO</Logo>
+      <Logo>{/* <Image src={logo} /> */}</Logo>
       <Profile>
         <Image
           alt="profileImage"
@@ -123,8 +134,10 @@ const Container = styled.div`
 `
 
 const Logo = styled.div`
-  height: 45px;
-  background-color: white;
+  height: 70px;
+  background-image: url('logo.png');
+  background-size: contain;
+  background-repeat: no-repeat;
   color: black;
 `
 const Profile = styled.div`
