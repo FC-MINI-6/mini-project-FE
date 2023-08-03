@@ -1,3 +1,7 @@
+import { useEffect, useState } from 'react'
+import { notificationRef } from '@/firebase'
+import { collection, getDocs } from 'firebase/firestore'
+import { INotificationData } from 'types/index'
 import { styled } from 'styled-components'
 import { Image, Menu, Button } from 'antd'
 import type { MenuProps } from 'antd'
@@ -40,6 +44,30 @@ const items: MenuItem[] = [
 ]
 
 export const AppNav = () => {
+  const [notifications, setNotifications] = useState<INotificationData[]>([])
+  const [newNotifications, setNewNotifications] = useState<INotificationData[]>([])
+  const fetchNoti = async () => {
+    try {
+      // TODO : userId1 > 실제 사용자 ID 값으로 대체
+      await getDocs(collection(notificationRef, 'userid1', 'notiList'))
+        .then(res => {
+          return res.docs.map(doc => doc.data() as INotificationData)
+        })
+        .then(allNotis => {
+          setNotifications(allNotis)
+          setNewNotifications(allNotis.filter(noti => !noti.read))
+          console.log(allNotis)
+          console.log(allNotis.filter(noti => !noti.read))
+        })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    fetchNoti()
+  }, [])
+
   return (
     <Container>
       <Logo>LOGO</Logo>
