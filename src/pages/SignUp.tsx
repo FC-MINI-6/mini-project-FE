@@ -1,4 +1,4 @@
-import { useState,useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { DatePicker, Input, Select, Space } from 'antd'
 import axios from 'axios'
 import {
@@ -7,7 +7,7 @@ import {
   StyledFormItemWrapper,
   StyledFormItem,
   StyledButton
-} from '@/components/signup/styled'
+} from 'components/index'
 
 interface SignUpData {
   name: string
@@ -18,8 +18,6 @@ interface SignUpData {
 }
 
 export const SignUp = () => {
-
-  
   const [signUpData, setSignUpData] = useState<SignUpData>({
     name: '',
     position: '',
@@ -28,9 +26,9 @@ export const SignUp = () => {
     password: ''
   })
   useEffect(() => {
-    console.log(signUpData);
-  }, [signUpData]);
-  
+    console.log(signUpData)
+  }, [signUpData])
+
   const [passwordConfirm, setPasswordConfirm] = useState<string>('')
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {

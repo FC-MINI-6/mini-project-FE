@@ -7,7 +7,7 @@ import {
   StyledFormItem,
   StyledCheckbox,
   StyledButton
-} from '@/components/login/styled'
+} from 'components/index'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 
