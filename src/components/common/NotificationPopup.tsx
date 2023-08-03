@@ -56,6 +56,7 @@ const NotiItem = styled(Item)`
 
 const NotiContent = styled.div`
   display: flex;
+  width: 100%;
   font-size: 16px;
 `
 
