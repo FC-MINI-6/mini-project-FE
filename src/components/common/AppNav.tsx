@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { NotificationPopup } from 'components/index'
 import { notificationRef } from '@/firebase'
 import { collection, getDocs } from 'firebase/firestore'
 import { INotificationData } from 'types/index'
 import { styled } from 'styled-components'
-import { Image, Menu, Button } from 'antd'
+import { Image, Menu, Button, Popover, Badge } from 'antd'
 import type { MenuProps } from 'antd'
 import {
   BellOutlined,
@@ -46,6 +47,11 @@ const items: MenuItem[] = [
 export const AppNav = () => {
   const [notifications, setNotifications] = useState<INotificationData[]>([])
   const [newNotifications, setNewNotifications] = useState<INotificationData[]>([])
+  const newNotificationCount = useMemo(
+    () => notifications.filter(noti => !noti.read).length,
+    [notifications]
+  )
+
   const fetchNoti = async () => {
     try {
       // TODO : userId1 > 실제 사용자 ID 값으로 대체
@@ -83,7 +89,11 @@ export const AppNav = () => {
           <p>홍길동님</p>
           <p>직급/관리자</p>
         </span>
-        <BellOutlined />
+        <Popover placement="right" title={'알림'} content={<NotificationPopup />} trigger="click">
+          <Badge count={newNotificationCount} size="small">
+            <BellOutlined style={{ fontSize: 24, color: '#fff' }} />
+          </Badge>
+        </Popover>
       </Profile>
       <Menu defaultSelectedKeys={['1']} defaultOpenKeys={['sub1']} theme="dark" items={items} />
       <Button
@@ -102,7 +112,7 @@ export const AppNav = () => {
 }
 
 const Container = styled.div`
-  margin: 20px;
+  padding: 20px;
   height: 90%;
   overflow: hidden;
   position: relative;
