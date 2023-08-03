@@ -7,7 +7,8 @@ import {
   AdminEmployee,
   HomeCalendar,
   SignUp,
-  Login
+  Login,
+  MyPage
 } from 'pages/index'
 
 import GlobalStyle from '@/GlobalStyle'
@@ -24,6 +25,7 @@ export const App = () => {
           <Route element={<NavLayout />}>
             {/* 아래 Route Page 추가 */}
             <Route path="/" element={<HomeCalendar />} />
+            <Route path="/mypage" element={<MyPage />} />
             <Route path="/day_off" element={<DayOff />} />
             <Route path="/duty" element={<Duty />} />
             <Route path="/admin/schedule" element={<AdminSchedule />} />
