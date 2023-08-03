@@ -57,13 +57,13 @@ export const AppNav = () => {
       // TODO : userId1 > 실제 사용자 ID 값으로 대체
       await getDocs(collection(notificationRef, 'userid1', 'notiList'))
         .then(res => {
-          return res.docs.map(doc => doc.data() as INotificationData)
+          return res.docs
+            .map(doc => doc.data() as INotificationData)
+            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
         })
         .then(allNotis => {
           setNotifications(allNotis)
           setNewNotifications(allNotis.filter(noti => !noti.read))
-          console.log(allNotis)
-          console.log(allNotis.filter(noti => !noti.read))
         })
     } catch (error) {
       console.log(error)
@@ -89,8 +89,12 @@ export const AppNav = () => {
           <p>홍길동님</p>
           <p>직급/관리자</p>
         </span>
-        <Popover placement="right" title={'알림'} content={<NotificationPopup />} trigger="click">
-          <Badge count={newNotificationCount} size="small">
+        <Popover
+          placement="rightTop"
+          title={'알림'}
+          content={<NotificationPopup datas={newNotifications} />}
+          trigger="click">
+          <Badge count={newNotificationCount} size="small" offset={[-2, 4]}>
             <BellOutlined style={{ fontSize: 24, color: '#fff' }} />
           </Badge>
         </Popover>
