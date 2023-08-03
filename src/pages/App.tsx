@@ -1,14 +1,20 @@
 import { Route, Routes } from 'react-router-dom'
 import { NavLayout } from 'components/index'
-import { DayOff, Duty, AdminSchedule, AdminEmployee, HomeCalendar } from 'pages/index'
+import {
+  DayOff,
+  Duty,
+  AdminSchedule,
+  AdminEmployee,
+  HomeCalendar,
+  SignUp,
+  Login,
+  MyPage
+} from 'pages/index'
 
 import GlobalStyle from '@/GlobalStyle'
 import { ConfigProvider } from 'antd'
 import { config } from '@/GlobalThemeConfig'
 import locale from 'antd/lib/locale/ko_KR'
-import { SignUp } from '@/pages/SignUp'
-import { Login } from '@/pages/Login'
-import { MyPage } from '@/pages/MyPage'
 
 export const App = () => {
   return (

@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import { Input } from 'antd'
 import {
-  Styleddiv,
-  StyledForm,
-  StyledFormItemWrapper,
-  StyledFormItem,
-  StyledCheckbox,
-  StyledButton
-} from '@/components/login/styled'
+  LoginStyleddiv,
+  LoginStyledForm,
+  LoginStyledFormItem,
+  LoginStyledFormItemWrapper,
+  LoginStyledCheckbox,
+  LoginStyledButton
+} from 'components/index'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 
@@ -40,9 +40,9 @@ export const Login = () => {
   }
 
   return (
-    <Styleddiv>
-      <StyledForm name="basic" autoComplete="off" onFinish={handleSubmit}>
-        <StyledFormItem
+    <LoginStyleddiv>
+      <LoginStyledForm name="basic" autoComplete="off" onFinish={handleSubmit}>
+        <LoginStyledFormItem
           label="이메일"
           name="이메일"
           rules={[{ required: true, message: '이메일을 입력하세요!' }]}>
@@ -52,9 +52,9 @@ export const Login = () => {
             onChange={handleChange}
             value={loginData.email}
           />
-        </StyledFormItem>
+        </LoginStyledFormItem>
 
-        <StyledFormItem
+        <LoginStyledFormItem
           label="비밀번호"
           name="비밀번호"
           rules={[{ required: true, message: '비밀번호를 입력하세요!' }]}>
@@ -64,22 +64,22 @@ export const Login = () => {
             onChange={handleChange}
             value={loginData.password}
           />
-        </StyledFormItem>
+        </LoginStyledFormItem>
 
-        <StyledFormItemWrapper>
-          <StyledFormItem name="remember" valuePropName="checked">
-            <StyledCheckbox>Remember me</StyledCheckbox>
-          </StyledFormItem>
-          <StyledFormItem>
+        <LoginStyledFormItemWrapper>
+          <LoginStyledFormItem name="remember" valuePropName="checked">
+            <LoginStyledCheckbox>Remember me</LoginStyledCheckbox>
+          </LoginStyledFormItem>
+          <LoginStyledFormItem>
             <p>
               <Link to="/signup">회원가입</Link>
             </p>
-          </StyledFormItem>
-          <StyledButton type="primary" htmlType="submit">
+          </LoginStyledFormItem>
+          <LoginStyledButton type="primary" htmlType="submit">
             로그인
-          </StyledButton>
-        </StyledFormItemWrapper>
-      </StyledForm>
-    </Styleddiv>
+          </LoginStyledButton>
+        </LoginStyledFormItemWrapper>
+      </LoginStyledForm>
+    </LoginStyleddiv>
   )
 }

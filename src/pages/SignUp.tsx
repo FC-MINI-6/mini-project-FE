@@ -1,13 +1,13 @@
-import { useState,useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { DatePicker, Input, Select, Space } from 'antd'
 import axios from 'axios'
 import {
-  Styleddiv,
-  StyledForm,
-  StyledFormItemWrapper,
-  StyledFormItem,
-  StyledButton
-} from '@/components/signup/styled'
+  SignUpStyledFormItem,
+  SignUpStyledFormItemWrapper,
+  SignUpStyledForm,
+  SignUpStyleddiv,
+  SignUpStyledButton
+} from 'components/index'
 
 interface SignUpData {
   name: string
@@ -18,8 +18,6 @@ interface SignUpData {
 }
 
 export const SignUp = () => {
-
-  
   const [signUpData, setSignUpData] = useState<SignUpData>({
     name: '',
     position: '',
@@ -28,9 +26,9 @@ export const SignUp = () => {
     password: ''
   })
   useEffect(() => {
-    console.log(signUpData);
-  }, [signUpData]);
-  
+    console.log(signUpData)
+  }, [signUpData])
+
   const [passwordConfirm, setPasswordConfirm] = useState<string>('')
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -69,10 +67,10 @@ export const SignUp = () => {
   }
 
   return (
-    <Styleddiv>
-      <StyledForm name="basic" autoComplete="off" onFinish={handleSubmit}>
-        <StyledFormItemWrapper>
-          <StyledFormItem
+    <SignUpStyleddiv>
+      <SignUpStyledForm name="basic" autoComplete="off" onFinish={handleSubmit}>
+        <SignUpStyledFormItemWrapper>
+          <SignUpStyledFormItem
             label="이름"
             name="이름"
             rules={[{ required: true, message: '이름을 입력하세요!' }]}>
@@ -82,10 +80,10 @@ export const SignUp = () => {
               onChange={handleChange}
               value={signUpData.name}
             />
-          </StyledFormItem>
+          </SignUpStyledFormItem>
 
           <Space wrap>
-            <StyledFormItem name="직급" rules={[{ required: true, message: '직급을 입력하세요!' }]}>
+            <SignUpStyledFormItem name="직급" rules={[{ required: true, message: '직급을 입력하세요!' }]}>
               <Select
                 style={{ width: 150 }}
                 placeholder="직급 선택"
@@ -98,12 +96,12 @@ export const SignUp = () => {
                   { value: '팀장', label: '팀장' }
                 ]}
               />
-            </StyledFormItem>
+            </SignUpStyledFormItem>
           </Space>
-        </StyledFormItemWrapper>
+        </SignUpStyledFormItemWrapper>
 
-        <StyledFormItemWrapper>
-          <StyledFormItem
+        <SignUpStyledFormItemWrapper>
+          <SignUpStyledFormItem
             label="이메일"
             name="이메일"
             rules={[{ required: true, message: '이메일을 입력하세요!' }]}>
@@ -113,15 +111,15 @@ export const SignUp = () => {
               onChange={handleChange}
               value={signUpData.email}
             />
-          </StyledFormItem>
-          <StyledFormItem
+          </SignUpStyledFormItem>
+          <SignUpStyledFormItem
             name="입사일"
             rules={[{ required: true, message: '입사일을 입력하세요!' }]}>
             <DatePicker placeholder="입사일 선택" style={{ width: 150 }} />
-          </StyledFormItem>
-        </StyledFormItemWrapper>
+          </SignUpStyledFormItem>
+        </SignUpStyledFormItemWrapper>
 
-        <StyledFormItem
+        <SignUpStyledFormItem
           label="비밀번호"
           name="비밀번호"
           rules={[{ required: true, message: '비밀번호를 입력하세요!' }]}>
@@ -131,9 +129,9 @@ export const SignUp = () => {
             onChange={handleChange}
             value={signUpData.password}
           />
-        </StyledFormItem>
+        </SignUpStyledFormItem>
 
-        <StyledFormItem
+        <SignUpStyledFormItem
           label="비밀번호 확인"
           name="비밀번호 확인"
           rules={[{ required: true, message: '비밀번호 확인을 입력하세요!' }]}>
@@ -143,22 +141,22 @@ export const SignUp = () => {
             onChange={handlePasswordConfirmChange}
             value={passwordConfirm}
           />
-        </StyledFormItem>
+        </SignUpStyledFormItem>
 
-        <StyledFormItem
+        <SignUpStyledFormItem
           label="전화번호"
           name="전화번호"
           rules={[{ required: true, message: '전화번호를 입력하세요!' }]}>
           <Input style={{ width: 50 }} defaultValue="010" />
           <Input style={{ width: 300 }} defaultValue="" />
-        </StyledFormItem>
+        </SignUpStyledFormItem>
 
-        <StyledFormItemWrapper>
-          <StyledButton type="primary" htmlType="submit">
+        <SignUpStyledFormItemWrapper>
+          <SignUpStyledButton type="primary" htmlType="submit">
             가입하기
-          </StyledButton>
-        </StyledFormItemWrapper>
-      </StyledForm>
-    </Styleddiv>
+          </SignUpStyledButton>
+        </SignUpStyledFormItemWrapper>
+      </SignUpStyledForm>
+    </SignUpStyleddiv>
   )
 }

@@ -1,1 +1,1 @@
-export * from '@/pages/SignUp'
+export * from 'components/signup/styled'

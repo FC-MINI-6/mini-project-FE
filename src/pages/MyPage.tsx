@@ -1,11 +1,16 @@
 import { useState } from 'react'
-import { Form, Input, Button, Modal } from 'antd'
-import { StyledButton, StyledForm, StyledFormItem, StyledFormItemWrapper } from '@/components/mypage/styled'
+import { Form, Input, Modal } from 'antd'
+import {
+  MyPageStyledButton,
+  MyPageStyledForm,
+  MyPageStyledFormItem,
+  MyPageStyledFormItemWrapper,
+} from 'components/index'
 
 export const MyPage = () => {
   const [form] = Form.useForm()
   const [showModal, setShowModal] = useState(false)
-  const [editablePhoneNumber, setEditablePhoneNumber] = useState('010-1234-1234')//
+  const [editablePhoneNumber, setEditablePhoneNumber] = useState('010-1234-1234') //
   const [isEditingPhoneNumber, setIsEditingPhoneNumber] = useState(false)
 
   const handlePasswordChange = () => {
@@ -35,45 +40,45 @@ export const MyPage = () => {
 
   return (
     <>
-      <StyledForm form={form}>
-        <StyledFormItem label="이름" name="name">
-          <Input style={{ width:400 }} readOnly defaultValue="Hyun Jun" />
-        </StyledFormItem>
-        <StyledFormItem label="이메일" name="email">
-          <Input style={{ width:400 }} readOnly defaultValue="qkrguswns@naver.com" />
-        </StyledFormItem>
-        <StyledFormItem label="직급" name="position">
-          <Input style={{ width:400 }} readOnly defaultValue="대리" />
-        </StyledFormItem>
-        <StyledFormItem label="입사일" name="joinDate">
-          <Input style={{ width:400 }} readOnly defaultValue="2023-08-01" />
-        </StyledFormItem>
-        <StyledFormItemWrapper>
+      <MyPageStyledForm form={form}>
+        <MyPageStyledFormItem label="이름" name="name">
+          <Input style={{ width: 400 }} readOnly defaultValue="Hyun Jun" />
+        </MyPageStyledFormItem>
+        <MyPageStyledFormItem label="이메일" name="email">
+          <Input style={{ width: 400 }} readOnly defaultValue="qkrguswns@naver.com" />
+        </MyPageStyledFormItem>
+        <MyPageStyledFormItem label="직급" name="position">
+          <Input style={{ width: 400 }} readOnly defaultValue="대리" />
+        </MyPageStyledFormItem>
+        <MyPageStyledFormItem label="입사일" name="joinDate">
+          <Input style={{ width: 400 }} readOnly defaultValue="2023-08-01" />
+        </MyPageStyledFormItem>
+        <MyPageStyledFormItemWrapper>
           {isEditingPhoneNumber ? (
-            <StyledFormItem label="전화번호" name="phoneNumber">
+            <MyPageStyledFormItem label="전화번호" name="phoneNumber">
               <Input
                 style={{ width: 330 }}
                 value={editablePhoneNumber}
-                onChange={(e) => setEditablePhoneNumber(e.target.value)}
+                onChange={e => setEditablePhoneNumber(e.target.value)}
               />
-            </StyledFormItem>
+            </MyPageStyledFormItem>
           ) : (
-            <StyledFormItem label="전화번호" name="phoneNumber">
+            <MyPageStyledFormItem label="전화번호" name="phoneNumber">
               <Input style={{ width: 330 }} readOnly defaultValue={editablePhoneNumber} />
-            </StyledFormItem>
+            </MyPageStyledFormItem>
           )}
           {isEditingPhoneNumber ? (
-            <StyledButton onClick={handleCompletePhoneNumber}>완료</StyledButton>
+            <MyPageStyledButton onClick={handleCompletePhoneNumber}>완료</MyPageStyledButton>
           ) : (
-            <StyledButton onClick={handleEditPhoneNumber}>수정</StyledButton>
+            <MyPageStyledButton onClick={handleEditPhoneNumber}>수정</MyPageStyledButton>
           )}
-        </StyledFormItemWrapper>
-        <StyledFormItem>
-          <Button type="primary" onClick={handlePasswordChange}>
+        </MyPageStyledFormItemWrapper>
+        <MyPageStyledFormItem>
+          <MyPageStyledButton type="primary" onClick={handlePasswordChange}>
             비밀번호 변경
-          </Button>
-        </StyledFormItem>
-      </StyledForm>
+          </MyPageStyledButton>
+        </MyPageStyledFormItem>
+      </MyPageStyledForm>
 
       <Modal
         visible={showModal}
@@ -81,19 +86,19 @@ export const MyPage = () => {
         onOk={handleModalOk}
         title="비밀번호 변경">
         <Form form={form}>
-          <StyledFormItem
+          <MyPageStyledFormItem
             label="기존 비밀번호"
             name="currentPassword"
             rules={[{ required: true, message: '기존 비밀번호를 입력하세요.' }]}>
             <Input.Password />
-          </StyledFormItem>
-          <StyledFormItem
+          </MyPageStyledFormItem>
+          <MyPageStyledFormItem
             label="새 비밀번호"
             name="newPassword"
             rules={[{ required: true, message: '새 비밀번호를 입력하세요.' }]}>
             <Input.Password />
-          </StyledFormItem>
-          <StyledFormItem
+          </MyPageStyledFormItem>
+          <MyPageStyledFormItem
             label="새 비밀번호 확인"
             name="confirmPassword"
             rules={[
@@ -108,7 +113,7 @@ export const MyPage = () => {
               })
             ]}>
             <Input.Password />
-          </StyledFormItem>
+          </MyPageStyledFormItem>
         </Form>
       </Modal>
     </>

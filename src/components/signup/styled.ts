@@ -1,14 +1,14 @@
 import { Button, Form,} from 'antd'
 import styled from 'styled-components'
 
-export const Styleddiv = styled.div`
+export const SignUpStyleddiv = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
 `
 
-export const StyledForm = styled(Form)`
+export const SignUpStyledForm = styled(Form)`
   width: 600px;
   padding: 40px;
   border: 1px solid #ddd;
@@ -16,17 +16,17 @@ export const StyledForm = styled(Form)`
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 `
 
-export const StyledFormItemWrapper = styled.div`
+export const SignUpStyledFormItemWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
 `
 
-export const StyledFormItem = styled(Form.Item)`
+export const SignUpStyledFormItem = styled(Form.Item)`
   display: flex;
   margin-bottom: 24px;
   justify-content: flex-end;
 `
 
-export const StyledButton = styled(Button)`
+export const SignUpStyledButton = styled(Button)`
   margin-left: 8px;
 `
