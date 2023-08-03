@@ -18,6 +18,7 @@ interface LoginData {
 
 export const Login = () => {
   const [loginData, setLoginData] = useState<LoginData>({ email: '', password: '' })
+  const [emailError, setEmailError] = useState<string>('')
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
@@ -29,6 +30,12 @@ export const Login = () => {
   }
 
   const handleSubmit = async () => {
+    //이메일 유효성 검사
+    const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/
+    if (!emailRegex.test(loginData.email)) {
+      setEmailError('유효한 이메일 주소를 입력하세요.')
+      return
+    }
     try {
       const response = await axios.post(api, loginData)
       console.log('API 호출 성공!')
@@ -45,7 +52,9 @@ export const Login = () => {
         <LoginStyledFormItem
           label="이메일"
           name="이메일"
-          rules={[{ required: true, message: '이메일을 입력하세요!' }]}>
+          rules={[{ required: true, message: '이메일을 입력하세요!' }]}
+          validateStatus={emailError ? 'error' : ''}
+          help={emailError}>
           <Input
             style={{ width: 400 }}
             name="email"
@@ -57,7 +66,10 @@ export const Login = () => {
         <LoginStyledFormItem
           label="비밀번호"
           name="비밀번호"
-          rules={[{ required: true, message: '비밀번호를 입력하세요!' }]}>
+          rules={[
+            { required: true, message: '비밀번호를 입력하세요!' },
+            { min: 4, max: 20, message: '비밀번호는 4~20자리여야 합니다!' }
+          ]}>
           <Input.Password
             style={{ width: 400 }}
             name="password"
