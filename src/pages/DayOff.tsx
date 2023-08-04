@@ -5,17 +5,45 @@ import {
   DayOffRequestTable,
   DayOffHistorytTable
 } from 'components/index'
+import { IDayOffRequest } from 'types/index'
+import { insertDayOff } from 'apis/index'
+import { modalStore } from 'stores/index'
+
 import { styled } from 'styled-components'
 
 import { Button } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
-import { DUMMY_DAYOFF_REQUEST_LIST } from '@/constants'
+import { resultModalDatas, DUMMY_DAYOFF_REQUEST_LIST } from 'constants/index'
 
 export const DayOff = () => {
+  const { openModal } = modalStore()
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const handleOk = () => {
-    setIsModalOpen(false)
+  const handleOk = (request: IDayOffRequest) => {
+    insertDayOff(request)
+      .then(
+        () => {
+          setIsModalOpen(false)
+          openModal({
+            ...resultModalDatas.DAY_OFF_INSERT_SUCCESS,
+            okCallback: () => {
+              // TODO : 신청 내역 갱신
+              console.log('갱신')
+            }
+          })
+        },
+        error => {
+          openModal({
+            ...resultModalDatas.DAY_OFF_INSERT_FAILUR,
+            content: `휴가 등록 신청 중 오류가 발생했습니다.\n관리자에게 문의해주세요.\n${
+              error.message ?? ''
+            }`
+          })
+        }
+      )
+      .finally(() => {
+        setIsModalOpen(false)
+      })
   }
 
   const handleCancel = () => {
