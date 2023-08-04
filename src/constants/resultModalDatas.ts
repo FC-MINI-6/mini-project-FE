@@ -17,5 +17,11 @@ export const resultModalDatas = {
     type: 1,
     okButton: '확인',
     okCallback: () => {}
+  },
+  DAY_OFF_DAYS_VALIDATION: {
+    title: '휴가 등록 오류',
+    content: '잔여 휴가일 보다 많은 휴가를 등록할 수 없습니다.\n잔여 휴가일 : ',
+    type: 1,
+    okButton: '확인'
   }
 }
