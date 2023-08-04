@@ -1,23 +1,43 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
   DayOffSummary,
   DayOffRequestModal,
   DayOffRequestTable,
   DayOffHistorytTable
 } from 'components/index'
-import { IDayOffRequest } from 'types/index'
-import { insertDayOff } from 'apis/index'
+import { IDayOffRequest, IDayOffResponse } from 'types/index'
+import { insertDayOff, fetchDayOffList } from 'apis/index'
 import { modalStore } from 'stores/index'
+import { resultModalDatas } from 'constants/index'
+import { getFilteredDayOffRequestList, getFilteredDayOffHistoryList } from 'utils/index'
 
 import { styled } from 'styled-components'
 
 import { Button } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
-import { resultModalDatas, DUMMY_DAYOFF_REQUEST_LIST } from 'constants/index'
 
 export const DayOff = () => {
   const { openModal } = modalStore()
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [dayOffList, setDayOffList] = useState<IDayOffResponse[]>([])
+
+  const requestList = useMemo(() => getFilteredDayOffRequestList(dayOffList), [dayOffList])
+  const historyList = useMemo(() => getFilteredDayOffHistoryList(dayOffList), [dayOffList])
+
+  const getDayOffList = () => {
+    fetchDayOffList().then(
+      res => {
+        setDayOffList(res.data)
+      },
+      () => {
+        openModal(resultModalDatas.DAY_OFF_FETCH_FAILURE)
+      }
+    )
+  }
+
+  useEffect(() => {
+    getDayOffList()
+  }, [])
 
   const handleOk = (request: IDayOffRequest) => {
     insertDayOff(request)
@@ -27,8 +47,7 @@ export const DayOff = () => {
           openModal({
             ...resultModalDatas.DAY_OFF_INSERT_SUCCESS,
             okCallback: () => {
-              // TODO : 신청 내역 갱신
-              console.log('갱신')
+              getDayOffList()
             }
           })
         },
@@ -67,16 +86,16 @@ export const DayOff = () => {
 
       <Wapper>
         <h2>
-          휴가 신청 내역 <span>{DUMMY_DAYOFF_REQUEST_LIST.length}</span>
+          휴가 신청 내역 <span>{requestList.length}</span>
         </h2>
-        <DayOffRequestTable requestList={DUMMY_DAYOFF_REQUEST_LIST} />
+        <DayOffRequestTable requestList={requestList} />
       </Wapper>
 
       <Wapper>
         <h2>
-          휴가 사용 내역 <span>{DUMMY_DAYOFF_REQUEST_LIST.length}</span>
+          휴가 사용 내역 <span>{historyList.length}</span>
         </h2>
-        <DayOffHistorytTable historyList={DUMMY_DAYOFF_REQUEST_LIST} />
+        <DayOffHistorytTable historyList={historyList} />
       </Wapper>
       <DayOffRequestModal
         isModalOpen={isModalOpen}

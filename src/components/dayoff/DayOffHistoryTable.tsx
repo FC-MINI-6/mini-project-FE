@@ -1,9 +1,9 @@
 import React from 'react'
-import { DUMMY_DAYOFF_REQUEST_LIST } from 'constants/index'
 import { IDayOffResponse } from 'types/index'
 import { Table, Tag, Typography } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { styled } from 'styled-components'
+import dayjs from 'dayjs'
 
 const { Text } = Typography
 
@@ -17,7 +17,9 @@ const getDayOffHistoryColumns = (): ColumnsType<IDayOffResponse> => [
       <StatusWrapper>
         <IconBox>🏖️</IconBox>
         <StatusBox>
-          <Tag bordered={false}>{status}</Tag>
+          <Tag bordered={false} style={{ minWidth: 60, textAlign: 'center' }}>
+            {status}
+          </Tag>
         </StatusBox>
       </StatusWrapper>
     ),
@@ -45,7 +47,9 @@ const getDayOffHistoryColumns = (): ColumnsType<IDayOffResponse> => [
     key: 'type',
     render: (type: string) => (
       <Type>
-        <Tag color="green">{type}</Tag>
+        <Tag color="green" style={{ minWidth: 60, textAlign: 'center' }}>
+          {type}
+        </Tag>
       </Type>
     ),
     filters: [
@@ -84,10 +88,12 @@ const getDayOffHistoryColumns = (): ColumnsType<IDayOffResponse> => [
     title: '사유',
     dataIndex: 'reason',
     key: 'reason',
-    render: (_, { reason }) => (
+    render: (_, { reason, type, endDate, startDate }) => (
       <ReasonCellWrapper>
         <ReasonText>{reason}</ReasonText>
-        <Tag bordered={false}>1일</Tag>
+        <Tag bordered={false} style={{ minWidth: 45, textAlign: 'center' }}>
+          {type === '연차' ? dayjs(endDate).diff(dayjs(startDate), 'day') + 1 : 0.5}일
+        </Tag>
       </ReasonCellWrapper>
     )
   }
@@ -100,7 +106,7 @@ type DayOffHistorytTableProps = {
 export const DayOffHistorytTable = React.memo(({ historyList }: DayOffHistorytTableProps) => {
   const columns = getDayOffHistoryColumns()
 
-  return <Table columns={columns} dataSource={DUMMY_DAYOFF_REQUEST_LIST} />
+  return <Table columns={columns} dataSource={historyList} />
 })
 
 const StatusWrapper = styled.div`
