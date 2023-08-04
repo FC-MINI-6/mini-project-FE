@@ -32,8 +32,15 @@ export const DayOffRequestModal = React.memo(
       return current < dayjs().endOf('day')
     }
 
+    const clearState = () => {
+      setType(0)
+      setDates(null)
+      setReason('')
+      setIsSingle(false)
+      setIsValid(false)
+    }
+
     const onChangeType = (e: RadioChangeEvent) => {
-      console.log('radio checked', e.target.value)
       setDates(null)
       setType(e.target.value)
       setIsSingle(e.target.value !== 0)
@@ -49,11 +56,13 @@ export const DayOffRequestModal = React.memo(
         }
 
         onClickOk(request)
+        clearState()
       }
     }, [onClickOk, dates, type, reason])
 
     const handleClickCancel = useCallback(() => {
       onClickCancel()
+      clearState()
     }, [onClickCancel])
 
     return (
@@ -89,6 +98,7 @@ export const DayOffRequestModal = React.memo(
             value={dates}
             disabledDate={disabledDate}
             onChange={val => {
+              // TODO : 남은 연차와 비교하는 유효성 검사 추가 필요
               setDates(val)
             }}
             disabled={[false, isSingle]}

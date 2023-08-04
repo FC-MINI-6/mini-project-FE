@@ -16,9 +16,23 @@ import GlobalStyle from '@/GlobalStyle'
 import { ConfigProvider, Modal } from 'antd'
 import { config } from '@/GlobalThemeConfig'
 import locale from 'antd/lib/locale/ko_KR'
+import { useCallback } from 'react'
 
 export const App = () => {
-  const { modal } = modalStore()
+  const { modal, closeModal } = modalStore()
+
+  const handleClickModalOk = useCallback(() => {
+    modal.okCallback()
+    closeModal()
+  }, [modal, closeModal])
+
+  const handleClcikModalCancel = useCallback(() => {
+    if (modal.cancelCallback) {
+      modal.cancelCallback()
+    }
+    closeModal()
+  }, [modal, closeModal])
+
   return (
     <>
       <GlobalStyle />
@@ -39,14 +53,16 @@ export const App = () => {
         </Routes>
       </ConfigProvider>
       <Modal
+        centered={true}
+        closeIcon={null}
         title={modal.title}
         open={modal.isOpen}
-        onOk={modal.okCallback}
-        onCancel={modal.cancelCallback}
+        onOk={handleClickModalOk}
+        onCancel={handleClcikModalCancel}
         okText={modal.okButton}
         cancelText={modal.cancelButton}
         cancelButtonProps={{ style: { display: `${modal.cancelCallback ? 'block' : 'none'}` } }}>
-        <p>{modal.content}</p>
+        <p style={{ whiteSpace: 'pre-wrap' }}>{modal.content}</p>
       </Modal>
     </>
   )
