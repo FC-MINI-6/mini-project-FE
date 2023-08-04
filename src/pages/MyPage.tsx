@@ -6,12 +6,14 @@ import {
   MyPageStyledFormItem,
   MyPageStyledFormItemWrapper,
 } from 'components/index'
+import { useUserStore } from '@/stores/userStore'
 
 export const MyPage = () => {
   const [form] = Form.useForm()
   const [showModal, setShowModal] = useState(false)
   const [editablePhoneNumber, setEditablePhoneNumber] = useState('010-1234-1234') //
   const [isEditingPhoneNumber, setIsEditingPhoneNumber] = useState(false)
+  const { name, email, position, joinDate, phoneNumber } = useUserStore()
 
   const handlePasswordChange = () => {
     setShowModal(true)
@@ -42,16 +44,16 @@ export const MyPage = () => {
     <>
       <MyPageStyledForm form={form}>
         <MyPageStyledFormItem label="이름" name="name">
-          <Input style={{ width: 400 }} readOnly defaultValue="Hyun Jun" />
+          <Input style={{ width: 400 }} readOnly defaultValue={name} />
         </MyPageStyledFormItem>
         <MyPageStyledFormItem label="이메일" name="email">
-          <Input style={{ width: 400 }} readOnly defaultValue="qkrguswns@naver.com" />
+          <Input style={{ width: 400 }} readOnly defaultValue={email} />
         </MyPageStyledFormItem>
         <MyPageStyledFormItem label="직급" name="position">
-          <Input style={{ width: 400 }} readOnly defaultValue="대리" />
+          <Input style={{ width: 400 }} readOnly defaultValue={position} />
         </MyPageStyledFormItem>
         <MyPageStyledFormItem label="입사일" name="joinDate">
-          <Input style={{ width: 400 }} readOnly defaultValue="2023-08-01" />
+          <Input style={{ width: 400 }} readOnly defaultValue={joinDate} />
         </MyPageStyledFormItem>
         <MyPageStyledFormItemWrapper>
           {isEditingPhoneNumber ? (
@@ -64,7 +66,7 @@ export const MyPage = () => {
             </MyPageStyledFormItem>
           ) : (
             <MyPageStyledFormItem label="전화번호" name="phoneNumber">
-              <Input style={{ width: 330 }} readOnly defaultValue={editablePhoneNumber} />
+              <Input style={{ width: 330 }} readOnly defaultValue={phoneNumber} />
             </MyPageStyledFormItem>
           )}
           {isEditingPhoneNumber ? (
