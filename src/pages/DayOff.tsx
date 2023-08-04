@@ -9,7 +9,11 @@ import { IDayOffRequest, IDayOffResponse } from 'types/index'
 import { insertDayOff, fetchDayOffList } from 'apis/index'
 import { modalStore } from 'stores/index'
 import { resultModalDatas } from 'constants/index'
-import { getFilteredDayOffRequestList, getFilteredDayOffHistoryList } from 'utils/index'
+import {
+  getFilteredDayOffRequestList,
+  getFilteredDayOffHistoryList,
+  calcNumOfUsedDayOff
+} from 'utils/index'
 
 import { styled } from 'styled-components'
 
@@ -24,7 +28,8 @@ export const DayOff = () => {
 
   const requestList = useMemo(() => getFilteredDayOffRequestList(dayOffList), [dayOffList])
   const historyList = useMemo(() => getFilteredDayOffHistoryList(dayOffList), [dayOffList])
-
+  const numOfUsedDays = useMemo(() => calcNumOfUsedDayOff(historyList), [historyList])
+  const numOfAvailableDays = useMemo(() => 15 - numOfUsedDays, [numOfUsedDays])
   const getDayOffList = useCallback(() => {
     setIsLoading(true)
     fetchDayOffList()
@@ -89,7 +94,7 @@ export const DayOff = () => {
       </ButtonBox>
       <Wapper>
         <h2>나의 휴가</h2>
-        <DayOffSummary />
+        <DayOffSummary available={numOfAvailableDays} used={numOfUsedDays} />
       </Wapper>
 
       <Wapper>
@@ -106,6 +111,7 @@ export const DayOff = () => {
         <DayOffHistorytTable historyList={historyList} isLoading={isLoading} />
       </Wapper>
       <DayOffRequestModal
+        availableDays={numOfAvailableDays}
         isModalOpen={isModalOpen}
         onClickOk={handleOk}
         onClickCancel={handleCancel}

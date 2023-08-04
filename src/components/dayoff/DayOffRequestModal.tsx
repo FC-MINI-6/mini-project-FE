@@ -1,5 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { IDayOffRequest } from 'types/index'
+import { calcNumOfDayOff } from 'utils/index'
+import { modalStore } from 'stores/index'
+import { resultModalDatas } from 'constants/index'
+
 import { Modal, Radio, DatePicker, Input } from 'antd'
 import type { RadioChangeEvent } from 'antd'
 import type { RangePickerProps } from 'antd/es/date-picker'
@@ -10,6 +14,7 @@ const { RangePicker } = DatePicker
 const { TextArea } = Input
 
 type TDayOffRequestModalProps = {
+  availableDays: number
   isModalOpen: boolean
   onClickOk: (request: IDayOffRequest) => void
   onClickCancel: () => void
@@ -17,7 +22,8 @@ type TDayOffRequestModalProps = {
 type RangeValue = [Dayjs | null, Dayjs | null] | null
 
 export const DayOffRequestModal = React.memo(
-  ({ isModalOpen, onClickOk, onClickCancel }: TDayOffRequestModalProps) => {
+  ({ availableDays, isModalOpen, onClickOk, onClickCancel }: TDayOffRequestModalProps) => {
+    const { openModal } = modalStore()
     const [type, setType] = useState<number>(0)
     const [dates, setDates] = useState<RangeValue>(null)
     const [reason, setReason] = useState<string>('')
@@ -29,7 +35,11 @@ export const DayOffRequestModal = React.memo(
     }, [type, dates, reason])
 
     const disabledDate: RangePickerProps['disabledDate'] = current => {
-      return current < dayjs().endOf('day')
+      return (
+        current < dayjs().endOf('day').add(-1, 'day') ||
+        dayjs(current).day() === 0 ||
+        dayjs(current).day() === 6
+      )
     }
 
     const clearState = () => {
@@ -48,17 +58,30 @@ export const DayOffRequestModal = React.memo(
 
     const handleClickOk = useCallback(() => {
       if (dates && dates[0] !== null) {
-        const request: IDayOffRequest = {
-          type: type,
-          startDate: dates[0].format('YYYY-MM-DD'),
-          endDate: type === 0 ? dates[1]!.format('YYYY-MM-DD') : dates[0].format('YYYY-MM-DD'),
-          reason: reason
-        }
+        const startDate = dates[0].format('YYYY-MM-DD')
+        const endDate = type === 0 ? dates[1]!.format('YYYY-MM-DD') : dates[0].format('YYYY-MM-DD')
 
-        onClickOk(request)
-        clearState()
+        if (availableDays - calcNumOfDayOff(startDate, endDate) > 0) {
+          const request: IDayOffRequest = {
+            type: type,
+            startDate: startDate,
+            endDate: endDate,
+            reason: reason
+          }
+
+          onClickOk(request)
+          clearState()
+        } else {
+          openModal({
+            ...resultModalDatas.DAY_OFF_DAYS_VALIDATION,
+            content: `${resultModalDatas.DAY_OFF_DAYS_VALIDATION.content}${availableDays}일`,
+            okCallback: () => {
+              setDates(null)
+            }
+          })
+        }
       }
-    }, [onClickOk, dates, type, reason])
+    }, [onClickOk, dates, type, reason, availableDays])
 
     const handleClickCancel = useCallback(() => {
       onClickCancel()
@@ -98,7 +121,6 @@ export const DayOffRequestModal = React.memo(
             value={dates}
             disabledDate={disabledDate}
             onChange={val => {
-              // TODO : 남은 연차와 비교하는 유효성 검사 추가 필요
               setDates(val)
             }}
             disabled={[false, isSingle]}

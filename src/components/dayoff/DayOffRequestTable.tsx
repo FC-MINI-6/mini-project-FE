@@ -2,13 +2,13 @@ import React from 'react'
 import { DAYOFF_MENU_ITEMS } from 'constants/index'
 import { SkeletonTable } from 'components/index'
 import { IDayOffResponse } from 'types/index'
+import { calcNumOfDayOff } from 'utils/index'
 
 import { EllipsisOutlined } from '@ant-design/icons'
 import { Table, Tag, Dropdown } from 'antd'
 import type { MenuProps } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { styled } from 'styled-components'
-import dayjs from 'dayjs'
 
 const getDayOffRequestColumns = (menuClick: MenuProps['onClick']): ColumnsType<IDayOffResponse> => [
   {
@@ -86,7 +86,7 @@ const getDayOffRequestColumns = (menuClick: MenuProps['onClick']): ColumnsType<I
           {endDate ? ` ~ ${endDate}` : ''}
         </DateWrapper>
         <Tag bordered={false} style={{ minWidth: 45, textAlign: 'center' }}>
-          {type === '연차' ? dayjs(endDate).diff(dayjs(startDate), 'day') + 1 : 0.5}일
+          {type === '연차' ? calcNumOfDayOff(startDate, endDate!) : 0.5}일
         </Tag>
         <Dropdown menu={{ items: DAYOFF_MENU_ITEMS, onClick: menuClick }} trigger={['click']}>
           <EllipsisOutlined style={{ marginRight: 10 }} />

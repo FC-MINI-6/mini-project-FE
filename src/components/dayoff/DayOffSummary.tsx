@@ -5,7 +5,12 @@ import { dayOffTypes } from 'constants/index'
 import { Col, Row } from 'antd'
 import { globalToken } from '@/GlobalThemeConfig'
 
-export const DayOffSummary = React.memo(() => {
+type TDayOffSummaryProps = {
+  available: number
+  used: number
+}
+
+export const DayOffSummary = React.memo(({ available, used }: TDayOffSummaryProps) => {
   return (
     <Row
       style={{
@@ -15,13 +20,13 @@ export const DayOffSummary = React.memo(() => {
         flexShrink: 0
       }}>
       <Col span={8}>
-        <MyDayOffCount type={dayOffTypes.AVAILABLE} day={11} />
+        <MyDayOffCount type={dayOffTypes.AVAILABLE} day={available} />
       </Col>
       <Col span={8}>
         <MyDayOffCount type={dayOffTypes.EXTINCTION} day={0} />
       </Col>
       <Col span={8}>
-        <MyDayOffCount type={dayOffTypes.USED} day={4} />
+        <MyDayOffCount type={dayOffTypes.USED} day={used} />
       </Col>
     </Row>
   )

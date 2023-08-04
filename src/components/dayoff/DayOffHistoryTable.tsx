@@ -1,11 +1,11 @@
 import React from 'react'
 import { IDayOffResponse } from 'types/index'
 import { SkeletonTable } from 'components/index'
+import { calcNumOfDayOff } from 'utils/index'
 
 import { Table, Tag, Typography } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { styled } from 'styled-components'
-import dayjs from 'dayjs'
 
 const { Text } = Typography
 
@@ -94,7 +94,7 @@ const getDayOffHistoryColumns = (): ColumnsType<IDayOffResponse> => [
       <ReasonCellWrapper>
         <ReasonText>{reason}</ReasonText>
         <Tag bordered={false} style={{ minWidth: 45, textAlign: 'center', marginRight: 10 }}>
-          {type === '연차' ? dayjs(endDate).diff(dayjs(startDate), 'day') + 1 : 0.5}일
+          {type === '연차' ? calcNumOfDayOff(startDate, endDate!) : 0.5}일
         </Tag>
       </ReasonCellWrapper>
     )
