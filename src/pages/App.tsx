@@ -10,13 +10,15 @@ import {
   Login,
   MyPage
 } from 'pages/index'
+import { modalStore } from 'stores/index'
 
 import GlobalStyle from '@/GlobalStyle'
-import { ConfigProvider } from 'antd'
+import { ConfigProvider, Modal } from 'antd'
 import { config } from '@/GlobalThemeConfig'
 import locale from 'antd/lib/locale/ko_KR'
 
 export const App = () => {
+  const { modal } = modalStore()
   return (
     <>
       <GlobalStyle />
@@ -36,6 +38,16 @@ export const App = () => {
           <Route path="/login" element={<Login />} />
         </Routes>
       </ConfigProvider>
+      <Modal
+        title={modal.title}
+        open={modal.isOpen}
+        onOk={modal.okCallback}
+        onCancel={modal.cancelCallback}
+        okText={modal.okButton}
+        cancelText={modal.cancelButton}
+        cancelButtonProps={{ style: { display: `${modal.cancelCallback ? 'block' : 'none'}` } }}>
+        <p>{modal.content}</p>
+      </Modal>
     </>
   )
 }
