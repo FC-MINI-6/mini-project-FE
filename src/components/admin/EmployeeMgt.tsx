@@ -70,6 +70,14 @@ const data: DataType[] = [
     position: '차장'
   }
 ]
+
+// 전화번호 유효성 검사 함수
+const isValidPhoneNumber = (value: string) => {
+  console.log(value)
+  const phoneNumberPattern = /^\d{3}-\d{4}-\d{4}$/
+  return phoneNumberPattern.test(value)
+}
+
 export const EmployeeMgt = () => {
   const [selectedRowData, setSelectedRowData] = useState<DataType | null>(null)
   const [updatedRowData, setUpdatedRowData] = useState<DataType | null>(null)
@@ -94,13 +102,18 @@ export const EmployeeMgt = () => {
       setSelectedRowData({ ...selectedRowData, position: value })
     }
   }
-
   const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target
-    if (selectedRowData) {
-      setSelectedRowData({ ...selectedRowData, phone: value })
+
+    // 입력값이 숫자로만 이루어진 문자열이고, xxx-xxxx-xxxx 형식에 맞으면 수정
+    if (/^\d*$/.test(value) && isValidPhoneNumber(value)) {
+      setUpdatedRowData({ ...selectedRowData, phone: value }) // 변경된 값을 updatedRowData에 반영
+    } else {
+      setUpdatedRowData(null) // 유효성 검사를 통과하지 않을 경우 updatedRowData를 초기화
     }
   }
+
+  console.log(selectedRowData?.phone)
 
   return (
     <>
@@ -151,15 +164,17 @@ export const EmployeeMgt = () => {
               <h4>{selectedRowData.joinDate}</h4>
             </Item>
             <Item>
-              <h3>연차</h3>
+              <h3>잔여 휴가(일)</h3>
               <h4>2</h4>
             </Item>
             <Item>
               <h3>연락처</h3>
               <Input
-                value={selectedRowData.phone}
-                onChange={handlePhoneChange}
+                value={selectedRowData.phone || null}
+                onChange={e => handlePhoneChange(e)}
                 style={{ width: '100%' }}
+                placeholder="xxx-xxxx-xxxx 형식으로 입력해주세요."
+                maxLength={13} // xxx-xxxx-xxxx 형식에서 '-' 포함 총 13글자를 입력받도록 제한
               />
             </Item>
             <Item>
