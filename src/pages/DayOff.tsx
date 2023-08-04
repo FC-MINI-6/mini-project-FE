@@ -20,20 +20,28 @@ export const DayOff = () => {
   const { openModal } = modalStore()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [dayOffList, setDayOffList] = useState<IDayOffResponse[]>([])
+  const [isLoading, setIsLoading] = useState(false)
 
   const requestList = useMemo(() => getFilteredDayOffRequestList(dayOffList), [dayOffList])
   const historyList = useMemo(() => getFilteredDayOffHistoryList(dayOffList), [dayOffList])
 
-  const getDayOffList = () => {
-    fetchDayOffList().then(
-      res => {
-        setDayOffList(res.data)
-      },
-      () => {
-        openModal(resultModalDatas.DAY_OFF_FETCH_FAILURE)
-      }
-    )
-  }
+  const getDayOffList = useCallback(() => {
+    setIsLoading(true)
+    fetchDayOffList()
+      .then(
+        res => {
+          setDayOffList(res.data)
+        },
+        () => {
+          openModal(resultModalDatas.DAY_OFF_FETCH_FAILURE)
+        }
+      )
+      .finally(() => {
+        setTimeout(() => {
+          setIsLoading(false)
+        }, 400)
+      })
+  }, [])
 
   useEffect(() => {
     getDayOffList()
@@ -88,14 +96,14 @@ export const DayOff = () => {
         <h2>
           휴가 신청 내역 <span>{requestList.length}</span>
         </h2>
-        <DayOffRequestTable requestList={requestList} />
+        <DayOffRequestTable requestList={requestList} isLoading={isLoading} />
       </Wapper>
 
       <Wapper>
         <h2>
           휴가 사용 내역 <span>{historyList.length}</span>
         </h2>
-        <DayOffHistorytTable historyList={historyList} />
+        <DayOffHistorytTable historyList={historyList} isLoading={isLoading} />
       </Wapper>
       <DayOffRequestModal
         isModalOpen={isModalOpen}

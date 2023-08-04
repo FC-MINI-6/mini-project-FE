@@ -1,5 +1,6 @@
 import React from 'react'
 import { DAYOFF_MENU_ITEMS } from 'constants/index'
+import { SkeletonTable } from 'components/index'
 import { IDayOffResponse } from 'types/index'
 
 import { EllipsisOutlined } from '@ant-design/icons'
@@ -88,7 +89,7 @@ const getDayOffRequestColumns = (menuClick: MenuProps['onClick']): ColumnsType<I
           {type === '연차' ? dayjs(endDate).diff(dayjs(startDate), 'day') + 1 : 0.5}일
         </Tag>
         <Dropdown menu={{ items: DAYOFF_MENU_ITEMS, onClick: menuClick }} trigger={['click']}>
-          <EllipsisOutlined />
+          <EllipsisOutlined style={{ marginRight: 10 }} />
         </Dropdown>
       </DateCellWrapper>
     ),
@@ -100,17 +101,29 @@ const getDayOffRequestColumns = (menuClick: MenuProps['onClick']): ColumnsType<I
 
 type DayOffRequestTableProps = {
   requestList: IDayOffResponse[]
+  isLoading: boolean
 }
 
-export const DayOffRequestTable = React.memo(({ requestList }: DayOffRequestTableProps) => {
-  const onClickCancel: MenuProps['onClick'] = () => {
-    // TODO : 신청 취소 기능
+export const DayOffRequestTable = React.memo(
+  ({ requestList, isLoading }: DayOffRequestTableProps) => {
+    const onClickCancel: MenuProps['onClick'] = () => {
+      // TODO : 신청 취소 기능
+    }
+
+    const columns = getDayOffRequestColumns(onClickCancel)
+
+    return (
+      <SkeletonTable loading={isLoading} columns={columns as ColumnsType<IDayOffResponse[]>}>
+        <Table
+          size="middle"
+          columns={columns}
+          dataSource={requestList}
+          pagination={{ pageSize: 5 }}
+        />
+      </SkeletonTable>
+    )
   }
-
-  const columns = getDayOffRequestColumns(onClickCancel)
-
-  return <Table columns={columns} dataSource={requestList} pagination={{ pageSize: 5 }} />
-})
+)
 
 const StatusWrapper = styled.div`
   display: flex;
@@ -127,6 +140,7 @@ const IconBox = styled.div`
   justify-content: center;
   align-items: center;
   background-color: var(--color-white);
+  margin-left: 10px;
 `
 
 const StatusBox = styled.div`
