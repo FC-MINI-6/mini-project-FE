@@ -10,5 +10,12 @@ export const resultModalDatas = {
     type: 1,
     okButton: '확인',
     okCallback: () => {}
+  },
+  DAY_OFF_FETCH_FAILURE: {
+    title: '휴가 내역 조회 실패',
+    content: '휴가 내역을 가져오는 중 오류가 발생했습니다.\n관리자에게 문의해주세요.',
+    type: 1,
+    okButton: '확인',
+    okCallback: () => {}
   }
 }
