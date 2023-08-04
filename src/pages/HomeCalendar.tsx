@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { DummyScheduleData, ScheduleCalendar, ScheduleList } from 'components/index'
+import { getCalendarUserList } from 'apis/index'
 import { userListStore } from 'stores/index'
 import { Col, Row } from 'antd'
 
@@ -7,7 +8,19 @@ export const HomeCalendar = () => {
   const { setUserList } = userListStore()
   const [selectedSchedule, setSelectedSchedule] = useState<DummyScheduleData[]>([])
 
+  const getUserList = () => {
+    getCalendarUserList().then(
+      res => {
+        console.log(res.data)
+      },
+      error => {
+        console.log(error.message)
+      }
+    )
+  }
+
   useEffect(() => {
+    getUserList()
     const dummyUserList = [
       { userName: '전체', userPosition: '' },
       {
