@@ -5,6 +5,9 @@ import {
   DayOffRequestTable,
   DayOffHistorytTable
 } from 'components/index'
+import { IDayOffRequest } from 'types/index'
+import { insertDayOff } from 'apis/index'
+
 import { styled } from 'styled-components'
 
 import { Button } from 'antd'
@@ -14,8 +17,19 @@ import { DUMMY_DAYOFF_REQUEST_LIST } from '@/constants'
 export const DayOff = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const handleOk = () => {
-    setIsModalOpen(false)
+  const handleOk = (request: IDayOffRequest) => {
+    insertDayOff(request)
+      .then(
+        () => {
+          setIsModalOpen(false)
+        },
+        error => {
+          console.log(error.message)
+        }
+      )
+      .finally(() => {
+        setIsModalOpen(false)
+      })
   }
 
   const handleCancel = () => {

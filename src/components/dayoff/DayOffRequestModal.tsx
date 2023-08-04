@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-
+import { IDayOffRequest } from 'types/index'
 import { Modal, Radio, DatePicker, Input } from 'antd'
 import type { RadioChangeEvent } from 'antd'
 import type { RangePickerProps } from 'antd/es/date-picker'
@@ -11,7 +11,7 @@ const { TextArea } = Input
 
 type TDayOffRequestModalProps = {
   isModalOpen: boolean
-  onClickOk: () => void
+  onClickOk: (request: IDayOffRequest) => void
   onClickCancel: () => void
 }
 type RangeValue = [Dayjs | null, Dayjs | null] | null
@@ -40,8 +40,17 @@ export const DayOffRequestModal = React.memo(
     }
 
     const handleClickOk = useCallback(() => {
-      onClickOk()
-    }, [onClickOk])
+      if (dates && dates[0] !== null) {
+        const request: IDayOffRequest = {
+          type: type,
+          startDate: dates[0].format('YYYY-MM-DD'),
+          endDate: type === 0 ? dates[1]!.format('YYYY-MM-DD') : dates[0].format('YYYY-MM-DD'),
+          reason: reason
+        }
+
+        onClickOk(request)
+      }
+    }, [onClickOk, dates, type, reason])
 
     const handleClickCancel = useCallback(() => {
       onClickCancel()
