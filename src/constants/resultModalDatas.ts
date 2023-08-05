@@ -5,7 +5,7 @@ export const resultModalDatas = {
     type: 1,
     okButton: '확인'
   },
-  DAY_OFF_INSERT_FAILUR: {
+  DAY_OFF_INSERT_FAILURE: {
     title: '휴가 등록 실패',
     type: 1,
     okButton: '확인',
@@ -23,5 +23,18 @@ export const resultModalDatas = {
     content: '잔여 휴가일 보다 많은 휴가를 등록할 수 없습니다.\n잔여 휴가일 : ',
     type: 1,
     okButton: '확인'
+  },
+  DUTY_INSERT_SUCCESS: {
+    title: '당직 등록 완료',
+    content: '당직 등록을 완료했습니다.\n관리자의 승인을 기다려주세요!',
+    type: 1,
+    okButton: '확인'
+  },
+  DUTY_INSERT_FAILURE: {
+    title: '당직 등록 실패',
+    content: '휴가 등록 신청 중 오류가 발생했습니다.\n관리자에게 문의해주세요.\n',
+    type: 1,
+    okButton: '확인',
+    okCallback: () => {}
   }
 }

@@ -66,7 +66,7 @@ export const DayOff = () => {
         },
         error => {
           openModal({
-            ...resultModalDatas.DAY_OFF_INSERT_FAILUR,
+            ...resultModalDatas.DAY_OFF_INSERT_FAILURE,
             content: `휴가 등록 신청 중 오류가 발생했습니다.\n관리자에게 문의해주세요.\n${
               error.message ?? ''
             }`

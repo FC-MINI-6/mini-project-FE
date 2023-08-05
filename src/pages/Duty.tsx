@@ -1,5 +1,10 @@
 import { DUMMY_DUTY_REQUEST_LIST } from 'constants/index'
 import { DutyRequestTable, DutyHistoryTable, DutyRequestModal } from 'components/index'
+import { IDutyRequest } from 'types/index'
+import { insertDuty } from 'apis/index'
+import { modalStore } from 'stores/index'
+import { resultModalDatas } from 'constants/index'
+
 import { styled } from 'styled-components'
 
 import { useCallback, useState } from 'react'
@@ -7,10 +12,31 @@ import { Button } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
 export const Duty = () => {
+  const { openModal } = modalStore()
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const handleOk = () => {
-    setIsModalOpen(false)
+  const handleOk = (request: IDutyRequest) => {
+    insertDuty(request)
+      .then(
+        () => {
+          setIsModalOpen(false)
+          openModal({
+            ...resultModalDatas.DUTY_INSERT_SUCCESS,
+            okCallback: () => {
+              // TODO: 당직 신청 갱신
+            }
+          })
+        },
+        error => {
+          openModal({
+            ...resultModalDatas.DUTY_INSERT_FAILURE,
+            content: `${resultModalDatas.DUTY_INSERT_FAILURE.content}${error.message ?? ''}`
+          })
+        }
+      )
+      .finally(() => {
+        setIsModalOpen(false)
+      })
   }
 
   const handleCancel = () => {
