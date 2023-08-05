@@ -1,19 +1,46 @@
-import { DUMMY_DUTY_REQUEST_LIST } from 'constants/index'
 import { DutyRequestTable, DutyHistoryTable, DutyRequestModal } from 'components/index'
-import { IDutyRequest } from 'types/index'
-import { insertDuty } from 'apis/index'
+import { IDutyRequest, IDutyResponse } from 'types/index'
+import { fetchDutyList, insertDuty } from 'apis/index'
 import { modalStore } from 'stores/index'
 import { resultModalDatas } from 'constants/index'
+import { filteredDutyHistoryList, filteredDutyRequestList } from 'utils/index'
 
 import { styled } from 'styled-components'
 
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState, useEffect } from 'react'
 import { Button } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
 export const Duty = () => {
   const { openModal } = modalStore()
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [dutyList, setDutyList] = useState<IDutyResponse[]>([])
+  const [isLoading, setIsLoading] = useState(false)
+
+  const requestList = useMemo(() => filteredDutyRequestList(dutyList), [dutyList])
+  const historyList = useMemo(() => filteredDutyHistoryList(dutyList), [dutyList])
+
+  const getDutyList = useCallback(() => {
+    setIsLoading(true)
+    fetchDutyList()
+      .then(
+        res => {
+          setDutyList(res.data)
+        },
+        () => {
+          openModal(resultModalDatas.DAY_OFF_FETCH_FAILURE)
+        }
+      )
+      .finally(() => {
+        setTimeout(() => {
+          setIsLoading(false)
+        }, 400)
+      })
+  }, [])
+
+  useEffect(() => {
+    getDutyList()
+  }, [])
 
   const handleOk = (request: IDutyRequest) => {
     insertDuty(request)
@@ -23,7 +50,7 @@ export const Duty = () => {
           openModal({
             ...resultModalDatas.DUTY_INSERT_SUCCESS,
             okCallback: () => {
-              // TODO: 당직 신청 갱신
+              getDutyList()
             }
           })
         },
@@ -55,16 +82,16 @@ export const Duty = () => {
       </ButtonBox>
       <Wapper>
         <h2>
-          당직 신청 내역 <span>{DUMMY_DUTY_REQUEST_LIST.length}</span>
+          당직 신청 내역 <span>{requestList.length}</span>
         </h2>
-        <DutyRequestTable requestList={DUMMY_DUTY_REQUEST_LIST} />
+        <DutyRequestTable requestList={requestList} isLoading={isLoading} />
       </Wapper>
 
       <Wapper>
         <h2>
-          나의 당직 내역 <span>{DUMMY_DUTY_REQUEST_LIST.length}</span>
+          나의 당직 내역 <span>{historyList.length}</span>
         </h2>
-        <DutyHistoryTable historyList={DUMMY_DUTY_REQUEST_LIST} />
+        <DutyHistoryTable historyList={historyList} isLoading={isLoading} />
       </Wapper>
 
       <DutyRequestModal

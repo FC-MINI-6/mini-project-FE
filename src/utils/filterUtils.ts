@@ -1,4 +1,4 @@
-import { IDayOffResponse } from 'types/index'
+import { IDayOffResponse, IDutyResponse } from 'types/index'
 import dayjs from 'dayjs'
 
 // * 신청 내역 필터링 기준
@@ -69,4 +69,16 @@ export const getFilteredDayOffHistoryList = (dayOffList: IDayOffResponse[]) => {
     }) ?? []
     // .filter(data => data.status === '승인') ?? []
   )
+}
+
+// 당직 신청 내역 필터링
+// 당직 사용 기준 : 당직 신청일이 조회한 날짜보다 이후
+export const filteredDutyRequestList = (dutyList: IDutyResponse[]) => {
+  return dutyList.filter(duty => dayjs().startOf('date').diff(duty.date) <= 0)
+}
+
+// 당직 사용 내역 필터링
+// 상태가 대기만 빼고 날짜가 지난 케이스들
+export const filteredDutyHistoryList = (dutyList: IDutyResponse[]) => {
+  return dutyList.filter(duty => dayjs().startOf('date').diff(duty.date) > 0 && duty.status !== 0)
 }
