@@ -24,7 +24,11 @@ export const DutyRequestModal = React.memo(
     }, [date, reason])
 
     const disabledDate: RangePickerProps['disabledDate'] = current => {
-      return current < dayjs().endOf('day')
+      return (
+        current < dayjs().endOf('day').add(-1, 'day') ||
+        dayjs(current).day() === 0 ||
+        dayjs(current).day() === 6
+      )
     }
 
     const handleClickOk = useCallback(() => {
