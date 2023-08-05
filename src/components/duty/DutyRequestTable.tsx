@@ -73,7 +73,7 @@ type DutyRequestTableProps = {
 }
 
 export const DutyRequestTable = React.memo(({ requestList, isLoading }: DutyRequestTableProps) => {
-  const onClickCancel: MenuProps['onClick'] = ({ key }) => {
+  const onClickCancel: MenuProps['onClick'] = () => {
     // TODO : 신청 취소 기능
   }
 
