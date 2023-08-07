@@ -12,15 +12,17 @@ import { resultModalDatas } from 'constants/index'
 import {
   getFilteredDayOffRequestList,
   getFilteredDayOffHistoryList,
-  calcNumOfUsedDayOff
+  calcNumOfUsedDayOff,
+  calcNumOfRequest
 } from 'utils/index'
 
 import { styled } from 'styled-components'
 
-import { Button } from 'antd'
+import { Button, message } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
 export const DayOff = () => {
+  const [messageApi, contextHolder] = message.useMessage()
   const { openModal } = modalStore()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [dayOffList, setDayOffList] = useState<IDayOffResponse[]>([])
@@ -29,7 +31,12 @@ export const DayOff = () => {
   const requestList = useMemo(() => getFilteredDayOffRequestList(dayOffList), [dayOffList])
   const historyList = useMemo(() => getFilteredDayOffHistoryList(dayOffList), [dayOffList])
   const numOfUsedDays = useMemo(() => calcNumOfUsedDayOff(historyList), [historyList])
-  const numOfAvailableDays = useMemo(() => 15 - numOfUsedDays, [numOfUsedDays])
+  const numOfAvailableDays = useMemo(() => 15 - numOfUsedDays, [numOfUsedDays]) // TODO : 전체 연차일수 수정
+  const numOfAvailableRequestDays = useMemo(
+    () => 15 - calcNumOfRequest(requestList) - numOfUsedDays,
+    [requestList, numOfUsedDays]
+  )
+
   const getDayOffList = useCallback(() => {
     setIsLoading(true)
     fetchDayOffList()
@@ -85,8 +92,17 @@ export const DayOff = () => {
     setIsModalOpen(true)
   }, [])
 
+  const handleDeleteCompleted = useCallback(() => {
+    getDayOffList()
+    messageApi.open({
+      type: 'success',
+      content: '휴가 신청 취소를 완료했습니다.'
+    })
+  }, [])
+
   return (
     <Container>
+      {contextHolder}
       <ButtonBox>
         <Button type="primary" icon={<PlusOutlined />} onClick={handleClickAdd}>
           휴가 등록하기
@@ -101,7 +117,11 @@ export const DayOff = () => {
         <h2>
           휴가 신청 내역 <span>{requestList.length}</span>
         </h2>
-        <DayOffRequestTable requestList={requestList} isLoading={isLoading} />
+        <DayOffRequestTable
+          requestList={requestList}
+          isLoading={isLoading}
+          deleteCallback={handleDeleteCompleted}
+        />
       </Wapper>
 
       <Wapper>
@@ -111,7 +131,7 @@ export const DayOff = () => {
         <DayOffHistorytTable historyList={historyList} isLoading={isLoading} />
       </Wapper>
       <DayOffRequestModal
-        availableDays={numOfAvailableDays}
+        availableDays={numOfAvailableRequestDays}
         isModalOpen={isModalOpen}
         onClickOk={handleOk}
         onClickCancel={handleCancel}

@@ -8,10 +8,11 @@ import { filteredDutyHistoryList, filteredDutyRequestList } from 'utils/index'
 import { styled } from 'styled-components'
 
 import { useCallback, useMemo, useState, useEffect } from 'react'
-import { Button } from 'antd'
+import { Button, message } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
 export const Duty = () => {
+  const [messageApi, contextHolder] = message.useMessage()
   const { openModal } = modalStore()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [dutyList, setDutyList] = useState<IDutyResponse[]>([])
@@ -36,11 +37,11 @@ export const Duty = () => {
           setIsLoading(false)
         }, 400)
       })
-  }, [])
+  }, [openModal])
 
   useEffect(() => {
     getDutyList()
-  }, [])
+  }, [getDutyList])
 
   const handleOk = (request: IDutyRequest) => {
     insertDuty(request)
@@ -73,8 +74,17 @@ export const Duty = () => {
     setIsModalOpen(true)
   }, [])
 
+  const handleDeleteCompleted = useCallback(() => {
+    getDutyList()
+    messageApi.open({
+      type: 'success',
+      content: '당직 신청 취소를 완료했습니다.'
+    })
+  }, [getDutyList, messageApi])
+
   return (
     <Container>
+      {contextHolder}
       <ButtonBox>
         <Button type="primary" icon={<PlusOutlined />} onClick={handleClickAdd}>
           당직 등록하기
@@ -84,7 +94,11 @@ export const Duty = () => {
         <h2>
           당직 신청 내역 <span>{requestList.length}</span>
         </h2>
-        <DutyRequestTable requestList={requestList} isLoading={isLoading} />
+        <DutyRequestTable
+          requestList={requestList}
+          isLoading={isLoading}
+          deleteCallback={handleDeleteCompleted}
+        />
       </Wapper>
 
       <Wapper>

@@ -1,8 +1,9 @@
 import React from 'react'
-import { DummyScheduleData, ScheduleCard } from 'components/index'
+import { ScheduleCard } from 'components/index'
+import { ICalendarSchedule } from 'types/index'
 
 type ScheduleListProps = {
-  schedules: DummyScheduleData[]
+  schedules: ICalendarSchedule[]
 }
 
 export const ScheduleList = React.memo(({ schedules }: ScheduleListProps) => {

@@ -72,6 +72,8 @@ export const DayOffRequestModal = React.memo(
           onClickOk(request)
           clearState()
         } else {
+          // 신청가능한 휴가일수 유효성 검사 예외처리
+          handleClickCancel()
           openModal({
             ...resultModalDatas.DAY_OFF_DAYS_VALIDATION,
             content: `${resultModalDatas.DAY_OFF_DAYS_VALIDATION.content}${availableDays}일`,

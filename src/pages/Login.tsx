@@ -7,7 +7,7 @@ import {
   LoginStyledFormItemWrapper,
   LoginStyledButton
 } from 'components/index'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useUserStore } from '@/stores/userStore'
 import { loginRequest } from '@/apis'
 import { ILoginData } from '@/types'
@@ -15,6 +15,7 @@ import { ILoginData } from '@/types'
 export const Login = () => {
   const [loginData, setLoginData] = useState<ILoginData>({ email: '', password: '' })
   const [emailError, setEmailError] = useState<string>('')
+  const navigate = useNavigate()
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
@@ -35,6 +36,7 @@ export const Login = () => {
     loginRequest(loginData).then(
       res => {
         useUserStore.setState(res.data)
+        navigate('/')
         console.log(res.data)
       },
       error => {

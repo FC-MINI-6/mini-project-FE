@@ -1,7 +1,7 @@
 import React from 'react'
 import { IDayOffResponse } from 'types/index'
 import { SkeletonTable } from 'components/index'
-import { calcNumOfDayOff } from 'utils/index'
+import { calcNumOfDayOff, colorOfType } from 'utils/index'
 import { REQUEST_STATUS, DAYOFF_TYPE } from 'constants/index'
 
 import { Table, Tag, Typography } from 'antd'
@@ -50,7 +50,7 @@ const getDayOffHistoryColumns = (): ColumnsType<IDayOffResponse> => [
     key: 'type',
     render: (type: number) => (
       <Type>
-        <Tag color="green" style={{ minWidth: 60, textAlign: 'center' }}>
+        <Tag color={colorOfType(type)} style={{ minWidth: 60, textAlign: 'center' }}>
           {DAYOFF_TYPE[type]}
         </Tag>
       </Type>

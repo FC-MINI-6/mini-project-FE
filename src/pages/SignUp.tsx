@@ -11,6 +11,7 @@ import {
 } from 'components/index'
 import { signUpRequest } from '@/apis'
 import { ISignUpData } from '@/types'
+import { useNavigate } from 'react-router-dom'
 
 export const SignUp = () => {
   const [signUpData, setSignUpData] = useState<ISignUpData>({
@@ -30,6 +31,7 @@ export const SignUp = () => {
   const [passwordMismatch, setPasswordMismatch] = useState<boolean>(false)
   const [emailError, setEmailError] = useState<string>('')
   const [date, setDate] = useState<Dayjs | null>(null)
+  const navigate = useNavigate()
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
@@ -73,6 +75,7 @@ export const SignUp = () => {
         res => {
           console.log('API 호출 성공!')
           console.log(res)
+          navigate('/login')
         },
         error => {
           console.error('API 호출 실패!')

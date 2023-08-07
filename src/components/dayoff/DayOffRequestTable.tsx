@@ -1,16 +1,17 @@
 import React from 'react'
-import { DAYOFF_MENU_ITEMS, REQUEST_STATUS, DAYOFF_TYPE } from 'constants/index'
+import { DAYOFF_MENU_ITEMS, REQUEST_STATUS, DAYOFF_TYPE, resultModalDatas } from 'constants/index'
 import { SkeletonTable } from 'components/index'
 import { IDayOffResponse } from 'types/index'
-import { calcNumOfDayOff } from 'utils/index'
+import { calcNumOfDayOff, colorOfType } from 'utils/index'
+import { deleteDayOff } from 'apis/index'
+import { modalStore } from 'stores/index'
 
 import { EllipsisOutlined } from '@ant-design/icons'
 import { Table, Tag, Dropdown } from 'antd'
-import type { MenuProps } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { styled } from 'styled-components'
 
-const getDayOffRequestColumns = (menuClick: MenuProps['onClick']): ColumnsType<IDayOffResponse> => [
+const getDayOffRequestColumns = (menuClick: (id: number) => void): ColumnsType<IDayOffResponse> => [
   {
     width: '15%',
     title: '신청 상태',
@@ -53,7 +54,7 @@ const getDayOffRequestColumns = (menuClick: MenuProps['onClick']): ColumnsType<I
     key: 'type',
     render: (type: number) => (
       <Type>
-        <Tag color="green" style={{ minWidth: 60, textAlign: 'center' }}>
+        <Tag color={colorOfType(type)} style={{ minWidth: 60, textAlign: 'center' }}>
           {DAYOFF_TYPE[type]}
         </Tag>
       </Type>
@@ -79,7 +80,7 @@ const getDayOffRequestColumns = (menuClick: MenuProps['onClick']): ColumnsType<I
     title: '휴가 일자',
     dataIndex: ['startDate', 'endDate'],
     key: 'date',
-    render: (_, { startDate, endDate, type }) => (
+    render: (_, { startDate, endDate, type, id }) => (
       <DateCellWrapper>
         <DateWrapper>
           {startDate}
@@ -88,7 +89,14 @@ const getDayOffRequestColumns = (menuClick: MenuProps['onClick']): ColumnsType<I
         <Tag bordered={false} style={{ minWidth: 45, textAlign: 'center' }}>
           {type === 0 ? calcNumOfDayOff(startDate, endDate!) : 0.5}일
         </Tag>
-        <Dropdown menu={{ items: DAYOFF_MENU_ITEMS, onClick: menuClick }} trigger={['click']}>
+        <Dropdown
+          menu={{
+            items: DAYOFF_MENU_ITEMS,
+            onClick: () => {
+              menuClick(id)
+            }
+          }}
+          trigger={['click']}>
           <EllipsisOutlined style={{ marginRight: 10 }} />
         </Dropdown>
       </DateCellWrapper>
@@ -102,12 +110,30 @@ const getDayOffRequestColumns = (menuClick: MenuProps['onClick']): ColumnsType<I
 type DayOffRequestTableProps = {
   requestList: IDayOffResponse[]
   isLoading: boolean
+  deleteCallback: () => void
 }
 
 export const DayOffRequestTable = React.memo(
-  ({ requestList, isLoading }: DayOffRequestTableProps) => {
-    const onClickCancel: MenuProps['onClick'] = () => {
-      // TODO : 신청 취소 기능
+  ({ requestList, isLoading, deleteCallback }: DayOffRequestTableProps) => {
+    const { openModal } = modalStore()
+
+    const onClickCancel = (id: number) => {
+      openModal({
+        ...resultModalDatas.DAYOFF_CANCEL_CONFIRM,
+        okCallback: () => {
+          deleteDayOff(id).then(
+            () => {
+              deleteCallback()
+            },
+            error => {
+              openModal({
+                ...resultModalDatas.DAYOFF_CANCEL_FAILURE,
+                content: `${resultModalDatas.DAYOFF_CANCEL_FAILURE.content}${error.message}`
+              })
+            }
+          )
+        }
+      })
     }
 
     const columns = getDayOffRequestColumns(onClickCancel)

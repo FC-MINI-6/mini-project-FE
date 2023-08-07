@@ -1,16 +1,18 @@
 import React from 'react'
-import { DummyScheduleData } from 'components/index'
+import { ICalendarSchedule } from 'types/index'
+import { CALENDER_TYPE, USER_POSITION } from 'constants/index'
+
 import { Card, Badge } from 'antd'
 import { styled } from 'styled-components'
 
-export const ScheduleCard = React.memo(({ schedule }: { schedule: DummyScheduleData }) => {
+export const ScheduleCard = React.memo(({ schedule }: { schedule: ICalendarSchedule }) => {
   return (
     <Card style={{ marginBottom: 10 }}>
       <CardContent>
         <Badge color={schedule.color} />
         <span>
-          {schedule.type === '당직' ? '⏰ ' : '🏖️ '}
-          {schedule.user} 님 {schedule.type}
+          {schedule.type === 3 ? '⏰ ' : '🏖️ '}
+          {USER_POSITION[schedule.position]} {schedule.username} 님 {CALENDER_TYPE[schedule.type]}
         </span>
       </CardContent>
     </Card>
