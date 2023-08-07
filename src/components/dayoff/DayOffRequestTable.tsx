@@ -8,7 +8,6 @@ import { modalStore } from 'stores/index'
 
 import { EllipsisOutlined } from '@ant-design/icons'
 import { Table, Tag, Dropdown } from 'antd'
-// import type { MenuProps } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { styled } from 'styled-components'
 
@@ -111,7 +110,7 @@ const getDayOffRequestColumns = (menuClick: (id: number) => void): ColumnsType<I
 type DayOffRequestTableProps = {
   requestList: IDayOffResponse[]
   isLoading: boolean
-  deleteCallback: (isSucess: boolean, message?: string) => void
+  deleteCallback: () => void
 }
 
 export const DayOffRequestTable = React.memo(
@@ -124,7 +123,7 @@ export const DayOffRequestTable = React.memo(
         okCallback: () => {
           deleteDayOff(id).then(
             () => {
-              deleteCallback(true)
+              deleteCallback()
             },
             error => {
               openModal({

@@ -1,16 +1,18 @@
 import React from 'react'
 import { SkeletonTable } from 'components/index'
 import { IDutyResponse } from 'types/index'
-import { DUTY_MENU_ITEMS, REQUEST_STATUS } from 'constants/index'
+import { DUTY_MENU_ITEMS, REQUEST_STATUS, resultModalDatas } from 'constants/index'
+import { deleteDuty } from 'apis/index'
+import { modalStore } from 'stores/index'
+
 import { EllipsisOutlined } from '@ant-design/icons'
 import { Table, Tag, Dropdown, Typography } from 'antd'
-import type { MenuProps } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { styled } from 'styled-components'
 
 const { Text } = Typography
 
-const getDutyRequestColumns = (menuClick: MenuProps['onClick']): ColumnsType<IDutyResponse> => [
+const getDutyRequestColumns = (menuClick: (id: number) => void): ColumnsType<IDutyResponse> => [
   {
     width: '20%',
     title: '신청 상태',
@@ -56,10 +58,17 @@ const getDutyRequestColumns = (menuClick: MenuProps['onClick']): ColumnsType<IDu
     title: '사유',
     dataIndex: 'reason',
     key: 'reason',
-    render: (_, { reason }) => (
+    render: (_, { reason, id }) => (
       <ReasonCellWrapper>
         <ReasonText>{reason}</ReasonText>
-        <Dropdown menu={{ items: DUTY_MENU_ITEMS, onClick: menuClick }} trigger={['click']}>
+        <Dropdown
+          menu={{
+            items: DUTY_MENU_ITEMS,
+            onClick: () => {
+              menuClick(id)
+            }
+          }}
+          trigger={['click']}>
           <EllipsisOutlined style={{ marginRight: 10 }} />
         </Dropdown>
       </ReasonCellWrapper>
@@ -70,26 +79,46 @@ const getDutyRequestColumns = (menuClick: MenuProps['onClick']): ColumnsType<IDu
 type DutyRequestTableProps = {
   requestList: IDutyResponse[]
   isLoading: boolean
+  deleteCallback: () => void
 }
 
-export const DutyRequestTable = React.memo(({ requestList, isLoading }: DutyRequestTableProps) => {
-  const onClickCancel: MenuProps['onClick'] = () => {
-    // TODO : 신청 취소 기능
+export const DutyRequestTable = React.memo(
+  ({ requestList, isLoading, deleteCallback }: DutyRequestTableProps) => {
+    const { openModal } = modalStore()
+
+    const onClickCancel = (id: number) => {
+      openModal({
+        ...resultModalDatas.DUTY_CANCEL_CONFIRM,
+        okCallback: () => {
+          deleteDuty(id).then(
+            () => {
+              deleteCallback()
+            },
+            error => {
+              openModal({
+                ...resultModalDatas.DUTY_CANCEL_FAILURE,
+                content: `${resultModalDatas.DUTY_CANCEL_FAILURE.content}${error.message}`
+              })
+            }
+          )
+        }
+      })
+    }
+
+    const columns = getDutyRequestColumns(onClickCancel)
+
+    return (
+      <SkeletonTable loading={isLoading} columns={columns as ColumnsType<IDutyResponse[]>}>
+        <Table
+          size="middle"
+          columns={columns}
+          dataSource={requestList}
+          pagination={{ pageSize: 5 }}
+        />
+      </SkeletonTable>
+    )
   }
-
-  const columns = getDutyRequestColumns(onClickCancel)
-
-  return (
-    <SkeletonTable loading={isLoading} columns={columns as ColumnsType<IDutyResponse[]>}>
-      <Table
-        size="middle"
-        columns={columns}
-        dataSource={requestList}
-        pagination={{ pageSize: 5 }}
-      />
-    </SkeletonTable>
-  )
-})
+)
 
 const StatusWrapper = styled.div`
   display: flex;
