@@ -1,14 +1,47 @@
-import { useEffect, useState } from 'react'
-import { DummyScheduleData, ScheduleCalendar, ScheduleList } from 'components/index'
-import { getCalendarUserList } from 'apis/index'
+import { useEffect, useState, useMemo } from 'react'
+import { ScheduleCalendar, ScheduleList } from 'components/index'
+import { getCalendarUserList, fetchScheduleCalendar } from 'apis/index'
 import { userListStore, userSelectedStore } from 'stores/index'
 import { CALENDER_MENU_ALL } from 'constants/index'
+import { ICalendarSchedule, ICalendarScheduleByDate } from 'types/index'
+import { colorOfType, parseCalendarDayOffList } from 'utils/index'
 import { Col, Row } from 'antd'
+import dayjs from 'dayjs'
+
+type TScheduleByDate = {
+  [key: string]: ICalendarSchedule[]
+}
 
 export const HomeCalendar = () => {
   const { setUserList } = userListStore()
-  const { selectedId, setSelectedId } = userSelectedStore()
-  const [selectedSchedule, setSelectedSchedule] = useState<DummyScheduleData[]>([])
+  const { setSelectedId } = userSelectedStore()
+  const [selectedSchedule, setSelectedSchedule] = useState<ICalendarSchedule[]>([])
+  const [schedules, setSchedules] = useState<ICalendarSchedule[]>([])
+  const schedulsMapByDate = useMemo(() => {
+    const result = schedules.reduce((acc, current) => {
+      const { startDate } = current
+      if (acc[startDate]) {
+        acc[startDate].push(current)
+      } else {
+        acc[startDate] = [current]
+      }
+      return acc
+    }, {} as TScheduleByDate)
+    return Object.keys(result).map(date => {
+      return { date: date, schedules: result[date] } as ICalendarScheduleByDate
+    })
+  }, [schedules])
+  const defaultDate = dayjs()
+
+  const getSchedules = (year: number, month: number) => {
+    fetchScheduleCalendar(year, month).then(res => {
+      const dayOffSchedules = parseCalendarDayOffList(res.data.dayOffList)
+      const dutySchedules = res.data.dutyList.map(duty => {
+        return { ...duty, endDate: duty.date, startDate: duty.date, color: colorOfType(3), type: 3 }
+      })
+      setSchedules([...dayOffSchedules, ...dutySchedules])
+    })
+  }
 
   const getUserList = () => {
     getCalendarUserList().then(
@@ -24,17 +57,21 @@ export const HomeCalendar = () => {
 
   useEffect(() => {
     getUserList()
+    getSchedules(defaultDate.get('year'), defaultDate.get('month') + 1)
   }, [])
 
-  const onClickDate = (schedule: DummyScheduleData[]) => {
-    console.log(schedule)
+  const onClickDate = (schedule: ICalendarSchedule[]) => {
     setSelectedSchedule(schedule)
   }
 
   return (
     <Row wrap={false} gutter={[16, 0]}>
       <Col span={selectedSchedule.length !== 0 ? 20 : 24}>
-        <ScheduleCalendar onClickDate={onClickDate} />
+        <ScheduleCalendar
+          schdules={schedulsMapByDate}
+          defaultDate={defaultDate}
+          onClickDate={onClickDate}
+        />
       </Col>
       {selectedSchedule.length !== 0 ? (
         <Col span={4}>
