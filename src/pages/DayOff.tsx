@@ -30,19 +30,24 @@ export const DayOff = () => {
 
   const requestList = useMemo(() => getFilteredDayOffRequestList(dayOffList), [dayOffList])
   const historyList = useMemo(() => getFilteredDayOffHistoryList(dayOffList), [dayOffList])
+  const [numOfDayOff, setNumOfDayOff] = useState<number>(0)
   const numOfUsedDays = useMemo(() => calcNumOfUsedDayOff(historyList), [historyList])
-  const numOfAvailableDays = useMemo(() => 15 - numOfUsedDays, [numOfUsedDays]) // TODO : 전체 연차일수 수정
+  const numOfAvailableDays = useMemo(
+    () => numOfDayOff - numOfUsedDays,
+    [numOfDayOff, numOfUsedDays]
+  )
   const numOfAvailableRequestDays = useMemo(
-    () => 15 - calcNumOfRequest(requestList) - numOfUsedDays,
-    [requestList, numOfUsedDays]
+    () => numOfDayOff - calcNumOfRequest(requestList) - numOfUsedDays,
+    [numOfDayOff, requestList, numOfUsedDays]
   )
 
-  const getDayOffList = useCallback(() => {
+  const getDayOffList = useCallback(async () => {
     setIsLoading(true)
     fetchDayOffList()
       .then(
         res => {
-          setDayOffList(res.data)
+          setNumOfDayOff(res.num)
+          setDayOffList(res.dayOffList)
         },
         () => {
           openModal(resultModalDatas.DAY_OFF_FETCH_FAILURE)
