@@ -20,7 +20,8 @@ export const resultModalDatas = {
   },
   DAY_OFF_DAYS_VALIDATION: {
     title: '휴가 등록 오류',
-    content: '잔여 휴가일 보다 많은 휴가를 등록할 수 없습니다.\n잔여 휴가일 : ',
+    content:
+      '신청할 수 있는 휴가일수를 초과했습니다.\n신청현황을 확인해주세요.\n신청 가능한 휴가일수 : ',
     type: 1,
     okButton: '확인'
   },
