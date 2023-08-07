@@ -15,14 +15,14 @@ type TScheduleCalendar = {
   schdules: ICalendarScheduleByDate[]
   defaultDate: Dayjs
   onClickDate: (schedules: ICalendarSchedule[]) => void
+  onChangeDate: (date: Dayjs) => void
 }
 
 export const ScheduleCalendar = React.memo(
-  ({ schdules, defaultDate, onClickDate }: TScheduleCalendar) => {
+  ({ schdules, defaultDate, onClickDate, onChangeDate }: TScheduleCalendar) => {
     const { selectedId } = userSelectedStore()
 
     const filteredSchedules = useMemo(() => {
-      console.log(selectedId)
       if (selectedId === -1) return schdules
       return schdules.map(data => {
         return {
@@ -65,6 +65,10 @@ export const ScheduleCalendar = React.memo(
       return dateCellRender(current)
     }
 
+    const handleDateChange = (date: Dayjs) => {
+      onChangeDate(date)
+    }
+
     return (
       <StyledCalendar
         style={{ padding: 20, borderRadius: 6 }}
@@ -73,6 +77,7 @@ export const ScheduleCalendar = React.memo(
         defaultValue={defaultDate}
         cellRender={cellRender}
         headerRender={({ value, onChange }) => <CalendarHeader value={value} onChange={onChange} />}
+        onChange={handleDateChange}
         onSelect={handleSelecteDate}
       />
     )

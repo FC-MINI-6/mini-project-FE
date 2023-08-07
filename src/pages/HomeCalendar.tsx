@@ -6,7 +6,7 @@ import { CALENDER_MENU_ALL } from 'constants/index'
 import { ICalendarSchedule, ICalendarScheduleByDate } from 'types/index'
 import { colorOfType, parseCalendarDayOffList } from 'utils/index'
 import { Col, Row } from 'antd'
-import dayjs from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 
 type TScheduleByDate = {
   [key: string]: ICalendarSchedule[]
@@ -64,6 +64,10 @@ export const HomeCalendar = () => {
     setSelectedSchedule(schedule)
   }
 
+  const onChangeDate = (date: Dayjs) => {
+    getSchedules(date.get('year'), date.get('month') + 1)
+  }
+
   return (
     <Row wrap={false} gutter={[16, 0]}>
       <Col span={selectedSchedule.length !== 0 ? 20 : 24}>
@@ -71,6 +75,7 @@ export const HomeCalendar = () => {
           schdules={schedulsMapByDate}
           defaultDate={defaultDate}
           onClickDate={onClickDate}
+          onChangeDate={onChangeDate}
         />
       </Col>
       {selectedSchedule.length !== 0 ? (

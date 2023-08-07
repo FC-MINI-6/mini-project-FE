@@ -3,7 +3,7 @@ export const colorOfType = (type: number) => {
     case 0:
       return 'geekblue'
     case 1:
-      return 'lime'
+      return 'cyan'
     case 2:
       return 'green'
     default:
