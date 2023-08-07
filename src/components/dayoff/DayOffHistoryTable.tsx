@@ -1,6 +1,8 @@
 import React from 'react'
-import { DUMMY_DAYOFF_REQUEST_LIST } from 'constants/index'
 import { IDayOffResponse } from 'types/index'
+import { SkeletonTable } from 'components/index'
+import { calcNumOfDayOff } from 'utils/index'
+
 import { Table, Tag, Typography } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { styled } from 'styled-components'
@@ -17,7 +19,9 @@ const getDayOffHistoryColumns = (): ColumnsType<IDayOffResponse> => [
       <StatusWrapper>
         <IconBox>🏖️</IconBox>
         <StatusBox>
-          <Tag bordered={false}>{status}</Tag>
+          <Tag bordered={false} style={{ minWidth: 60, textAlign: 'center' }}>
+            {status}
+          </Tag>
         </StatusBox>
       </StatusWrapper>
     ),
@@ -45,7 +49,9 @@ const getDayOffHistoryColumns = (): ColumnsType<IDayOffResponse> => [
     key: 'type',
     render: (type: string) => (
       <Type>
-        <Tag color="green">{type}</Tag>
+        <Tag color="green" style={{ minWidth: 60, textAlign: 'center' }}>
+          {type}
+        </Tag>
       </Type>
     ),
     filters: [
@@ -84,10 +90,12 @@ const getDayOffHistoryColumns = (): ColumnsType<IDayOffResponse> => [
     title: '사유',
     dataIndex: 'reason',
     key: 'reason',
-    render: (_, { reason }) => (
+    render: (_, { reason, type, endDate, startDate }) => (
       <ReasonCellWrapper>
         <ReasonText>{reason}</ReasonText>
-        <Tag bordered={false}>1일</Tag>
+        <Tag bordered={false} style={{ minWidth: 45, textAlign: 'center', marginRight: 10 }}>
+          {type === '연차' ? calcNumOfDayOff(startDate, endDate!) : 0.5}일
+        </Tag>
       </ReasonCellWrapper>
     )
   }
@@ -95,13 +103,20 @@ const getDayOffHistoryColumns = (): ColumnsType<IDayOffResponse> => [
 
 type DayOffHistorytTableProps = {
   historyList: IDayOffResponse[]
+  isLoading: boolean
 }
 
-export const DayOffHistorytTable = React.memo(({ historyList }: DayOffHistorytTableProps) => {
-  const columns = getDayOffHistoryColumns()
+export const DayOffHistorytTable = React.memo(
+  ({ historyList, isLoading }: DayOffHistorytTableProps) => {
+    const columns = getDayOffHistoryColumns()
 
-  return <Table columns={columns} dataSource={DUMMY_DAYOFF_REQUEST_LIST} />
-})
+    return (
+      <SkeletonTable loading={isLoading} columns={columns as ColumnsType<IDayOffResponse[]>}>
+        <Table size="middle" columns={columns} dataSource={historyList} />
+      </SkeletonTable>
+    )
+  }
+)
 
 const StatusWrapper = styled.div`
   display: flex;
@@ -118,6 +133,7 @@ const IconBox = styled.div`
   justify-content: center;
   align-items: center;
   background-color: var(--color-white);
+  margin-left: 10px;
 `
 
 const StatusBox = styled.div`
