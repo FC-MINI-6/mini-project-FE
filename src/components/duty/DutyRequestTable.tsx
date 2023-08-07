@@ -27,15 +27,15 @@ const getDutyRequestColumns = (menuClick: MenuProps['onClick']): ColumnsType<IDu
     filters: [
       {
         text: '승인대기',
-        value: '승인대기'
+        value: 0
       },
       {
         text: '승인',
-        value: '승인'
+        value: 1
       },
       {
         text: '반려',
-        value: '반려'
+        value: 2
       }
     ],
     onFilter: (value, { status }) => status === value,
