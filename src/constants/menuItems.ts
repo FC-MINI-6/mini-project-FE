@@ -13,3 +13,9 @@ export const DAYOFF_MENU_ITEMS: MenuProps['items'] = [
     key: '1'
   }
 ]
+
+export const CALENDER_MENU_ALL = {
+  id: -1,
+  username: '전체',
+  position: ''
+}

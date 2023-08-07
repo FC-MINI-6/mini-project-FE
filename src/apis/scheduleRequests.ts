@@ -7,6 +7,7 @@ import {
   IDayOffResponse
 } from 'types/index'
 
+// 캘린더 - 사용자 목록 조회
 export const getCalendarUserList = async (): Promise<IDataResponse<ICalendarUser[]>> => {
   const response = await client.get('/mypage/schedule/userList')
   return response.data

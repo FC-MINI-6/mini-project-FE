@@ -1,51 +1,29 @@
 import { useEffect, useState } from 'react'
 import { DummyScheduleData, ScheduleCalendar, ScheduleList } from 'components/index'
 import { getCalendarUserList } from 'apis/index'
-import { userListStore } from 'stores/index'
+import { userListStore, userSelectedStore } from 'stores/index'
+import { CALENDER_MENU_ALL } from 'constants/index'
 import { Col, Row } from 'antd'
 
 export const HomeCalendar = () => {
   const { setUserList } = userListStore()
+  const { selectedId, setSelectedId } = userSelectedStore()
   const [selectedSchedule, setSelectedSchedule] = useState<DummyScheduleData[]>([])
 
   const getUserList = () => {
     getCalendarUserList().then(
       res => {
-        console.log(res.data)
+        setUserList([CALENDER_MENU_ALL, ...res.data.filter(user => user.username !== '어드민')])
+        setSelectedId(-1)
       },
       error => {
-        console.log(error.message)
+        setUserList([CALENDER_MENU_ALL])
       }
     )
   }
 
   useEffect(() => {
     getUserList()
-    const dummyUserList = [
-      { userName: '전체', userPosition: '' },
-      {
-        userId: 1,
-        userName: '홍길동',
-        userPosition: '대리'
-      },
-      {
-        userId: 2,
-        userName: '이은비',
-        userPosition: '사원'
-      },
-      {
-        userId: 3,
-        userName: '나길순',
-        userPosition: '팀장'
-      },
-      {
-        userId: 4,
-        userName: '김동동',
-        userPosition: '사원'
-      }
-    ]
-
-    setUserList(dummyUserList)
   }, [])
 
   const onClickDate = (schedule: DummyScheduleData[]) => {

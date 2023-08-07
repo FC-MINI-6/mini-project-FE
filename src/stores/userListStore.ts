@@ -1,9 +1,9 @@
 import { create } from 'zustand'
-import { IUserSearchResponse } from 'types/index'
+import { ICalendarUser } from 'types/index'
 
 interface IUserList {
-  userList: IUserSearchResponse[]
-  setUserList: (newList: IUserSearchResponse[]) => void
+  userList: ICalendarUser[]
+  setUserList: (newList: ICalendarUser[]) => void
 }
 
 export const userListStore = create<IUserList>(set => ({
