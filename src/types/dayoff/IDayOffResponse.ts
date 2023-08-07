@@ -1,7 +1,7 @@
 export interface IDayOffResponse {
   id: number
-  status: string
-  type: string
+  status: number
+  type: number
   startDate: string
   endDate: string | null
   reason: string

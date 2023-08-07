@@ -1,5 +1,5 @@
 import React from 'react'
-import { DAYOFF_MENU_ITEMS } from 'constants/index'
+import { DAYOFF_MENU_ITEMS, REQUEST_STATUS, DAYOFF_TYPE } from 'constants/index'
 import { SkeletonTable } from 'components/index'
 import { IDayOffResponse } from 'types/index'
 import { calcNumOfDayOff } from 'utils/index'
@@ -16,15 +16,15 @@ const getDayOffRequestColumns = (menuClick: MenuProps['onClick']): ColumnsType<I
     title: '신청 상태',
     dataIndex: 'status',
     key: 'stauts',
-    render: (status: string) => (
+    render: (status: number) => (
       <StatusWrapper>
         <IconBox>🏖️</IconBox>
         <StatusBox>
           <Tag
             bordered={false}
-            color={status === '반려' ? 'error' : 'default'}
+            color={status === 2 ? 'error' : 'default'}
             style={{ minWidth: 60, textAlign: 'center' }}>
-            {status}
+            {REQUEST_STATUS[status]}
           </Tag>
         </StatusBox>
       </StatusWrapper>
@@ -32,44 +32,44 @@ const getDayOffRequestColumns = (menuClick: MenuProps['onClick']): ColumnsType<I
     filters: [
       {
         text: '승인대기',
-        value: '승인대기'
+        value: 0
       },
       {
         text: '승인',
-        value: '승인'
+        value: 1
       },
       {
         text: '반려',
-        value: '반려'
+        value: 2
       }
     ],
     onFilter: (value, { status }) => status === value,
-    sorter: (a, b) => a.status.length - b.status.length
+    sorter: (a, b) => a.status - b.status
   },
   {
     width: '15%',
     title: '휴가 타입',
     dataIndex: 'type',
     key: 'type',
-    render: (type: string) => (
+    render: (type: number) => (
       <Type>
         <Tag color="green" style={{ minWidth: 60, textAlign: 'center' }}>
-          {type}
+          {DAYOFF_TYPE[type]}
         </Tag>
       </Type>
     ),
     filters: [
       {
         text: '연차',
-        value: '연차'
+        value: 0
       },
       {
         text: '오전반차',
-        value: '오전반차'
+        value: 1
       },
       {
         text: '오후반차',
-        value: '오후반차'
+        value: 2
       }
     ],
     onFilter: (value, { type }) => type === value
@@ -86,7 +86,7 @@ const getDayOffRequestColumns = (menuClick: MenuProps['onClick']): ColumnsType<I
           {endDate ? ` ~ ${endDate}` : ''}
         </DateWrapper>
         <Tag bordered={false} style={{ minWidth: 45, textAlign: 'center' }}>
-          {type === '연차' ? calcNumOfDayOff(startDate, endDate!) : 0.5}일
+          {type === 0 ? calcNumOfDayOff(startDate, endDate!) : 0.5}일
         </Tag>
         <Dropdown menu={{ items: DAYOFF_MENU_ITEMS, onClick: menuClick }} trigger={['click']}>
           <EllipsisOutlined style={{ marginRight: 10 }} />
