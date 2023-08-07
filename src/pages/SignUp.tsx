@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { DatePicker, Input, Select, Space } from 'antd'
 import axios from 'axios'
+import { Dayjs } from 'dayjs'
+
 import {
   SignUpStyledFormItem,
   SignUpStyledFormItemWrapper,
@@ -34,6 +36,7 @@ export const SignUp = () => {
   const [passwordConfirm, setPasswordConfirm] = useState<string>('')
   const [passwordMismatch, setPasswordMismatch] = useState<boolean>(false)
   const [emailError, setEmailError] = useState<string>('')
+  const [date, setDate] = useState<Dayjs | null>(null); 
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
@@ -42,6 +45,14 @@ export const SignUp = () => {
       [name]: value
     })
   }
+
+  const handleDatePickerChange = (date: Dayjs | null, dateString: string) => {
+    setDate(date); // date 변수 업데이트
+    setSignUpData(prevData => ({
+      ...prevData,
+      joinDate: date ? dateString : '' // 선택된 날짜 문자열을 signUpData의 joinDate에 저장
+    }));
+  };
 
   const handlePositionChange = (value: string) => {
     setSignUpData({
@@ -138,7 +149,13 @@ export const SignUp = () => {
           <SignUpStyledFormItem
             name="입사일"
             rules={[{ required: true, message: '입사일을 입력하세요!' }]}>
-            <DatePicker placeholder="입사일 선택" style={{ width: 150 }} />
+            <DatePicker
+              format="YYYY-MM-DD"
+              placeholder="입사일 선택"
+              style={{ width: 150 }}
+              value={date}
+              onChange={handleDatePickerChange} 
+            />
           </SignUpStyledFormItem>
         </SignUpStyledFormItemWrapper>
 
