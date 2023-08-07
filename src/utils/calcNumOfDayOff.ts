@@ -18,6 +18,16 @@ export const calcNumOfDayOff = (startDate: string, endDate: string) => {
 // 사용한 휴가의 합산
 export const calcNumOfUsedDayOff = (historyList: IDayOffResponse[]) => {
   return historyList.reduce((acc, cur) => {
-    return (acc += cur.type === '연차' ? calcNumOfDayOff(cur.startDate, cur.endDate!) : 0.5)
+    return (acc += cur.type === 0 ? calcNumOfDayOff(cur.startDate, cur.endDate!) : 0.5)
   }, 0)
+}
+
+// 현재 신청한 휴가일수 계산 (승인, 대기 상태만)
+export const calcNumOfRequest = (request: IDayOffResponse[]) => {
+  // 신청한 것 중 승인, 대기인 휴가일수
+  return request
+    .filter(dayoff => dayoff.status !== 2)
+    .reduce((acc, cur) => {
+      return (acc += cur.type === 0 ? calcNumOfDayOff(cur.startDate, cur.endDate!) : 0.5)
+    }, 0)
 }

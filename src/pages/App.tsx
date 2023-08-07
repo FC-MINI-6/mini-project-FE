@@ -61,7 +61,7 @@ export const App = () => {
         onCancel={handleClcikModalCancel}
         okText={modal.okButton}
         cancelText={modal.cancelButton}
-        cancelButtonProps={{ style: { display: `${modal.cancelCallback ? 'block' : 'none'}` } }}>
+        cancelButtonProps={{ style: { display: `${modal.cancelCallback ? 'inline' : 'none'}` } }}>
         <p style={{ whiteSpace: 'pre-wrap' }}>{modal.content}</p>
       </Modal>
     </>
