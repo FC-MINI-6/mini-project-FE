@@ -1,13 +1,12 @@
 import { client } from './index'
 import { IBaseResponse, IDataResponse, ILoginData, ILoginUser, ISignUpData } from 'types/index'
 
-
 export const loginRequest = async (params: ILoginData): Promise<IDataResponse<ILoginUser>> => {
-  const response = await client.post('/login', { params })
+  const response = await client.post('/login', params)
   return response.data
 }
 
 export const signUpRequest = async (params: ISignUpData): Promise<IBaseResponse> => {
-  const response = await client.post('/join', { params })
+  const response = await client.post('/join', params)
   return response.data
 }
