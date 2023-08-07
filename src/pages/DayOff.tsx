@@ -101,7 +101,11 @@ export const DayOff = () => {
         <h2>
           휴가 신청 내역 <span>{requestList.length}</span>
         </h2>
-        <DayOffRequestTable requestList={requestList} isLoading={isLoading} />
+        <DayOffRequestTable
+          requestList={requestList}
+          isLoading={isLoading}
+          deleteCallback={getDayOffList}
+        />
       </Wapper>
 
       <Wapper>

@@ -36,5 +36,20 @@ export const resultModalDatas = {
     type: 1,
     okButton: '확인',
     okCallback: () => {}
+  },
+  DAYOFF_CANCEL_CONFIRM: {
+    title: '휴가 취소',
+    content: '등록하신 휴가를 취소하시겠습니까?',
+    type: 0,
+    okButton: '확인',
+    cancelButton: '닫기',
+    cancelCallback: () => {}
+  },
+  DAYOFF_CANCEL_FAILURE: {
+    title: '휴가 취소 오류',
+    content: '휴가 취소 중 오류가 발생했습니다.\n관리자에게 문의해주세요.\n',
+    type: 1,
+    okButton: '확인',
+    okCallback: () => {}
   }
 }
