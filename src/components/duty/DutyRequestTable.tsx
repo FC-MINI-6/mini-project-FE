@@ -1,5 +1,7 @@
 import React from 'react'
-import { DUTY_MENU_ITEMS, REQUEST_STATUS, IDummyDutyRequest } from 'constants/index'
+import { SkeletonTable } from 'components/index'
+import { IDutyResponse } from 'types/index'
+import { DUTY_MENU_ITEMS, REQUEST_STATUS } from 'constants/index'
 import { EllipsisOutlined } from '@ant-design/icons'
 import { Table, Tag, Dropdown, Typography } from 'antd'
 import type { MenuProps } from 'antd'
@@ -8,7 +10,7 @@ import { styled } from 'styled-components'
 
 const { Text } = Typography
 
-const getDutyRequestColumns = (menuClick: MenuProps['onClick']): ColumnsType<IDummyDutyRequest> => [
+const getDutyRequestColumns = (menuClick: MenuProps['onClick']): ColumnsType<IDutyResponse> => [
   {
     width: '20%',
     title: '신청 상태',
@@ -58,7 +60,7 @@ const getDutyRequestColumns = (menuClick: MenuProps['onClick']): ColumnsType<IDu
       <ReasonCellWrapper>
         <ReasonText>{reason}</ReasonText>
         <Dropdown menu={{ items: DUTY_MENU_ITEMS, onClick: menuClick }} trigger={['click']}>
-          <EllipsisOutlined />
+          <EllipsisOutlined style={{ marginRight: 10 }} />
         </Dropdown>
       </ReasonCellWrapper>
     )
@@ -66,17 +68,27 @@ const getDutyRequestColumns = (menuClick: MenuProps['onClick']): ColumnsType<IDu
 ]
 
 type DutyRequestTableProps = {
-  requestList: IDummyDutyRequest[]
+  requestList: IDutyResponse[]
+  isLoading: boolean
 }
 
-export const DutyRequestTable = React.memo(({ requestList }: DutyRequestTableProps) => {
-  const onClickCancel: MenuProps['onClick'] = ({ key }) => {
+export const DutyRequestTable = React.memo(({ requestList, isLoading }: DutyRequestTableProps) => {
+  const onClickCancel: MenuProps['onClick'] = () => {
     // TODO : 신청 취소 기능
   }
 
   const columns = getDutyRequestColumns(onClickCancel)
 
-  return <Table columns={columns} dataSource={requestList} pagination={{ pageSize: 5 }} />
+  return (
+    <SkeletonTable loading={isLoading} columns={columns as ColumnsType<IDutyResponse[]>}>
+      <Table
+        size="middle"
+        columns={columns}
+        dataSource={requestList}
+        pagination={{ pageSize: 5 }}
+      />
+    </SkeletonTable>
+  )
 })
 
 const StatusWrapper = styled.div`
@@ -94,6 +106,7 @@ const IconBox = styled.div`
   justify-content: center;
   align-items: center;
   background-color: var(--color-white);
+  margin-left: 10px;
 `
 
 const StatusBox = styled.div`

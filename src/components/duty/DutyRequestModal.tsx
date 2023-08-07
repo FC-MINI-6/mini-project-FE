@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
+import { IDutyRequest } from 'types/index'
 
 import { Modal, DatePicker, Input } from 'antd'
 import type { RangePickerProps } from 'antd/es/date-picker'
@@ -9,7 +10,7 @@ const { TextArea } = Input
 
 type TDayOffRequestModalProps = {
   isModalOpen: boolean
-  onClickOk: () => void
+  onClickOk: (request: IDutyRequest) => void
   onClickCancel: () => void
 }
 
@@ -24,15 +25,31 @@ export const DutyRequestModal = React.memo(
     }, [date, reason])
 
     const disabledDate: RangePickerProps['disabledDate'] = current => {
-      return current < dayjs().endOf('day')
+      return (
+        current < dayjs().endOf('day').add(-1, 'day') ||
+        dayjs(current).day() === 0 ||
+        dayjs(current).day() === 6
+      )
+    }
+
+    const clearState = () => {
+      setDate(null)
+      setReason('')
+      setIsValid(false)
     }
 
     const handleClickOk = useCallback(() => {
-      onClickOk()
-    }, [onClickOk])
+      const request: IDutyRequest = {
+        date: date!.format('YYYY-MM-DD'),
+        reason: reason
+      }
+      onClickOk(request)
+      clearState()
+    }, [onClickOk, date, reason])
 
     const handleClickCancel = useCallback(() => {
       onClickCancel()
+      clearState()
     }, [onClickCancel])
 
     return (
