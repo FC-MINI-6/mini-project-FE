@@ -2,9 +2,11 @@ import { useEffect, useState, useMemo } from 'react'
 import { ScheduleCalendar, ScheduleList } from 'components/index'
 import { getCalendarUserList, fetchScheduleCalendar } from 'apis/index'
 import { userListStore, userSelectedStore } from 'stores/index'
-import { CALENDER_MENU_ALL } from 'constants/index'
+import { CALENDER_MENU_ALL, resultModalDatas } from 'constants/index'
 import { ICalendarSchedule, ICalendarScheduleByDate } from 'types/index'
 import { colorOfType, parseCalendarDayOffList } from 'utils/index'
+import { modalStore } from 'stores/index'
+
 import { Col, Row } from 'antd'
 import dayjs, { Dayjs } from 'dayjs'
 
@@ -13,6 +15,7 @@ type TScheduleByDate = {
 }
 
 export const HomeCalendar = () => {
+  const { openModal } = modalStore()
   const { setUserList } = userListStore()
   const { setSelectedId } = userSelectedStore()
   const [selectedSchedule, setSelectedSchedule] = useState<ICalendarSchedule[]>([])
@@ -34,13 +37,27 @@ export const HomeCalendar = () => {
   const defaultDate = dayjs()
 
   const getSchedules = (year: number, month: number) => {
-    fetchScheduleCalendar(year, month).then(res => {
-      const dayOffSchedules = parseCalendarDayOffList(res.data.dayOffList)
-      const dutySchedules = res.data.dutyList.map(duty => {
-        return { ...duty, endDate: duty.date, startDate: duty.date, color: colorOfType(3), type: 3 }
-      })
-      setSchedules([...dayOffSchedules, ...dutySchedules])
-    })
+    fetchScheduleCalendar(year, month).then(
+      res => {
+        const dayOffSchedules = parseCalendarDayOffList(res.data.dayOffList)
+        const dutySchedules = res.data.dutyList.map(duty => {
+          return {
+            ...duty,
+            endDate: duty.date,
+            startDate: duty.date,
+            color: colorOfType(3),
+            type: 3
+          }
+        })
+        setSchedules([...dayOffSchedules, ...dutySchedules])
+      },
+      error => {
+        openModal({
+          ...resultModalDatas.FETCH_SCHEDULES_FAILURE,
+          content: `${resultModalDatas.FETCH_SCHEDULES_FAILURE.content}${error.message ?? ''}`
+        })
+      }
+    )
   }
 
   const getUserList = () => {
@@ -51,6 +68,10 @@ export const HomeCalendar = () => {
       },
       error => {
         setUserList([CALENDER_MENU_ALL])
+        openModal({
+          ...resultModalDatas.FETCH_USER_LIST_FAILURE,
+          content: `${resultModalDatas.FETCH_USER_LIST_FAILURE.content}${error.message ?? ''}`
+        })
       }
     )
   }
