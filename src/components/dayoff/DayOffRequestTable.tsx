@@ -2,7 +2,7 @@ import React from 'react'
 import { DAYOFF_MENU_ITEMS, REQUEST_STATUS, DAYOFF_TYPE, resultModalDatas } from 'constants/index'
 import { SkeletonTable } from 'components/index'
 import { IDayOffResponse } from 'types/index'
-import { calcNumOfDayOff } from 'utils/index'
+import { calcNumOfDayOff, colorOfType } from 'utils/index'
 import { deleteDayOff } from 'apis/index'
 import { modalStore } from 'stores/index'
 
@@ -54,7 +54,7 @@ const getDayOffRequestColumns = (menuClick: (id: number) => void): ColumnsType<I
     key: 'type',
     render: (type: number) => (
       <Type>
-        <Tag color="green" style={{ minWidth: 60, textAlign: 'center' }}>
+        <Tag color={colorOfType(type)} style={{ minWidth: 60, textAlign: 'center' }}>
           {DAYOFF_TYPE[type]}
         </Tag>
       </Type>

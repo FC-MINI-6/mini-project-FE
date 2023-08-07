@@ -1,4 +1,5 @@
-import { IDayOffResponse, IDutyResponse } from 'types/index'
+import { ICalendarDayOff, IDayOffResponse, IDutyResponse, ICalendarSchedule } from 'types/index'
+import { colorOfType } from 'utils/index'
 import dayjs from 'dayjs'
 
 // * 신청 내역 필터링 기준
@@ -82,4 +83,28 @@ export const filteredDutyRequestList = (dutyList: IDutyResponse[]) => {
 // 상태가 대기만 빼고 날짜가 지난 케이스들
 export const filteredDutyHistoryList = (dutyList: IDutyResponse[]) => {
   return dutyList.filter(duty => dayjs().startOf('date').diff(duty.date) > 0 && duty.status !== 0)
+}
+
+// 캘린더 휴가 리스트 파싱
+export const parseCalendarDayOffList = (dayoffList: ICalendarDayOff[]) => {
+  const dayOffSchedules = [] as ICalendarSchedule[]
+  dayoffList.map(dayoff => {
+    if (dayoff.startDate !== dayoff.endDate) {
+      let date = dayjs(dayoff.startDate)
+      const diffDays = dayjs(dayoff.endDate).diff(date, 'day')
+      for (let i = 0; i <= diffDays; i++) {
+        if (date.get('day') !== 0 && date.get('day') !== 6) {
+          dayOffSchedules.push({
+            ...dayoff,
+            color: colorOfType(dayoff.type),
+            startDate: date.format('YYYY-MM-DD')
+          })
+        }
+        date = date.add(1, 'day')
+      }
+    } else {
+      dayOffSchedules.push({ ...dayoff, color: colorOfType(dayoff.type) })
+    }
+  })
+  return dayOffSchedules
 }

@@ -67,5 +67,19 @@ export const resultModalDatas = {
     type: 1,
     okButton: '확인',
     okCallback: () => {}
+  },
+  FETCH_USER_LIST_FAILURE: {
+    title: '사용자 조회 오류',
+    content: '일정 정보를 가져오는 중 오류가 발생했습니다.\n관리자에게 문의해주세요.\n',
+    type: 1,
+    okButton: '확인',
+    okCallback: () => {}
+  },
+  FETCH_SCHEDULES_FAILURE: {
+    title: '일정 조회 오류',
+    content: '일정 정보를 가져오는 중 오류가 발생했습니다.\n관리자에게 문의해주세요.\n',
+    type: 1,
+    okButton: '확인',
+    okCallback: () => {}
   }
 }

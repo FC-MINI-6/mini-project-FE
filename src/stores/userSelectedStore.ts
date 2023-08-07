@@ -1,11 +1,11 @@
 import { create } from 'zustand'
 
 interface IUserSelected {
-  selectedId: string
-  setSelectedId: (selectedId: string) => void
+  selectedId: number | null
+  setSelectedId: (selectedId: number | null) => void
 }
 
 export const userSelectedStore = create<IUserSelected>(set => ({
-  selectedId: '',
+  selectedId: null,
   setSelectedId: selectedId => set({ selectedId: selectedId })
 }))

@@ -4,14 +4,24 @@ import {
   IDataResponse,
   ICalendarUser,
   IDayOffRequest,
-  IDayOffResponse
+  IDayOffResponse,
+  ICalendarDatas
 } from 'types/index'
 
+// 캘린더 - 사용자 목록 조회
 export const getCalendarUserList = async (): Promise<IDataResponse<ICalendarUser[]>> => {
   const response = await client.get('/mypage/schedule/userList')
   return response.data
 }
 
+// 캘린더 - 일정 조회
+export const fetchScheduleCalendar = async (
+  year: number,
+  month: number
+): Promise<IDataResponse<ICalendarDatas>> => {
+  const response = await client.get(`/mypage/schedule/${year}/${month}`)
+  return response.data
+}
 // 연차 신청
 export const insertDayOff = async (params: IDayOffRequest): Promise<IBaseResponse> => {
   const response = await client.post('/mypage/dayoff/register', params, {

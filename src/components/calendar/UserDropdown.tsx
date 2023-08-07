@@ -9,11 +9,11 @@ export const UserDropdown = React.memo(() => {
 
   const options = useMemo(() => {
     return userList.map(user => {
-      return { value: user.userId?.toString() ?? '', label: user.userName }
+      return { value: user.id, label: user.username }
     })
   }, [userList])
 
-  const onChange = (value: string) => {
+  const onChange = (value: number) => {
     setSelectedId(value)
   }
 
@@ -26,7 +26,6 @@ export const UserDropdown = React.memo(() => {
       style={{ minWidth: 100 }}
       showSearch
       popupMatchSelectWidth={100}
-      defaultValue={options[0]?.value ?? ''}
       value={selectedId}
       optionFilterProp="children"
       onChange={onChange}
