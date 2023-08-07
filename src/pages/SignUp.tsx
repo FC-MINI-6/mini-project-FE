@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { DatePicker, Input, Select, Space } from 'antd'
-import axios from 'axios'
 import { Dayjs } from 'dayjs'
 
 import {
@@ -10,25 +9,19 @@ import {
   SignUpStyleddiv,
   SignUpStyledButton
 } from 'components/index'
-
-interface SignUpData {
-  name: string
-  position: string
-  email: string
-  joinDate: string
-  password: string
-  phoneNumber: string
-}
+import { signUpRequest } from '@/apis'
+import { ISignUpData } from '@/types'
 
 export const SignUp = () => {
-  const [signUpData, setSignUpData] = useState<SignUpData>({
-    name: '',
+  const [signUpData, setSignUpData] = useState<ISignUpData>({
+    username: '',
     position: '',
     email: '',
     joinDate: '',
     password: '',
     phoneNumber: ''
   })
+
   useEffect(() => {
     console.log(signUpData)
   }, [signUpData])
@@ -36,7 +29,7 @@ export const SignUp = () => {
   const [passwordConfirm, setPasswordConfirm] = useState<string>('')
   const [passwordMismatch, setPasswordMismatch] = useState<boolean>(false)
   const [emailError, setEmailError] = useState<string>('')
-  const [date, setDate] = useState<Dayjs | null>(null); 
+  const [date, setDate] = useState<Dayjs | null>(null)
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
@@ -47,12 +40,12 @@ export const SignUp = () => {
   }
 
   const handleDatePickerChange = (date: Dayjs | null, dateString: string) => {
-    setDate(date); // date 변수 업데이트
-    setSignUpData(prevData => ({
-      ...prevData,
-      joinDate: date ? dateString : '' // 선택된 날짜 문자열을 signUpData의 joinDate에 저장
-    }));
-  };
+    setDate(date)
+    setSignUpData({
+      ...signUpData,
+      joinDate: date ? dateString : ''
+    })
+  }
 
   const handlePositionChange = (value: string) => {
     setSignUpData({
@@ -67,10 +60,6 @@ export const SignUp = () => {
   }
 
   const handleSubmit = async () => {
-    //전체 유효성검사
-    if (!signUpData.email || !signUpData.joinDate || !signUpData.name || !signUpData.password || !signUpData.phoneNumber || !signUpData.position) {
-      return
-    }
     //이메일 유효성검사
     const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/
     if (!emailRegex.test(signUpData.email)) {
@@ -79,14 +68,17 @@ export const SignUp = () => {
     }
     //비밀번호확인 유효성검사
     if (signUpData.password === passwordConfirm) {
-      try {
-        const response = await axios.post(api, signUpData)
-        console.log('API 호출 성공!')
-        console.log(response.data)
-      } catch (error) {
-        console.error('API 호출 실패!')
-        console.error(error)
-      }
+      console.log(signUpData)
+      signUpRequest(signUpData).then(
+        res => {
+          console.log('API 호출 성공!')
+          console.log(res)
+        },
+        error => {
+          console.error('API 호출 실패!')
+          console.error(error)
+        }
+      )
     } else {
       console.log('비밀번호 확인 실패!')
       setPasswordMismatch(true)
@@ -98,7 +90,7 @@ export const SignUp = () => {
 
   return (
     <SignUpStyleddiv>
-      <SignUpStyledForm name="basic" autoComplete="off" onFinish={handleSubmit}>
+      <SignUpStyledForm name="basic" autoComplete="off">
         <SignUpStyledFormItemWrapper>
           <SignUpStyledFormItem
             label="이름"
@@ -106,9 +98,9 @@ export const SignUp = () => {
             rules={[{ required: true, message: '이름을 입력하세요!' }]}>
             <Input
               style={{ width: 250 }}
-              name="name"
+              name="username"
               onChange={handleChange}
-              value={signUpData.name}
+              value={signUpData.username}
             />
           </SignUpStyledFormItem>
 
@@ -154,7 +146,7 @@ export const SignUp = () => {
               placeholder="입사일 선택"
               style={{ width: 150 }}
               value={date}
-              onChange={handleDatePickerChange} 
+              onChange={handleDatePickerChange}
             />
           </SignUpStyledFormItem>
         </SignUpStyledFormItemWrapper>
@@ -203,15 +195,14 @@ export const SignUp = () => {
           ]}>
           <Input
             style={{ width: 350 }}
-            name="phonNumber"
+            name="phoneNumber"
             onChange={handleChange}
             value={signUpData.phoneNumber}
-            defaultValue=""
           />
         </SignUpStyledFormItem>
 
         <SignUpStyledFormItemWrapper>
-          <SignUpStyledButton type="primary" htmlType="submit">
+          <SignUpStyledButton type="primary" onClick={handleSubmit}>
             가입하기
           </SignUpStyledButton>
         </SignUpStyledFormItemWrapper>
