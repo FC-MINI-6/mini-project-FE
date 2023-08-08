@@ -112,8 +112,18 @@ export const DayOffHistorytTable = React.memo(
     const columns = getDayOffHistoryColumns()
 
     return (
-      <SkeletonTable loading={isLoading} columns={columns as ColumnsType<IDayOffResponse[]>}>
-        <Table size="middle" columns={columns} dataSource={historyList} />
+      <SkeletonTable
+        loading={isLoading}
+        rowKey={(_, index) => {
+          return `key ${index}`
+        }}
+        columns={columns as ColumnsType<IDayOffResponse[]>}>
+        <Table
+          rowKey={render => render.id}
+          size="middle"
+          columns={columns}
+          dataSource={historyList}
+        />
       </SkeletonTable>
     )
   }
