@@ -21,7 +21,7 @@ const getDayOffHistoryColumns = (): ColumnsType<IDayOffResponse> => [
         <IconBox>🏖️</IconBox>
         <StatusBox>
           <Tag bordered={false} style={{ minWidth: 60, textAlign: 'center' }}>
-            {status}
+            {REQUEST_STATUS[status]}
           </Tag>
         </StatusBox>
       </StatusWrapper>
@@ -50,8 +50,8 @@ const getDayOffHistoryColumns = (): ColumnsType<IDayOffResponse> => [
     key: 'type',
     render: (type: number) => (
       <Type>
-        <Tag color="green" style={{ minWidth: 60, textAlign: 'center' }}>
-          {type}
+        <Tag color={colorOfType(type)} style={{ minWidth: 60, textAlign: 'center' }}>
+          {DAYOFF_TYPE[type]}
         </Tag>
       </Type>
     ),
@@ -95,7 +95,7 @@ const getDayOffHistoryColumns = (): ColumnsType<IDayOffResponse> => [
       <ReasonCellWrapper>
         <ReasonText>{reason}</ReasonText>
         <Tag bordered={false} style={{ minWidth: 45, textAlign: 'center', marginRight: 10 }}>
-          {type === '연차' ? calcNumOfDayOff(startDate, endDate!) : 0.5}일
+          {type === 0 ? calcNumOfDayOff(startDate, endDate!) : 0.5}일
         </Tag>
       </ReasonCellWrapper>
     )
@@ -112,18 +112,8 @@ export const DayOffHistorytTable = React.memo(
     const columns = getDayOffHistoryColumns()
 
     return (
-      <SkeletonTable
-        loading={isLoading}
-        rowKey={(_, index) => {
-          return `key ${index}`
-        }}
-        columns={columns as ColumnsType<IDayOffResponse[]>}>
-        <Table
-          rowKey={render => render.id}
-          size="middle"
-          columns={columns}
-          dataSource={historyList}
-        />
+      <SkeletonTable loading={isLoading} columns={columns as ColumnsType<IDayOffResponse[]>}>
+        <Table size="middle" columns={columns} dataSource={historyList} />
       </SkeletonTable>
     )
   }
