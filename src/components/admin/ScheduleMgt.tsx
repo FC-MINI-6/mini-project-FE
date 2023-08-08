@@ -1,14 +1,13 @@
 import React, { useEffect } from 'react'
 import type { ColumnsType } from 'antd/es/table'
-import { Table, Button } from 'antd'
 import axios from 'axios'
-
 import { addDoc, collection } from 'firebase/firestore'
 import { notificationRef } from '@/firebase'
 import dayjs from 'dayjs'
-
+import { Table, Button, message, Popconfirm } from 'antd'
 interface DataType {
   key: React.Key
+  userId: string
   name: string
   type: string
   date: string
@@ -64,23 +63,41 @@ const columns: ColumnsType<DataType> = [
     width: 50,
     render: (_, record) => (
       <>
-        <Button type="primary">승인</Button>
-        <Button danger>반려</Button>
+        <Popconfirm
+          title="요청 승인 ✅"
+          description="해당 요청을 승인처리 하시겠습니까?"
+          onConfirm={confirm}
+          okText="확인"
+          cancelText="취소">
+          <Button type="primary">승인</Button>
+        </Popconfirm>
+        <Popconfirm
+          title="요청 반려 ❌"
+          description="해당 요청을 반려처리 하시겠습니까?"
+          onConfirm={confirm}
+          okText="확인"
+          cancelText="취소">
+          <Button danger>반려</Button>
+        </Popconfirm>
       </>
     )
   }
 ]
 
-const data: DataType[] = []
-for (let i = 0; i < 5; i++) {
-  data.push({
-    key: i,
-    name: '김어쩌구',
-    type: '연차',
-    date: '2023-08-23 ~ 2023-08-24',
-    day: 1,
-    reason: '어쩌구저쩌구'
-  })
+// const data: DataType[] = []
+// for (let i = 0; i < 5; i++) {
+//   data.push({
+//     key: i,
+//     name: '김어쩌구',
+//     type: '연차',
+//     date: '2023-08-23 ~ 2023-08-24',
+//     day: 1,
+//     reason: '어쩌구저쩌구'
+//   })
+// }
+
+const confirm = () => {
+  message.success('처리 완료')
 }
 
 export const ScheduleMgt = () => {
