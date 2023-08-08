@@ -36,8 +36,8 @@ export const Login = () => {
     loginRequest(loginData).then(
       res => {
         useUserStore.setState(res.data)
+        console.log(res.success)
         navigate('/')
-        console.log(res.data)
       },
       error => {
         console.log(error)

@@ -26,3 +26,15 @@ export interface ISignUpData {
   password: string
   phoneNumber: string
 }
+
+//비밀번호 변경 요청
+export interface IUpdatePasswordData {
+  userId: string
+  oldPassword: string
+  newPassword: string
+}
+
+//핸드폰번호 변경 요청
+export interface IUpdatePhoneNumberData{
+  phoneNumber: string
+}
