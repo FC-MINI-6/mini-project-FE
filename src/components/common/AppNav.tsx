@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { NotificationPopup } from 'components/index'
 import { notificationRef } from '@/firebase'
 import { collection, getDocs, onSnapshot } from 'firebase/firestore'
@@ -6,6 +7,7 @@ import { INotificationData } from 'types/index'
 import { styled } from 'styled-components'
 import { Image, Menu, Button, Popover, Badge } from 'antd'
 import type { MenuProps } from 'antd'
+import { navTabStore } from 'stores/index'
 import {
   BellOutlined,
   HomeOutlined,
@@ -22,6 +24,7 @@ type MenuItem = Required<MenuProps>['items'][number]
 function getItem(
   label: React.ReactNode,
   key: React.Key,
+  url: React.ReactNode,
   icon?: React.ReactNode,
   children?: MenuItem[],
   type?: 'group'
@@ -31,22 +34,24 @@ function getItem(
     icon,
     children,
     label,
-    type
+    type,
+    url
   } as MenuItem
 }
 
 const items: MenuItem[] = [
-  getItem('홈', '1', <HomeOutlined />),
-  getItem('내 정보', '2', <UserOutlined />),
-  getItem('휴가', '3', <CoffeeOutlined />),
-  getItem('당직', '4', <LaptopOutlined />),
-  getItem('휴가/당직 관리', '5', <ProfileOutlined />),
-  getItem('사원 관리', '6', <IdcardOutlined />)
+  getItem('홈', '1', '', <HomeOutlined />),
+  getItem('내 정보', '2', 'mypage', <UserOutlined />),
+  getItem('휴가', '3', 'day_off', <CoffeeOutlined />),
+  getItem('당직', '4', 'duty', <LaptopOutlined />),
+  getItem('휴가/당직 관리', '5', 'admin/schedule', <ProfileOutlined />),
+  getItem('사원 관리', '6', 'admin/employee', <IdcardOutlined />)
 ]
 
 export const AppNav = () => {
   const [newNotifications, setNewNotifications] = useState<INotificationData[]>([])
   const newNotificationCount = useMemo(() => newNotifications.length, [newNotifications])
+  const { tabNumber, setTabNumber } = navTabStore()
 
   // 실시간 알림 변경사항 구독
   useEffect(() => {
@@ -81,6 +86,10 @@ export const AppNav = () => {
     }
   }
 
+  const handleTabNumber = key => {
+    setTabNumber(Number(key))
+  }
+  console.log(tabNumber)
   useEffect(() => {
     fetchNoti()
   }, [])
@@ -110,7 +119,13 @@ export const AppNav = () => {
           </Badge>
         </Popover>
       </Profile>
-      <Menu defaultSelectedKeys={['1']} defaultOpenKeys={['sub1']} theme="dark" items={items} />
+      <Menu defaultSelectedKeys={tabNumber || ['1']} theme="dark">
+        {items.map(item => (
+          <Menu.Item key={item.key} icon={item.icon} onClick={() => handleTabNumber(item.key)}>
+            <Link to={`/${item.url}`}>{item.label}</Link>
+          </Menu.Item>
+        ))}
+      </Menu>
       <Button
         icon={<ExportOutlined />}
         style={{
