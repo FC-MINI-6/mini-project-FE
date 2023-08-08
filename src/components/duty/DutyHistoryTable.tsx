@@ -45,8 +45,14 @@ export const DutyHistoryTable = React.memo(({ historyList, isLoading }: DutyHist
   const columns = getDutyHistoryColumns()
 
   return (
-    <SkeletonTable loading={isLoading} columns={columns as ColumnsType<IDutyResponse[]>}>
+    <SkeletonTable
+      loading={isLoading}
+      rowKey={(_, index) => {
+        return `key ${index}`
+      }}
+      columns={columns as ColumnsType<IDutyResponse[]>}>
       <Table
+        rowKey={render => render.id}
         size="middle"
         columns={columns}
         dataSource={historyList}

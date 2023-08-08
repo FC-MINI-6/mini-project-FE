@@ -108,8 +108,14 @@ export const DutyRequestTable = React.memo(
     const columns = getDutyRequestColumns(onClickCancel)
 
     return (
-      <SkeletonTable loading={isLoading} columns={columns as ColumnsType<IDutyResponse[]>}>
+      <SkeletonTable
+        loading={isLoading}
+        rowKey={(_, index) => {
+          return `key ${index}`
+        }}
+        columns={columns as ColumnsType<IDutyResponse[]>}>
         <Table
+          rowKey={render => render.id}
           size="middle"
           columns={columns}
           dataSource={requestList}
