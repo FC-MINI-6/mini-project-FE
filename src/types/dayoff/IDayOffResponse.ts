@@ -6,3 +6,12 @@ export interface IDayOffResponse {
   endDate: string | null
   reason: string
 }
+
+export interface IDayOffNumResponse {
+  numOfInitialDayOff: number
+}
+
+export interface IDayOffAllResponse {
+  num: number
+  dayOffList: IDayOffResponse[]
+}

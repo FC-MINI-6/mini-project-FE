@@ -139,8 +139,14 @@ export const DayOffRequestTable = React.memo(
     const columns = getDayOffRequestColumns(onClickCancel)
 
     return (
-      <SkeletonTable loading={isLoading} columns={columns as ColumnsType<IDayOffResponse[]>}>
+      <SkeletonTable
+        loading={isLoading}
+        rowKey={(_, index) => {
+          return `key ${index}`
+        }}
+        columns={columns as ColumnsType<IDayOffResponse[]>}>
         <Table
+          rowKey={render => render.id}
           size="middle"
           columns={columns}
           dataSource={requestList}

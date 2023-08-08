@@ -87,7 +87,7 @@ export const AppNav = () => {
 
   return (
     <Container>
-      <Logo>{/* <Image src={logo} /> */}</Logo>
+      <Logo />
       <Profile>
         <Image
           alt="profileImage"
@@ -135,7 +135,7 @@ const Container = styled.div`
 
 const Logo = styled.div`
   height: 70px;
-  background-image: url('logo.png');
+  background-image: url('/logo.png');
   background-size: contain;
   background-repeat: no-repeat;
   color: black;

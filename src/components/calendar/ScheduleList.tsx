@@ -10,7 +10,7 @@ export const ScheduleList = React.memo(({ schedules }: ScheduleListProps) => {
   return (
     <ul>
       {schedules.map(schedule => (
-        <ScheduleCard schedule={schedule} />
+        <ScheduleCard schedule={schedule} key={schedule.id} />
       ))}
     </ul>
   )

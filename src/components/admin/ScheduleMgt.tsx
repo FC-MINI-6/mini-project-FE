@@ -1,91 +1,145 @@
 import React, { useEffect } from 'react'
 import type { ColumnsType } from 'antd/es/table'
-import { Table, Button } from 'antd'
-import axios from 'axios'
-
 import { addDoc, collection } from 'firebase/firestore'
 import { notificationRef } from '@/firebase'
 import dayjs from 'dayjs'
-
-interface DataType {
-  key: React.Key
-  name: string
-  type: string
-  date: string
-  day: number
-  reason: string
-}
-
-const columns: ColumnsType<DataType> = [
-  {
-    title: '이름',
-    align: 'center',
-    width: 40,
-    dataIndex: 'name',
-    key: 'name',
-    fixed: 'left'
-  },
-  {
-    title: '종류',
-    align: 'center',
-    width: 30,
-    dataIndex: 'type',
-    key: 'type',
-    fixed: 'left'
-  },
-  {
-    title: '신청기간',
-    align: 'center',
-    width: 100,
-    dataIndex: 'date',
-    key: 'date',
-    fixed: 'left'
-  },
-  {
-    title: '총 일수(일)',
-    align: 'center',
-    width: 40,
-    dataIndex: 'day',
-    key: 'day',
-    fixed: 'left'
-  },
-  {
-    title: '사유',
-    align: 'center',
-    dataIndex: 'reason',
-    key: 'reason',
-    width: 250
-  },
-  {
-    title: 'Action',
-    align: 'center',
-    key: 'action',
-    fixed: 'right',
-    width: 50,
-    render: (_, record) => (
-      <>
-        <Button type="primary">승인</Button>
-        <Button danger>반려</Button>
-      </>
-    )
-  }
-]
-
-const data: DataType[] = []
-for (let i = 0; i < 5; i++) {
-  data.push({
-    key: i,
-    name: '김어쩌구',
-    type: '연차',
-    date: '2023-08-23 ~ 2023-08-24',
-    day: 1,
-    reason: '어쩌구저쩌구'
-  })
-}
+import { Table, Button, message, Popconfirm } from 'antd'
+import { getDayOffList, approveOrRejectDayOff } from 'apis/index'
+import { dayOffListStore } from 'stores/index'
+import { DayOff } from 'types/index'
 
 export const ScheduleMgt = () => {
+  const { dayOffList, setDayOffList } = dayOffListStore()
+
+  const getTypeLabel = type => {
+    switch (type) {
+      case 0:
+        return '연차'
+      case 1:
+        return '오전반차'
+      case 2:
+        return '오후반차'
+      default:
+        return ''
+    }
+  }
+
+  const columns: ColumnsType<DayOff> = [
+    {
+      title: '이름',
+      align: 'center',
+      width: 40,
+      dataIndex: 'userName',
+      key: 'userName',
+      fixed: 'left'
+    },
+    {
+      title: '종류',
+      align: 'center',
+      width: 50,
+      dataIndex: 'type',
+      key: 'type',
+      fixed: 'left',
+      filters: [
+        {
+          text: '연차',
+          value: 0
+        },
+        {
+          text: '오전반차',
+          value: 1
+        },
+        {
+          text: '오후반차',
+          value: 2
+        }
+      ],
+      onFilter: (value: number, record) => record.type === value,
+      render: type => getTypeLabel(type)
+    },
+    {
+      title: '시작일',
+      align: 'center',
+      width: 60,
+      dataIndex: 'startDate',
+      key: 'startDate',
+      sorter: (a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime(),
+      sortDirections: ['ascend'],
+      fixed: 'left'
+    },
+    {
+      title: '종료일',
+      align: 'center',
+      width: 60,
+      dataIndex: 'endDate',
+      key: 'endDate',
+      fixed: 'left'
+    },
+    {
+      title: '사유',
+      align: 'center',
+      dataIndex: 'reason',
+      key: 'reason',
+      width: 100
+    },
+    {
+      title: '상태',
+      align: 'center',
+      key: 'status',
+      fixed: 'right',
+      width: 80,
+      filters: [
+        {
+          text: '처리중',
+          value: 0
+        },
+        {
+          text: '승인처리완료',
+          value: 1
+        },
+        {
+          text: '반려처리완료',
+          value: 2
+        }
+      ],
+      onFilter: (value: number, record) => record.status === value,
+      render: (_, record) => (
+        <>
+          {record.status === 0 ? (
+            <>
+              <Popconfirm
+                title="요청 승인 ✅"
+                description="해당 요청을 승인처리 하시겠습니까?"
+                onConfirm={() => confirmApproval(record)}
+                okText="확인"
+                cancelText="취소">
+                <Button type="primary">승인</Button>
+              </Popconfirm>
+              <Popconfirm
+                title="요청 반려 ❌"
+                description="해당 요청을 반려처리 하시겠습니까?"
+                onConfirm={() => confirmRejection(record)}
+                okText="확인"
+                cancelText="취소">
+                <Button danger>반려</Button>
+              </Popconfirm>
+            </>
+          ) : record.status === 1 ? (
+            <Button type="primary" disabled>
+              승인처리 완료
+            </Button>
+          ) : (
+            <Button type="primary" disabled>
+              반려처리 완료
+            </Button>
+          )}
+        </>
+      )
+    }
+  ]
+
   useEffect(() => {
-    getScheduleList()
+    getScheduleListAll()
   }, [])
 
   // 휴가 승인 반려 알림 푸시
@@ -101,13 +155,24 @@ export const ScheduleMgt = () => {
     })
   }
 
-  // const body = {
-
-  // }
-
-  const getScheduleList = async () => {
-    // await axios.get(`/admin/status`, body, {header: header})
+  const getScheduleListAll = () => {
+    getDayOffList().then(res => {
+      const dayOffWithKeys = res.map(dayOff => ({
+        ...dayOff,
+        key: dayOff.id
+      }))
+      setDayOffList(dayOffWithKeys)
+    })
   }
 
-  return <Table columns={columns} dataSource={data} scroll={{ x: 1500 }} sticky />
+  const confirmApproval = record => {
+    approveOrRejectDayOff(1, record.key).then(getScheduleListAll)
+    message.success('처리 완료')
+  }
+  const confirmRejection = record => {
+    approveOrRejectDayOff(2, record.key).then(getScheduleListAll)
+    message.success('처리 완료')
+  }
+
+  return <Table columns={columns} dataSource={dayOffList} sticky />
 }

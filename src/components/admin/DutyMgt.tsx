@@ -1,70 +1,100 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import type { ColumnsType } from 'antd/es/table'
-import { Table, Button } from 'antd'
-import axios from 'node_modules/axios/index'
+import { Table, Button, message, Popconfirm } from 'antd'
 import { addDoc, collection } from 'firebase/firestore'
 import { notificationRef } from '@/firebase'
 import dayjs from 'dayjs'
-
-interface DataType {
-  key: React.Key
-  name: string
-  date: string
-  reason: string
-}
-
-const columns: ColumnsType<DataType> = [
-  {
-    title: '이름',
-    align: 'center',
-    width: 40,
-    dataIndex: 'name',
-    key: 'name',
-    fixed: 'left'
-  },
-  {
-    title: '근무날짜',
-    align: 'center',
-    width: 50,
-    dataIndex: 'date',
-    key: 'date',
-    fixed: 'left'
-  },
-  {
-    title: '사유',
-    align: 'center',
-    dataIndex: 'reason',
-    key: 'reason',
-    width: 250
-  },
-  {
-    title: 'Action',
-    align: 'center',
-    key: 'action',
-    fixed: 'right',
-    width: 50,
-    render: (_, record) => (
-      <>
-        <Button type="primary">승인</Button>
-        <Button danger>반려</Button>
-      </>
-    )
-  }
-]
-
-const data: DataType[] = []
-for (let i = 0; i < 5; i++) {
-  data.push({
-    key: i,
-    name: '김저쩌구',
-    date: '2023-08-23',
-    reason: '어쩌구저쩌구'
-  })
-}
+import { getDutyList, approveOrRejectDuty } from 'apis/index'
+import { dutyListStore } from 'stores/index'
+import { Duty } from 'types/index'
 
 export const DutyMgt = () => {
+  const { dutyList, setDutyList } = dutyListStore()
+
+  const columns: ColumnsType<Duty> = [
+    {
+      title: '이름',
+      align: 'center',
+      width: 40,
+      dataIndex: 'username',
+      key: 'username',
+      fixed: 'left'
+    },
+    {
+      title: '근무날짜',
+      align: 'center',
+      width: 50,
+      dataIndex: 'date',
+      key: 'date',
+      sorter: (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+      sortDirections: ['ascend'],
+      fixed: 'left'
+    },
+    {
+      title: '사유',
+      align: 'center',
+      dataIndex: 'reason',
+      key: 'reason',
+      width: 100
+    },
+    {
+      title: '상태',
+      align: 'center',
+      key: 'status',
+      fixed: 'right',
+      width: 80,
+      filters: [
+        {
+          text: '처리중',
+          value: 0
+        },
+        {
+          text: '승인처리완료',
+          value: 1
+        },
+        {
+          text: '반려처리완료',
+          value: 2
+        }
+      ],
+      onFilter: (value: number, record) => record.status === value,
+      render: (_, record) => (
+        <>
+          {record.status === 0 ? (
+            <>
+              <Popconfirm
+                title="요청 승인 ✅"
+                description="해당 요청을 승인처리 하시겠습니까?"
+                onConfirm={() => confirmApproval(record)}
+                okText="확인"
+                cancelText="취소">
+                <Button type="primary">승인</Button>
+              </Popconfirm>
+              <Popconfirm
+                title="요청 반려 ❌"
+                description="해당 요청을 반려처리 하시겠습니까?"
+                onConfirm={() => confirmRejection(record)}
+                okText="확인"
+                cancelText="취소">
+                <Button danger>반려</Button>
+              </Popconfirm>
+            </>
+          ) : record.status === 1 ? (
+            <Button type="primary" disabled>
+              승인처리 완료
+            </Button>
+          ) : (
+            <Button type="primary" disabled>
+              반려처리 완료
+            </Button>
+          )}
+        </>
+      )
+    }
+  ]
+
   useEffect(() => {
-    getScheduleList()
+    getDutyListAll()
   }, [])
 
   // 당직 승인 반려 알림 푸시
@@ -80,13 +110,24 @@ export const DutyMgt = () => {
     })
   }
 
-  // const body = {
-
-  // }
-
-  const getScheduleList = async () => {
-    // await axios.get(`/admin/status`, body, {header: header})
+  const getDutyListAll = () => {
+    getDutyList().then(res => {
+      const dutyWithKeys = res.map(duty => ({
+        ...duty,
+        key: duty.id
+      }))
+      setDutyList(dutyWithKeys)
+    })
   }
 
-  return <Table columns={columns} dataSource={data} scroll={{ x: 1500 }} sticky />
+  const confirmApproval = record => {
+    approveOrRejectDuty(1, record.key).then(getDutyListAll)
+    message.success('처리 완료')
+  }
+  const confirmRejection = record => {
+    approveOrRejectDuty(2, record.key).then(getDutyListAll)
+    message.success('처리 완료')
+  }
+
+  return <Table columns={columns} dataSource={dutyList} sticky />
 }

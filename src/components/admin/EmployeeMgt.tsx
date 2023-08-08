@@ -1,28 +1,38 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Input, Table, Modal, Select, Button } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { styled } from 'styled-components'
+import { getEmployeeList, updateEmployee } from 'apis/index'
+import { employeeListStore } from 'stores/index'
+import { Employee, EmployeeUpdate } from 'types/index'
 const { Search } = Input
 const { Option } = Select
 
-const onSearch = (value: string) => console.log(value)
-
-interface DataType {
-  key: React.Key
-  name: string
-  email: string
-  phone: string
-  joinDate: string
-  position: string
+const getPositionLabel = position => {
+  switch (position) {
+    case 0:
+      return '사원'
+    case 1:
+      return '주임'
+    case 2:
+      return '대리'
+    case 3:
+      return '과장'
+    case 4:
+      return '차장'
+    case 5:
+      return '부장'
+    default:
+      return ''
+  }
 }
 
-const columns: ColumnsType<DataType> = [
+const columns: ColumnsType<Employee> = [
   {
     title: '이름',
-    dataIndex: 'name',
-    key: 'name',
+    dataIndex: 'username',
+    key: 'username',
     align: 'center',
-    // render: text => <a>{text}</a>,
     width: 150
   },
   {
@@ -34,80 +44,143 @@ const columns: ColumnsType<DataType> = [
   },
   {
     title: '연락처',
-    dataIndex: 'phone',
-    key: 'phone',
+    dataIndex: 'phoneNumber',
+    key: 'phoneNumber',
     align: 'center'
   },
   {
     title: '입사일',
     dataIndex: 'joinDate',
     key: 'joinDate',
+    sorter: (a, b) => new Date(a.joinDate).getTime() - new Date(b.joinDate).getTime(),
+    sortDirections: ['descend'],
     align: 'center'
   },
   {
     title: '직급',
     dataIndex: 'position',
     key: 'position',
-    align: 'center'
+    align: 'center',
+    filters: [
+      {
+        text: '사원',
+        value: 0
+      },
+      {
+        text: '주임',
+        value: 1
+      },
+      {
+        text: '대리',
+        value: 2
+      },
+      {
+        text: '과장',
+        value: 3
+      },
+      {
+        text: '차장',
+        value: 4
+      },
+      {
+        text: '부장',
+        value: 5
+      }
+    ],
+    onFilter: (value: number, record) => record.position === value,
+    render: position => getPositionLabel(position)
   }
 ]
 
-const data: DataType[] = [
-  {
-    key: '1',
-    name: '김어쩌구',
-    email: 'abc@gmail.com',
-    phone: '010-2345-6789',
-    joinDate: '2022-07-01',
-    position: '대리'
-  },
-  {
-    key: '2',
-    name: '김저쩌구',
-    email: 'aef@gmail.com',
-    phone: '010-2345-6789',
-    joinDate: '2022-04-01',
-    position: '차장'
-  }
-]
 export const EmployeeMgt = () => {
-  const [selectedRowData, setSelectedRowData] = useState<DataType | null>(null)
-  const [updatedRowData, setUpdatedRowData] = useState<DataType | null>(null)
-  const handleRowClick = (record: DataType) => {
-    setSelectedRowData(record)
+  const { employeeList, setEmployeeList } = employeeListStore()
+  const [selectedRowData, setSelectedRowData] = useState<Employee | null>(null)
+  const [updatedRowData, setUpdatedRowData] = useState<EmployeeUpdate | null>(null)
+
+  const onSearch = (value: string) => {
+    const filteredEmployeeList = employeeList.filter(
+      employee => employee.username.includes(value) || employee.email.includes(value)
+    )
+    setEmployeeList(filteredEmployeeList)
   }
 
+  const resetEmployeeList = () => {
+    getUserList()
+  }
+
+  const getUserList = () => {
+    getEmployeeList().then(
+      res => {
+        const employeesWithKeys = res.data.map(employee => ({
+          ...employee,
+          key: employee.userId
+        }))
+        setEmployeeList(employeesWithKeys)
+      },
+      error => {
+        console.log(error.message)
+      }
+    )
+  }
+
+  useEffect(() => {
+    getUserList()
+  }, [])
+
+  const handleRowClick = (record: Employee) => {
+    setSelectedRowData(record)
+    setUpdatedRowData({
+      position: record.position,
+      phoneNumber: record.phoneNumber,
+      roles: record.roles
+    })
+  }
   const handleCloseModal = () => {
     setSelectedRowData(null)
   }
 
   const handleUpdate = () => {
-    if (updatedRowData) {
-      // 수정된 내용을 원래 데이터에 반영
-      setSelectedRowData(updatedRowData)
-      setUpdatedRowData(null) // 수정된 데이터를 초기화
-    }
+    updateEmployee(updatedRowData, selectedRowData.userId).then(getUserList)
+    setUpdatedRowData(null)
+    handleCloseModal()
   }
-
   const handlePositionChange = (value: string) => {
     if (selectedRowData) {
-      setSelectedRowData({ ...selectedRowData, position: value })
+      setSelectedRowData({ ...selectedRowData, position: parseInt(value) })
+      setUpdatedRowData({ ...updatedRowData, position: value })
     }
   }
-
+  const handleRoleChange = (value: string) => {
+    if (selectedRowData) {
+      setSelectedRowData({ ...selectedRowData, roles: parseInt(value) })
+      setUpdatedRowData({ ...updatedRowData, roles: value })
+    }
+  }
   const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target
-    if (selectedRowData) {
-      setSelectedRowData({ ...selectedRowData, phone: value })
+    const numericValue = value.replace(/\D/g, '')
+    const truncatedValue = numericValue.slice(0, 11)
+    const isValid = /^\d{0,11}$/.test(truncatedValue)
+
+    if (isValid) {
+      setSelectedRowData({ ...selectedRowData, phoneNumber: truncatedValue })
+      setUpdatedRowData({ ...updatedRowData, phoneNumber: truncatedValue })
+    } else {
+      setUpdatedRowData(null)
     }
   }
 
   return (
     <>
-      <Search placeholder="Search" onSearch={onSearch} style={{ width: '50%' }} />
+      <Search
+        placeholder="Search"
+        onSearch={onSearch}
+        onChange={resetEmployeeList}
+        style={{ width: '50%' }}
+      />
       <Table
         columns={columns}
-        dataSource={data}
+        dataSource={employeeList}
         onRow={record => ({
           onClick: () => handleRowClick(record)
         })}
@@ -128,17 +201,20 @@ export const EmployeeMgt = () => {
           <Container>
             <Item>
               <h3>이름</h3>
-              <h4>{selectedRowData.name}</h4>
+              <h4>{selectedRowData.username}</h4>
             </Item>
             <Item>
               <h3>직급</h3>
               <Select
-                value={selectedRowData.position}
+                value={getPositionLabel(selectedRowData?.position)}
                 onChange={handlePositionChange}
                 style={{ width: '100%' }}>
-                <Option value="대리">대리</Option>
-                <Option value="차장">차장</Option>
-                <Option value="부장">부장</Option>
+                <Option value="0">사원</Option>
+                <Option value="1">주임</Option>
+                <Option value="2">대리</Option>
+                <Option value="3">과장</Option>
+                <Option value="4">차장</Option>
+                <Option value="5">부장</Option>
               </Select>
             </Item>
             <Item>
@@ -151,25 +227,23 @@ export const EmployeeMgt = () => {
               <h4>{selectedRowData.joinDate}</h4>
             </Item>
             <Item>
-              <h3>연차</h3>
-              <h4>2</h4>
-            </Item>
-            <Item>
               <h3>연락처</h3>
               <Input
-                value={selectedRowData.phone}
+                value={selectedRowData.phoneNumber || ''}
                 onChange={handlePhoneChange}
                 style={{ width: '100%' }}
+                placeholder="'-'를 제외한 숫자만 입력해주세요."
+                maxLength={11}
               />
             </Item>
             <Item>
               <h3>권한</h3>
               <Select
-                value={selectedRowData.authority}
-                // onChange={handleAuthorityChange}
+                value={selectedRowData.roles === 0 ? '일반' : '관리자'}
+                onChange={handleRoleChange}
                 style={{ width: '100%' }}>
-                <Option value="일반사용자">일반사용자</Option>
-                <Option value="관리자">관리자</Option>
+                <Option value="0">일반</Option>
+                <Option value="1">관리자</Option>
               </Select>
             </Item>
           </Container>
@@ -192,9 +266,6 @@ const Container = styled.div`
 
 const Item = styled.div`
   align-items: center;
-  &:nth-child(3) {
-    grid-column: span 2;
-  }
   h4 {
     padding: 0 10px;
     border: 1px solid #c1c1c1;
