@@ -7,6 +7,7 @@ import dayjs from 'dayjs'
 import { Table, Button, message, Popconfirm } from 'antd'
 interface DataType {
   key: React.Key
+  userId: string
   name: string
   type: string
   date: string
@@ -83,17 +84,17 @@ const columns: ColumnsType<DataType> = [
   }
 ]
 
-const data: DataType[] = []
-for (let i = 0; i < 5; i++) {
-  data.push({
-    key: i,
-    name: '김어쩌구',
-    type: '연차',
-    date: '2023-08-23 ~ 2023-08-24',
-    day: 1,
-    reason: '어쩌구저쩌구'
-  })
-}
+// const data: DataType[] = []
+// for (let i = 0; i < 5; i++) {
+//   data.push({
+//     key: i,
+//     name: '김어쩌구',
+//     type: '연차',
+//     date: '2023-08-23 ~ 2023-08-24',
+//     day: 1,
+//     reason: '어쩌구저쩌구'
+//   })
+// }
 
 const confirm = () => {
   message.success('처리 완료')
