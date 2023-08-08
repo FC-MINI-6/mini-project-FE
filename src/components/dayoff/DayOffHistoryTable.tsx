@@ -1,6 +1,9 @@
 import React from 'react'
-import { DUMMY_DAYOFF_REQUEST_LIST } from 'constants/index'
 import { IDayOffResponse } from 'types/index'
+import { SkeletonTable } from 'components/index'
+import { calcNumOfDayOff, colorOfType } from 'utils/index'
+import { REQUEST_STATUS, DAYOFF_TYPE } from 'constants/index'
+
 import { Table, Tag, Typography } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { styled } from 'styled-components'
@@ -13,53 +16,57 @@ const getDayOffHistoryColumns = (): ColumnsType<IDayOffResponse> => [
     title: '신청 상태',
     dataIndex: 'status',
     key: 'stauts',
-    render: (status: string) => (
+    render: (status: number) => (
       <StatusWrapper>
         <IconBox>🏖️</IconBox>
         <StatusBox>
-          <Tag bordered={false}>{status}</Tag>
+          <Tag bordered={false} style={{ minWidth: 60, textAlign: 'center' }}>
+            {REQUEST_STATUS[status]}
+          </Tag>
         </StatusBox>
       </StatusWrapper>
     ),
     filters: [
       {
         text: '승인대기',
-        value: '승인대기'
+        value: 0
       },
       {
         text: '승인',
-        value: '승인'
+        value: 1
       },
       {
         text: '반려',
-        value: '반려'
+        value: 2
       }
     ],
     onFilter: (value, { status }) => status === value,
-    sorter: (a, b) => a.status.length - b.status.length
+    sorter: (a, b) => a.status - b.status
   },
   {
     width: '15%',
     title: '휴가 타입',
     dataIndex: 'type',
     key: 'type',
-    render: (type: string) => (
+    render: (type: number) => (
       <Type>
-        <Tag color="green">{type}</Tag>
+        <Tag color={colorOfType(type)} style={{ minWidth: 60, textAlign: 'center' }}>
+          {DAYOFF_TYPE[type]}
+        </Tag>
       </Type>
     ),
     filters: [
       {
         text: '연차',
-        value: '연차'
+        value: 0
       },
       {
         text: '오전반차',
-        value: '오전반차'
+        value: 1
       },
       {
         text: '오후반차',
-        value: '오후반차'
+        value: 2
       }
     ],
     onFilter: (value, { type }) => type === value
@@ -84,10 +91,12 @@ const getDayOffHistoryColumns = (): ColumnsType<IDayOffResponse> => [
     title: '사유',
     dataIndex: 'reason',
     key: 'reason',
-    render: (_, { reason }) => (
+    render: (_, { reason, type, endDate, startDate }) => (
       <ReasonCellWrapper>
         <ReasonText>{reason}</ReasonText>
-        <Tag bordered={false}>1일</Tag>
+        <Tag bordered={false} style={{ minWidth: 45, textAlign: 'center', marginRight: 10 }}>
+          {type === 0 ? calcNumOfDayOff(startDate, endDate!) : 0.5}일
+        </Tag>
       </ReasonCellWrapper>
     )
   }
@@ -95,13 +104,20 @@ const getDayOffHistoryColumns = (): ColumnsType<IDayOffResponse> => [
 
 type DayOffHistorytTableProps = {
   historyList: IDayOffResponse[]
+  isLoading: boolean
 }
 
-export const DayOffHistorytTable = React.memo(({ historyList }: DayOffHistorytTableProps) => {
-  const columns = getDayOffHistoryColumns()
+export const DayOffHistorytTable = React.memo(
+  ({ historyList, isLoading }: DayOffHistorytTableProps) => {
+    const columns = getDayOffHistoryColumns()
 
-  return <Table columns={columns} dataSource={DUMMY_DAYOFF_REQUEST_LIST} />
-})
+    return (
+      <SkeletonTable loading={isLoading} columns={columns as ColumnsType<IDayOffResponse[]>}>
+        <Table size="middle" columns={columns} dataSource={historyList} />
+      </SkeletonTable>
+    )
+  }
+)
 
 const StatusWrapper = styled.div`
   display: flex;
@@ -118,6 +134,7 @@ const IconBox = styled.div`
   justify-content: center;
   align-items: center;
   background-color: var(--color-white);
+  margin-left: 10px;
 `
 
 const StatusBox = styled.div`

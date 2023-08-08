@@ -1,4 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react'
+import { IDayOffRequest } from 'types/index'
+import { calcNumOfDayOff } from 'utils/index'
+import { modalStore } from 'stores/index'
+import { resultModalDatas } from 'constants/index'
 
 import { Modal, Radio, DatePicker, Input } from 'antd'
 import type { RadioChangeEvent } from 'antd'
@@ -10,14 +14,16 @@ const { RangePicker } = DatePicker
 const { TextArea } = Input
 
 type TDayOffRequestModalProps = {
+  availableDays: number
   isModalOpen: boolean
-  onClickOk: () => void
+  onClickOk: (request: IDayOffRequest) => void
   onClickCancel: () => void
 }
 type RangeValue = [Dayjs | null, Dayjs | null] | null
 
 export const DayOffRequestModal = React.memo(
-  ({ isModalOpen, onClickOk, onClickCancel }: TDayOffRequestModalProps) => {
+  ({ availableDays, isModalOpen, onClickOk, onClickCancel }: TDayOffRequestModalProps) => {
+    const { openModal } = modalStore()
     const [type, setType] = useState<number>(0)
     const [dates, setDates] = useState<RangeValue>(null)
     const [reason, setReason] = useState<string>('')
@@ -29,22 +35,59 @@ export const DayOffRequestModal = React.memo(
     }, [type, dates, reason])
 
     const disabledDate: RangePickerProps['disabledDate'] = current => {
-      return current < dayjs().endOf('day')
+      return (
+        current < dayjs().endOf('day').add(-1, 'day') ||
+        dayjs(current).day() === 0 ||
+        dayjs(current).day() === 6
+      )
+    }
+
+    const clearState = () => {
+      setType(0)
+      setDates(null)
+      setReason('')
+      setIsSingle(false)
+      setIsValid(false)
     }
 
     const onChangeType = (e: RadioChangeEvent) => {
-      console.log('radio checked', e.target.value)
       setDates(null)
       setType(e.target.value)
       setIsSingle(e.target.value !== 0)
     }
 
     const handleClickOk = useCallback(() => {
-      onClickOk()
-    }, [onClickOk])
+      if (dates && dates[0] !== null) {
+        const startDate = dates[0].format('YYYY-MM-DD')
+        const endDate = type === 0 ? dates[1]!.format('YYYY-MM-DD') : dates[0].format('YYYY-MM-DD')
+
+        if (availableDays - calcNumOfDayOff(startDate, endDate) > 0) {
+          const request: IDayOffRequest = {
+            type: type,
+            startDate: startDate,
+            endDate: endDate,
+            reason: reason
+          }
+
+          onClickOk(request)
+          clearState()
+        } else {
+          // 신청가능한 휴가일수 유효성 검사 예외처리
+          handleClickCancel()
+          openModal({
+            ...resultModalDatas.DAY_OFF_DAYS_VALIDATION,
+            content: `${resultModalDatas.DAY_OFF_DAYS_VALIDATION.content}${availableDays}일`,
+            okCallback: () => {
+              setDates(null)
+            }
+          })
+        }
+      }
+    }, [onClickOk, dates, type, reason, availableDays])
 
     const handleClickCancel = useCallback(() => {
       onClickCancel()
+      clearState()
     }, [onClickCancel])
 
     return (

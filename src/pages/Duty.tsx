@@ -1,16 +1,70 @@
-import { DUMMY_DUTY_REQUEST_LIST } from 'constants/index'
 import { DutyRequestTable, DutyHistoryTable, DutyRequestModal } from 'components/index'
+import { IDutyRequest, IDutyResponse } from 'types/index'
+import { fetchDutyList, insertDuty } from 'apis/index'
+import { modalStore } from 'stores/index'
+import { resultModalDatas } from 'constants/index'
+import { filteredDutyHistoryList, filteredDutyRequestList } from 'utils/index'
+
 import { styled } from 'styled-components'
 
-import { useCallback, useState } from 'react'
-import { Button } from 'antd'
+import { useCallback, useMemo, useState, useEffect } from 'react'
+import { Button, message } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
 export const Duty = () => {
+  const [messageApi, contextHolder] = message.useMessage()
+  const { openModal } = modalStore()
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [dutyList, setDutyList] = useState<IDutyResponse[]>([])
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleOk = () => {
-    setIsModalOpen(false)
+  const requestList = useMemo(() => filteredDutyRequestList(dutyList), [dutyList])
+  const historyList = useMemo(() => filteredDutyHistoryList(dutyList), [dutyList])
+
+  const getDutyList = useCallback(() => {
+    setIsLoading(true)
+    fetchDutyList()
+      .then(
+        res => {
+          setDutyList(res.data)
+        },
+        () => {
+          openModal(resultModalDatas.DAY_OFF_FETCH_FAILURE)
+        }
+      )
+      .finally(() => {
+        setTimeout(() => {
+          setIsLoading(false)
+        }, 400)
+      })
+  }, [openModal])
+
+  useEffect(() => {
+    getDutyList()
+  }, [getDutyList])
+
+  const handleOk = (request: IDutyRequest) => {
+    insertDuty(request)
+      .then(
+        () => {
+          setIsModalOpen(false)
+          openModal({
+            ...resultModalDatas.DUTY_INSERT_SUCCESS,
+            okCallback: () => {
+              getDutyList()
+            }
+          })
+        },
+        error => {
+          openModal({
+            ...resultModalDatas.DUTY_INSERT_FAILURE,
+            content: `${resultModalDatas.DUTY_INSERT_FAILURE.content}${error.message ?? ''}`
+          })
+        }
+      )
+      .finally(() => {
+        setIsModalOpen(false)
+      })
   }
 
   const handleCancel = () => {
@@ -20,8 +74,17 @@ export const Duty = () => {
     setIsModalOpen(true)
   }, [])
 
+  const handleDeleteCompleted = useCallback(() => {
+    getDutyList()
+    messageApi.open({
+      type: 'success',
+      content: '당직 신청 취소를 완료했습니다.'
+    })
+  }, [getDutyList, messageApi])
+
   return (
     <Container>
+      {contextHolder}
       <ButtonBox>
         <Button type="primary" icon={<PlusOutlined />} onClick={handleClickAdd}>
           당직 등록하기
@@ -29,16 +92,20 @@ export const Duty = () => {
       </ButtonBox>
       <Wapper>
         <h2>
-          당직 신청 내역 <span>{DUMMY_DUTY_REQUEST_LIST.length}</span>
+          당직 신청 내역 <span>{requestList.length}</span>
         </h2>
-        <DutyRequestTable requestList={DUMMY_DUTY_REQUEST_LIST} />
+        <DutyRequestTable
+          requestList={requestList}
+          isLoading={isLoading}
+          deleteCallback={handleDeleteCompleted}
+        />
       </Wapper>
 
       <Wapper>
         <h2>
-          나의 당직 내역 <span>{DUMMY_DUTY_REQUEST_LIST.length}</span>
+          나의 당직 내역 <span>{historyList.length}</span>
         </h2>
-        <DutyHistoryTable historyList={DUMMY_DUTY_REQUEST_LIST} />
+        <DutyHistoryTable historyList={historyList} isLoading={isLoading} />
       </Wapper>
 
       <DutyRequestModal

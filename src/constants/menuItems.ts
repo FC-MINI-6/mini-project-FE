@@ -9,7 +9,13 @@ export const DUTY_MENU_ITEMS: MenuProps['items'] = [
 
 export const DAYOFF_MENU_ITEMS: MenuProps['items'] = [
   {
-    label: '연차 취소하기',
+    label: '휴가 취소하기',
     key: '1'
   }
 ]
+
+export const CALENDER_MENU_ALL = {
+  id: -1,
+  username: '전체',
+  position: ''
+}

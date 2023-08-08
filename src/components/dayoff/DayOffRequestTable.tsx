@@ -1,66 +1,76 @@
 import React from 'react'
-import { DAYOFF_MENU_ITEMS, DUMMY_DAYOFF_REQUEST_LIST } from 'constants/index'
+import { DAYOFF_MENU_ITEMS, REQUEST_STATUS, DAYOFF_TYPE, resultModalDatas } from 'constants/index'
+import { SkeletonTable } from 'components/index'
 import { IDayOffResponse } from 'types/index'
+import { calcNumOfDayOff, colorOfType } from 'utils/index'
+import { deleteDayOff } from 'apis/index'
+import { modalStore } from 'stores/index'
 
 import { EllipsisOutlined } from '@ant-design/icons'
 import { Table, Tag, Dropdown } from 'antd'
-import type { MenuProps } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { styled } from 'styled-components'
 
-const getDayOffRequestColumns = (menuClick: MenuProps['onClick']): ColumnsType<IDayOffResponse> => [
+const getDayOffRequestColumns = (menuClick: (id: number) => void): ColumnsType<IDayOffResponse> => [
   {
     width: '15%',
     title: '신청 상태',
     dataIndex: 'status',
     key: 'stauts',
-    render: (status: string) => (
+    render: (status: number) => (
       <StatusWrapper>
         <IconBox>🏖️</IconBox>
         <StatusBox>
-          <Tag bordered={false}>{status}</Tag>
+          <Tag
+            bordered={false}
+            color={status === 2 ? 'error' : 'default'}
+            style={{ minWidth: 60, textAlign: 'center' }}>
+            {REQUEST_STATUS[status]}
+          </Tag>
         </StatusBox>
       </StatusWrapper>
     ),
     filters: [
       {
         text: '승인대기',
-        value: '승인대기'
+        value: 0
       },
       {
         text: '승인',
-        value: '승인'
+        value: 1
       },
       {
         text: '반려',
-        value: '반려'
+        value: 2
       }
     ],
     onFilter: (value, { status }) => status === value,
-    sorter: (a, b) => a.status.length - b.status.length
+    sorter: (a, b) => a.status - b.status
   },
   {
     width: '15%',
     title: '휴가 타입',
     dataIndex: 'type',
     key: 'type',
-    render: (type: string) => (
+    render: (type: number) => (
       <Type>
-        <Tag color="green">{type}</Tag>
+        <Tag color={colorOfType(type)} style={{ minWidth: 60, textAlign: 'center' }}>
+          {DAYOFF_TYPE[type]}
+        </Tag>
       </Type>
     ),
     filters: [
       {
         text: '연차',
-        value: '연차'
+        value: 0
       },
       {
         text: '오전반차',
-        value: '오전반차'
+        value: 1
       },
       {
         text: '오후반차',
-        value: '오후반차'
+        value: 2
       }
     ],
     onFilter: (value, { type }) => type === value
@@ -70,15 +80,24 @@ const getDayOffRequestColumns = (menuClick: MenuProps['onClick']): ColumnsType<I
     title: '휴가 일자',
     dataIndex: ['startDate', 'endDate'],
     key: 'date',
-    render: (_, { startDate, endDate }) => (
+    render: (_, { startDate, endDate, type, id }) => (
       <DateCellWrapper>
         <DateWrapper>
           {startDate}
           {endDate ? ` ~ ${endDate}` : ''}
         </DateWrapper>
-        <Tag bordered={false}>1일</Tag>
-        <Dropdown menu={{ items: DAYOFF_MENU_ITEMS, onClick: menuClick }} trigger={['click']}>
-          <EllipsisOutlined />
+        <Tag bordered={false} style={{ minWidth: 45, textAlign: 'center' }}>
+          {type === 0 ? calcNumOfDayOff(startDate, endDate!) : 0.5}일
+        </Tag>
+        <Dropdown
+          menu={{
+            items: DAYOFF_MENU_ITEMS,
+            onClick: () => {
+              menuClick(id)
+            }
+          }}
+          trigger={['click']}>
+          <EllipsisOutlined style={{ marginRight: 10 }} />
         </Dropdown>
       </DateCellWrapper>
     ),
@@ -90,17 +109,47 @@ const getDayOffRequestColumns = (menuClick: MenuProps['onClick']): ColumnsType<I
 
 type DayOffRequestTableProps = {
   requestList: IDayOffResponse[]
+  isLoading: boolean
+  deleteCallback: () => void
 }
 
-export const DayOffRequestTable = React.memo(({ requestList }: DayOffRequestTableProps) => {
-  const onClickCancel: MenuProps['onClick'] = ({ key }) => {
-    // TODO : 신청 취소 기능
+export const DayOffRequestTable = React.memo(
+  ({ requestList, isLoading, deleteCallback }: DayOffRequestTableProps) => {
+    const { openModal } = modalStore()
+
+    const onClickCancel = (id: number) => {
+      openModal({
+        ...resultModalDatas.DAYOFF_CANCEL_CONFIRM,
+        okCallback: () => {
+          deleteDayOff(id).then(
+            () => {
+              deleteCallback()
+            },
+            error => {
+              openModal({
+                ...resultModalDatas.DAYOFF_CANCEL_FAILURE,
+                content: `${resultModalDatas.DAYOFF_CANCEL_FAILURE.content}${error.message}`
+              })
+            }
+          )
+        }
+      })
+    }
+
+    const columns = getDayOffRequestColumns(onClickCancel)
+
+    return (
+      <SkeletonTable loading={isLoading} columns={columns as ColumnsType<IDayOffResponse[]>}>
+        <Table
+          size="middle"
+          columns={columns}
+          dataSource={requestList}
+          pagination={{ pageSize: 5 }}
+        />
+      </SkeletonTable>
+    )
   }
-
-  const columns = getDayOffRequestColumns(onClickCancel)
-
-  return <Table columns={columns} dataSource={DUMMY_DAYOFF_REQUEST_LIST} />
-})
+)
 
 const StatusWrapper = styled.div`
   display: flex;
@@ -117,6 +166,7 @@ const IconBox = styled.div`
   justify-content: center;
   align-items: center;
   background-color: var(--color-white);
+  margin-left: 10px;
 `
 
 const StatusBox = styled.div`

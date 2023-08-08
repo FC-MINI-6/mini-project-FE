@@ -1,12 +1,13 @@
 import React from 'react'
-import { IDummyDutyRequest } from 'constants/index'
+import { SkeletonTable } from 'components/index'
+import { IDutyResponse } from 'types/index'
 import { Table, Typography } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { styled } from 'styled-components'
 
 const { Text } = Typography
 
-const getDutyHistoryColumns = (): ColumnsType<IDummyDutyRequest> => [
+const getDutyHistoryColumns = (): ColumnsType<IDutyResponse> => [
   {
     width: '40%',
     title: '당직 일자',
@@ -36,16 +37,24 @@ const getDutyHistoryColumns = (): ColumnsType<IDummyDutyRequest> => [
 ]
 
 type DutyHistoryTableProps = {
-  historyList: IDummyDutyRequest[]
+  historyList: IDutyResponse[]
+  isLoading: boolean
 }
 
-export const DutyHistoryTable = React.memo(
-  ({ historyList: requestList }: DutyHistoryTableProps) => {
-    const columns = getDutyHistoryColumns()
+export const DutyHistoryTable = React.memo(({ historyList, isLoading }: DutyHistoryTableProps) => {
+  const columns = getDutyHistoryColumns()
 
-    return <Table columns={columns} dataSource={requestList} pagination={{ pageSize: 5 }} />
-  }
-)
+  return (
+    <SkeletonTable loading={isLoading} columns={columns as ColumnsType<IDutyResponse[]>}>
+      <Table
+        size="middle"
+        columns={columns}
+        dataSource={historyList}
+        pagination={{ pageSize: 5 }}
+      />
+    </SkeletonTable>
+  )
+})
 
 const StatusWrapper = styled.div`
   display: flex;
@@ -62,11 +71,13 @@ const IconBox = styled.div`
   justify-content: center;
   align-items: center;
   background-color: var(--color-white);
+  margin-left: 10px;
 `
 
 const ReasonCellWrapper = styled.div`
   display: flex;
   gap: 10px;
+  margin-right: 10px;
 `
 
 const ReasonText = styled(Text)`
