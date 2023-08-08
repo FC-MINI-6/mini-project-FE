@@ -52,6 +52,8 @@ const columns: ColumnsType<Employee> = [
     title: '입사일',
     dataIndex: 'joinDate',
     key: 'joinDate',
+    sorter: (a, b) => new Date(a.joinDate).getTime() - new Date(b.joinDate).getTime(),
+    sortDirections: ['descend'],
     align: 'center'
   },
   {
@@ -59,6 +61,33 @@ const columns: ColumnsType<Employee> = [
     dataIndex: 'position',
     key: 'position',
     align: 'center',
+    filters: [
+      {
+        text: '사원',
+        value: 0
+      },
+      {
+        text: '주임',
+        value: 1
+      },
+      {
+        text: '대리',
+        value: 2
+      },
+      {
+        text: '과장',
+        value: 3
+      },
+      {
+        text: '차장',
+        value: 4
+      },
+      {
+        text: '부장',
+        value: 5
+      }
+    ],
+    onFilter: (value: number, record) => record.position === value,
     render: position => getPositionLabel(position)
   }
 ]
