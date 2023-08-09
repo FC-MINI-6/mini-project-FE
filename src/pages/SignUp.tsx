@@ -12,8 +12,16 @@ import {
 import { signUpRequest } from '@/apis'
 import { ISignUpData } from '@/types'
 import { useNavigate } from 'react-router-dom'
+import { modalStore } from '@/stores'
+import { resultModalDatas } from '@/constants'
 
 export const SignUp = () => {
+  const [passwordConfirm, setPasswordConfirm] = useState<string>('')
+  const [passwordMismatch, setPasswordMismatch] = useState<boolean>(false)
+  const [emailError, setEmailError] = useState<string>('')
+  const [date, setDate] = useState<Dayjs | null>(null)
+  const navigate = useNavigate()
+  const { openModal } = modalStore()
   const [signUpData, setSignUpData] = useState<ISignUpData>({
     username: '',
     position: '',
@@ -26,12 +34,6 @@ export const SignUp = () => {
   useEffect(() => {
     console.log(signUpData)
   }, [signUpData])
-
-  const [passwordConfirm, setPasswordConfirm] = useState<string>('')
-  const [passwordMismatch, setPasswordMismatch] = useState<boolean>(false)
-  const [emailError, setEmailError] = useState<string>('')
-  const [date, setDate] = useState<Dayjs | null>(null)
-  const navigate = useNavigate()
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
@@ -76,8 +78,17 @@ export const SignUp = () => {
           console.log('API 호출 성공!')
           console.log(res)
           navigate('/login')
+          openModal({
+            ...resultModalDatas.SIGNUP_SUCCESS,
+            okCallback: () => {}
+          })
         },
         error => {
+          console.log(error);
+          openModal({
+            ...resultModalDatas.SIGNUP_FAILURE,
+            content: error.message || resultModalDatas.LOGIN_FAILURE.content
+          })
           console.error('API 호출 실패!')
           console.error(error)
         }

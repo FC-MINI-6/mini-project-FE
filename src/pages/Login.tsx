@@ -8,9 +8,10 @@ import {
   LoginStyledButton
 } from 'components/index'
 import { Link, useNavigate } from 'react-router-dom'
-import { useUserStore } from 'stores/index'
+import { modalStore, useUserStore } from 'stores/index'
 import { loginRequest } from '@/apis'
 import { ILoginData } from 'types/index'
+import { resultModalDatas } from '@/constants'
 
 export const Login = () => {
   const [loginData, setLoginData] = useState<ILoginData>({ email: '', password: '' })
@@ -18,6 +19,7 @@ export const Login = () => {
   const navigate = useNavigate()
   // 로그인한 유저 정보 전역 State
   const { setUserInfo } = useUserStore()
+  const { openModal } = modalStore()
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
@@ -41,7 +43,10 @@ export const Login = () => {
         navigate('/')
       },
       error => {
-        // TODO : 로그인 실패 예외처리 필요해보여요!
+        openModal({
+          ...resultModalDatas.LOGIN_FAILURE, 
+          okCallback: () => {}
+        })
         console.log(error)
       }
     )
