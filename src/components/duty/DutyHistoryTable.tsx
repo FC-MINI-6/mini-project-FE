@@ -12,6 +12,7 @@ const getDutyHistoryColumns = (): ColumnsType<IDutyResponse> => [
     width: '40%',
     title: '당직 일자',
     dataIndex: 'date',
+    align: 'center',
     key: 'date',
     render: (_, { date }) => (
       <StatusWrapper>
@@ -27,6 +28,7 @@ const getDutyHistoryColumns = (): ColumnsType<IDutyResponse> => [
     width: '60%',
     title: '사유',
     dataIndex: 'reason',
+    align: 'center',
     key: 'reason',
     render: (_, { reason }) => (
       <ReasonCellWrapper>

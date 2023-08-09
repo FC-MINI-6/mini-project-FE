@@ -25,10 +25,10 @@ export const Login = () => {
       ...loginData,
       [name]: value
     })
-    console.log(loginData)
   }
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
     //이메일 유효성 검사
     const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/
     if (!emailRegex.test(loginData.email)) {
@@ -76,6 +76,7 @@ export const Login = () => {
             name="password"
             onChange={handleChange}
             value={loginData.password}
+            onPressEnter={handleSubmit}
           />
         </LoginStyledFormItem>
 

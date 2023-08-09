@@ -11,7 +11,6 @@ import { Duty } from 'types/index'
 export const DutyMgt = () => {
   const { userInfo } = useUserStore()
   const { dutyList, setDutyList } = dutyListStore()
-
   const columns: ColumnsType<Duty> = [
     {
       title: '이름',
@@ -59,6 +58,16 @@ export const DutyMgt = () => {
         }
       ],
       onFilter: (value, record) => record.status === value,
+      defaultSortOrder: 'ascend',
+      sorter: (a, b) => {
+        if (a.status === 0 && b.status !== 0) {
+          return -1
+        } else if (a.status !== 0 && b.status === 0) {
+          return 1
+        } else {
+          return a.status - b.status
+        }
+      },
       render: (_, record) => (
         <>
           {record.status === 0 ? (
@@ -112,7 +121,7 @@ export const DutyMgt = () => {
 
   const getDutyListAll = () => {
     getDutyList().then(res => {
-      const dutyWithKeys = res.map(duty => ({
+      const dutyWithKeys = res?.map(duty => ({
         ...duty,
         key: duty.id
       }))
@@ -131,5 +140,15 @@ export const DutyMgt = () => {
     message.success('처리 완료')
   }
 
-  return <Table columns={columns} dataSource={dutyList} sticky />
+  return (
+    <Table
+      columns={columns}
+      dataSource={dutyList}
+      sticky
+      pagination={{
+        position: ['bottomCenter'],
+        pageSizeOptions: ['10', '20', '30', '40']
+      }}
+    />
+  )
 }

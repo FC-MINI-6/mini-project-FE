@@ -17,6 +17,7 @@ const getDutyRequestColumns = (menuClick: (id: number) => void): ColumnsType<IDu
     width: '20%',
     title: '신청 상태',
     dataIndex: 'status',
+    align: 'center',
     key: 'stauts',
     render: (status: number) => (
       <StatusWrapper>
@@ -52,6 +53,7 @@ const getDutyRequestColumns = (menuClick: (id: number) => void): ColumnsType<IDu
     width: '20%',
     title: '당직 일자',
     dataIndex: 'date',
+    align: 'center',
     key: 'date',
     render: (_, { date }) => <span>{date}</span>,
     sorter: (a, b) => {
@@ -62,6 +64,7 @@ const getDutyRequestColumns = (menuClick: (id: number) => void): ColumnsType<IDu
     width: '60%',
     title: '사유',
     dataIndex: 'reason',
+    align: 'center',
     key: 'reason',
     render: (_, { reason, id }) => (
       <ReasonCellWrapper>
