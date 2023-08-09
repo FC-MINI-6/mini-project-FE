@@ -11,6 +11,7 @@ import {
   MyPage
 } from 'pages/index'
 import { modalStore } from 'stores/index'
+import { useAxiosInterceptor } from 'hooks/index'
 
 import GlobalStyle from '@/GlobalStyle'
 import { ConfigProvider, Modal } from 'antd'
@@ -33,6 +34,7 @@ export const App = () => {
     closeModal()
   }, [modal, closeModal])
 
+  useAxiosInterceptor()
   return (
     <>
       <GlobalStyle />

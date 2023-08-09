@@ -17,7 +17,7 @@ export interface Duty {
   position: string
   date: string
   reasons: string
-  status: string
+  status: number
 }
 
 export interface StatusChange {

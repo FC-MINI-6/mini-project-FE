@@ -1,14 +1,5 @@
 import { create } from 'zustand'
-
-interface Duty {
-  id: number
-  userId: number
-  username: string
-  position: string
-  date: string
-  reason: string
-  status: number
-}
+import { Duty } from 'types/index'
 
 interface DutyList {
   dutyList: Duty[]
