@@ -22,7 +22,12 @@ const getDutyRequestColumns = (menuClick: (id: number) => void): ColumnsType<IDu
       <StatusWrapper>
         <IconBox>⏰</IconBox>
         <StatusBox>
-          <Tag bordered={false}>{REQUEST_STATUS[status]}</Tag>
+          <Tag
+            bordered={false}
+            color={status === 2 ? 'error' : 'default'}
+            style={{ minWidth: 60, textAlign: 'center' }}>
+            {REQUEST_STATUS[status]}
+          </Tag>
         </StatusBox>
       </StatusWrapper>
     ),

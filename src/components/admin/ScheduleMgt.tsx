@@ -5,13 +5,15 @@ import { notificationRef } from '@/firebase'
 import dayjs from 'dayjs'
 import { Table, Button, message, Popconfirm } from 'antd'
 import { getDayOffList, approveOrRejectDayOff } from 'apis/index'
-import { dayOffListStore } from 'stores/index'
+import { dayOffListStore, useUserStore } from 'stores/index'
 import { DayOff } from 'types/index'
+import { DAYOFF_TYPE } from 'constants/index'
 
 export const ScheduleMgt = () => {
+  const { userInfo } = useUserStore()
   const { dayOffList, setDayOffList } = dayOffListStore()
 
-  const getTypeLabel = type => {
+  const getTypeLabel = (type: number) => {
     switch (type) {
       case 0:
         return '연차'
@@ -54,7 +56,7 @@ export const ScheduleMgt = () => {
           value: 2
         }
       ],
-      onFilter: (value: number, record) => record.type === value,
+      onFilter: (value, record) => record.type === value,
       render: type => getTypeLabel(type)
     },
     {
@@ -102,7 +104,7 @@ export const ScheduleMgt = () => {
           value: 2
         }
       ],
-      onFilter: (value: number, record) => record.status === value,
+      onFilter: (value, record) => record.status === value,
       render: (_, record) => (
         <>
           {record.status === 0 ? (
@@ -143,16 +145,17 @@ export const ScheduleMgt = () => {
   }, [])
 
   // 휴가 승인 반려 알림 푸시
-  // *  호출 예시 >> pushDayOffStatusNotification('오후반차', 'APPROVE')
-  const pushDayOffStatusNotification = async (type: string, status: string) => {
-    const userNotiRef = collection(notificationRef, 'userid1', 'notiList')
-    await addDoc(userNotiRef, {
-      date: dayjs().format('YYYY-MM-DD'),
-      message: `${type} 신청이 ${status === 'APPROVE' ? '승인' : '반려'}되었습니다.`,
-      status: status,
-      type: type,
-      read: false
-    })
+  const pushDayOffStatusNotification = async (userId: number, type: string, status: string) => {
+    if (userInfo) {
+      const userNotiRef = collection(notificationRef, `${userId}`, 'notiList')
+      await addDoc(userNotiRef, {
+        date: dayjs().format('YYYY-MM-DD'),
+        message: `${type} 신청이 ${status === 'APPROVE' ? '승인' : '반려'}되었습니다.`,
+        status: status,
+        type: type,
+        read: false
+      })
+    }
   }
 
   const getScheduleListAll = () => {
@@ -165,12 +168,14 @@ export const ScheduleMgt = () => {
     })
   }
 
-  const confirmApproval = record => {
-    approveOrRejectDayOff(1, record.key).then(getScheduleListAll)
+  const confirmApproval = (record: DayOff) => {
+    approveOrRejectDayOff(1, record.id).then(getScheduleListAll)
+    pushDayOffStatusNotification(record.userId, DAYOFF_TYPE[record.type], 'APPROVE')
     message.success('처리 완료')
   }
-  const confirmRejection = record => {
-    approveOrRejectDayOff(2, record.key).then(getScheduleListAll)
+  const confirmRejection = (record: DayOff) => {
+    approveOrRejectDayOff(2, record.id).then(getScheduleListAll)
+    pushDayOffStatusNotification(record.userId, DAYOFF_TYPE[record.type], 'REJECT')
     message.success('처리 완료')
   }
 

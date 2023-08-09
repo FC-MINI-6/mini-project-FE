@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, useCallback } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { NotificationPopup } from 'components/index'
 import { modalStore, useUserStore } from 'stores/index'
@@ -7,7 +7,7 @@ import { notificationRef } from '@/firebase'
 import { collection, getDocs, onSnapshot } from 'firebase/firestore'
 import { INotificationData } from 'types/index'
 import { styled } from 'styled-components'
-import { Image, Menu, Button, Popover, Badge } from 'antd'
+import { Image, Menu, Button, Popover, Badge, Empty } from 'antd'
 import type { MenuProps } from 'antd'
 
 import {
@@ -64,36 +64,39 @@ export const AppNav = () => {
   const navigate = useNavigate()
   // 실시간 알림 변경사항 구독
   useEffect(() => {
-    onSnapshot(collection(notificationRef, 'userid1', 'notiList'), snapshot => {
-      const updateNotifications = snapshot.docs
-        .map(doc => {
-          return { ...(doc.data() as INotificationData), id: doc.id }
-        })
-        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-        .filter(noti => !noti.read)
-      setNewNotifications(updateNotifications)
-    })
-  }, [])
-
-  const fetchNoti = async () => {
-    try {
-      // TODO : userId1 > 실제 사용자 ID 값으로 대체
-      await getDocs(collection(notificationRef, 'userid1', 'notiList'))
-        .then(res => {
-          return res.docs
-            .map(doc => {
-              return { ...(doc.data() as INotificationData), id: doc.id }
-            })
-            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-            .filter(noti => !noti.read)
-        })
-        .then(newNotifications => {
-          setNewNotifications(newNotifications)
-        })
-    } catch (error) {
-      console.log(error)
+    if (userInfo) {
+      onSnapshot(collection(notificationRef, `${userInfo.id}`, 'notiList'), snapshot => {
+        const updateNotifications = snapshot.docs
+          .map(doc => {
+            return { ...(doc.data() as INotificationData), id: doc.id }
+          })
+          .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+          .filter(noti => !noti.read)
+        setNewNotifications(updateNotifications)
+      })
     }
-  }
+  }, [userInfo])
+
+  const fetchNoti = useCallback(async () => {
+    if (userInfo) {
+      try {
+        await getDocs(collection(notificationRef, `${userInfo.id}`, 'notiList'))
+          .then(res => {
+            return res.docs
+              .map(doc => {
+                return { ...(doc.data() as INotificationData), id: doc.id }
+              })
+              .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+              .filter(noti => !noti.read)
+          })
+          .then(newNotifications => {
+            setNewNotifications(newNotifications)
+          })
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }, [userInfo])
 
   const handleLogout = () => {
     openModal({
@@ -107,7 +110,7 @@ export const AppNav = () => {
 
   useEffect(() => {
     fetchNoti()
-  }, [])
+  }, [fetchNoti])
 
   return (
     <Container>
@@ -132,7 +135,13 @@ export const AppNav = () => {
         <Popover
           placement="rightTop"
           title={'알림'}
-          content={<NotificationPopup datas={newNotifications} />}
+          content={
+            newNotifications.length !== 0 ? (
+              <NotificationPopup datas={newNotifications} />
+            ) : (
+              <Empty description={'알림이 없습니다.'} />
+            )
+          }
           trigger="click">
           <Badge count={newNotificationCount} size="small" offset={[-2, 4]}>
             <BellOutlined style={{ fontSize: 24, color: '#fff' }} />

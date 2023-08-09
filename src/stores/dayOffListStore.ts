@@ -1,16 +1,5 @@
 import { create } from 'zustand'
-
-interface DayOff {
-  id: number
-  userId: number
-  username: string
-  position: string
-  startDate: string
-  endDate: string
-  reason: string
-  type: number
-  status: number
-}
+import { DayOff } from '@/types'
 
 interface DayOffList {
   dayOffList: DayOff[]
