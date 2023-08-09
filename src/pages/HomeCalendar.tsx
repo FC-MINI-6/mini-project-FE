@@ -1,11 +1,10 @@
 import { useEffect, useState, useMemo } from 'react'
 import { ScheduleCalendar, ScheduleList } from 'components/index'
 import { getCalendarUserList, fetchScheduleCalendar } from 'apis/index'
-import { userListStore, userSelectedStore } from 'stores/index'
+import { userListStore, userSelectedStore, modalStore } from 'stores/index'
 import { CALENDER_MENU_ALL, resultModalDatas } from 'constants/index'
 import { ICalendarSchedule, ICalendarScheduleByDate } from 'types/index'
 import { colorOfType, parseCalendarDayOffList } from 'utils/index'
-import { modalStore } from 'stores/index'
 
 import { Col, Row } from 'antd'
 import dayjs, { Dayjs } from 'dayjs'
@@ -20,6 +19,7 @@ export const HomeCalendar = () => {
   const { setSelectedId } = userSelectedStore()
   const [selectedSchedule, setSelectedSchedule] = useState<ICalendarSchedule[]>([])
   const [schedules, setSchedules] = useState<ICalendarSchedule[]>([])
+
   const schedulsMapByDate = useMemo(() => {
     const result = schedules.reduce((acc, current) => {
       const { startDate } = current

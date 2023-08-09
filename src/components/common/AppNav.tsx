@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { NotificationPopup } from 'components/index'
 import { modalStore, useUserStore } from 'stores/index'
 
@@ -126,7 +126,7 @@ export const AppNav = () => {
           <p>{userInfo?.username ?? '게스트'} 님</p>
           <p>
             {userInfo && userInfo.position}
-            {userInfo!.roles === '관리자' ? `/${userInfo!.roles}` : ''}
+            {userInfo?.roles === '관리자' ? `/${userInfo!.roles}` : ''}
           </p>
         </span>
         <Popover
@@ -139,7 +139,12 @@ export const AppNav = () => {
           </Badge>
         </Popover>
       </Profile>
-      <Menu defaultSelectedKeys={['/']} theme="dark" items={items} selectedKeys={[path]} />
+      <Menu
+        defaultSelectedKeys={['/']}
+        theme="dark"
+        items={userInfo?.roles === '관리자' ? items : items.slice(0, 4)}
+        selectedKeys={[path]}
+      />
       <Button
         onClick={handleLogout}
         icon={<ExportOutlined />}
