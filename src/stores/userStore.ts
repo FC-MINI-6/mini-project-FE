@@ -1,39 +1,24 @@
-import { create } from 'zustand';
+import { create } from 'zustand'
+import { persist, createJSONStorage } from 'zustand/middleware'
+
+import { ILoginUser } from 'types/index'
 
 interface IUserState {
-  isLoggedIn: boolean; 
-  accessToken: string | null; 
-  id: string
-  name: string;
-  email: string;
-  position: string;
-  joinDate: string;
-  phoneNumber: string;
-  setUserData: (userData: Partial<IUserState>) => void;
-  setAccessToken: (accessToken: string | null) => void; 
-  logout: () => void;
+  userInfo: ILoginUser | null
+  setUserInfo: (userInfo: ILoginUser) => void
+  logout: () => void
 }
 
-export const useUserStore = create<IUserState>((set) => ({
-  isLoggedIn: false,
-  id: '',
-  name: '',
-  email: '',
-  phoneNumber: '',
-  position: '',
-  joinDate: '',
-  accessToken: '',
-  setUserData: (userData) => set((state) => ({ ...state, ...userData })),
-  setAccessToken: (accessToken) => set((state) => ({ ...state, accessToken })),
-  logout: () =>
-    set({
-      isLoggedIn: false,
-      id: '',
-      name: '',
-      email: '',
-      phoneNumber: '',
-      position: '',
-      joinDate: '',
-      accessToken: '',
+export const useUserStore = create(
+  persist<IUserState>(
+    set => ({
+      userInfo: null,
+      setUserInfo: (userInfo: ILoginUser) => set({ userInfo: userInfo }),
+      logout: () => set({ userInfo: null })
     }),
-}));
+    {
+      name: 'userInfo-storage',
+      storage: createJSONStorage(() => sessionStorage)
+    }
+  )
+)

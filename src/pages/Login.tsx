@@ -8,14 +8,16 @@ import {
   LoginStyledButton
 } from 'components/index'
 import { Link, useNavigate } from 'react-router-dom'
-import { useUserStore } from '@/stores/userStore'
+import { useUserStore } from 'stores/index'
 import { loginRequest } from '@/apis'
-import { ILoginData } from '@/types'
+import { ILoginData } from 'types/index'
 
 export const Login = () => {
   const [loginData, setLoginData] = useState<ILoginData>({ email: '', password: '' })
   const [emailError, setEmailError] = useState<string>('')
   const navigate = useNavigate()
+  // 로그인한 유저 정보 전역 State
+  const { setUserInfo } = useUserStore()
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
@@ -35,11 +37,11 @@ export const Login = () => {
     }
     loginRequest(loginData).then(
       res => {
-        useUserStore.setState(res.data)
-        console.log(res.success)
+        setUserInfo(res.data)
         navigate('/')
       },
       error => {
+        // TODO : 로그인 실패 예외처리 필요해보여요!
         console.log(error)
       }
     )
