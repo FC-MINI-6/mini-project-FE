@@ -5,21 +5,19 @@ import {
   LoginStyledForm,
   LoginStyledFormItem,
   LoginStyledFormItemWrapper,
-  LoginStyledCheckbox,
   LoginStyledButton
 } from 'components/index'
-import { Link } from 'react-router-dom'
-import axios from 'axios'
-import { useUserStore } from '@/stores/userStore'
-
-interface LoginData {
-  email: string
-  password: string
-}
+import { Link, useNavigate } from 'react-router-dom'
+import { useUserStore } from 'stores/index'
+import { loginRequest } from '@/apis'
+import { ILoginData } from 'types/index'
 
 export const Login = () => {
-  const [loginData, setLoginData] = useState<LoginData>({ email: '', password: '' })
+  const [loginData, setLoginData] = useState<ILoginData>({ email: '', password: '' })
   const [emailError, setEmailError] = useState<string>('')
+  const navigate = useNavigate()
+  // 로그인한 유저 정보 전역 State
+  const { setUserInfo } = useUserStore()
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
@@ -27,7 +25,7 @@ export const Login = () => {
       ...loginData,
       [name]: value
     })
-    console.log(event.target)
+    console.log(loginData)
   }
 
   const handleSubmit = async () => {
@@ -37,18 +35,16 @@ export const Login = () => {
       setEmailError('유효한 이메일 주소를 입력하세요.')
       return
     }
-    try {
-      const response = await axios.post(api, loginData)
-      console.log('API 호출 성공!')
-      console.log(response.data)
-
-      //유저 데이터 업데이트
-      const userData = response.data
-      useUserStore.setState(userData)
-    } catch (error) {
-      console.error('API 호출 실패!')
-      console.error(error)
-    }
+    loginRequest(loginData).then(
+      res => {
+        setUserInfo(res.data)
+        navigate('/')
+      },
+      error => {
+        // TODO : 로그인 실패 예외처리 필요해보여요!
+        console.log(error)
+      }
+    )
   }
 
   return (
@@ -84,15 +80,12 @@ export const Login = () => {
         </LoginStyledFormItem>
 
         <LoginStyledFormItemWrapper>
-          <LoginStyledFormItem name="remember" valuePropName="checked">
-            <LoginStyledCheckbox>Remember me</LoginStyledCheckbox>
-          </LoginStyledFormItem>
           <LoginStyledFormItem>
             <p>
               <Link to="/signup">회원가입</Link>
             </p>
           </LoginStyledFormItem>
-          <LoginStyledButton type="primary" htmlType="submit">
+          <LoginStyledButton type="primary" onClick={handleSubmit}>
             로그인
           </LoginStyledButton>
         </LoginStyledFormItemWrapper>

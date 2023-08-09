@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { NotificationPopup } from 'components/index'
+import { modalStore, useUserStore } from 'stores/index'
+
 import { notificationRef } from '@/firebase'
 import { collection, getDocs, onSnapshot } from 'firebase/firestore'
 import { INotificationData } from 'types/index'
@@ -18,6 +20,7 @@ import {
   CoffeeOutlined,
   ExportOutlined
 } from '@ant-design/icons'
+import { resultModalDatas } from '@/constants'
 
 const items: MenuProps['items'] = [
   {
@@ -53,9 +56,12 @@ const items: MenuProps['items'] = [
 ]
 
 export const AppNav = () => {
+  const { userInfo, logout } = useUserStore()
+  const { openModal } = modalStore()
   const [newNotifications, setNewNotifications] = useState<INotificationData[]>([])
   const newNotificationCount = useMemo(() => newNotifications.length, [newNotifications])
   const path = useLocation().pathname
+  const navigate = useNavigate()
   // 실시간 알림 변경사항 구독
   useEffect(() => {
     onSnapshot(collection(notificationRef, 'userid1', 'notiList'), snapshot => {
@@ -89,6 +95,16 @@ export const AppNav = () => {
     }
   }
 
+  const handleLogout = () => {
+    openModal({
+      ...resultModalDatas.LOGOUT_CONFIRM,
+      okCallback: () => {
+        logout()
+        navigate('/login', { replace: true })
+      }
+    })
+  }
+
   useEffect(() => {
     fetchNoti()
   }, [])
@@ -106,9 +122,12 @@ export const AppNav = () => {
           style={{ borderRadius: '70%' }}
           preview={false}
         />
-        <span>
-          <p>홍길동님</p>
-          <p>직급/관리자</p>
+        <span className="user">
+          <p>{userInfo?.username ?? '게스트'} 님</p>
+          <p>
+            {userInfo && userInfo.position}
+            {userInfo!.roles === '관리자' ? `/${userInfo!.roles}` : ''}
+          </p>
         </span>
         <Popover
           placement="rightTop"
@@ -122,6 +141,7 @@ export const AppNav = () => {
       </Profile>
       <Menu defaultSelectedKeys={['/']} theme="dark" items={items} selectedKeys={[path]} />
       <Button
+        onClick={handleLogout}
         icon={<ExportOutlined />}
         style={{
           border: 'none',
@@ -157,4 +177,9 @@ const Profile = styled.div`
   justify-content: center;
   align-items: center;
   justify-content: space-between;
+  gap: 20px;
+
+  span.user {
+    flex-grow: 1;
+  }
 `

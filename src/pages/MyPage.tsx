@@ -4,15 +4,22 @@ import {
   MyPageStyledButton,
   MyPageStyledForm,
   MyPageStyledFormItem,
-  MyPageStyledFormItemWrapper,
+  MyPageStyledFormItemWrapper
 } from 'components/index'
-import { useUserStore } from '@/stores/userStore'
+import { useUserStore } from '@/stores'
+import { updatePassword, updatePhoneNumber } from '@/apis'
+import { IUpdatePasswordData, IUpdatePhoneNumberData } from '@/types'
 
 export const MyPage = () => {
   const [form] = Form.useForm()
   const [showModal, setShowModal] = useState(false)
-  const [editablePhoneNumber, setEditablePhoneNumber] = useState('010-1234-1234') //
+  const [editablePhoneNumber, setEditablePhoneNumber] = useState<string>('')
   const [isEditingPhoneNumber, setIsEditingPhoneNumber] = useState(false)
+  const [editPassword, setEditPassword] = useState<IUpdatePasswordData>({
+    userId: '',
+    oldPassword: '',
+    newPassword: ''
+  })
   const { name, email, position, joinDate, phoneNumber } = useUserStore()
 
   const handlePasswordChange = () => {
@@ -21,6 +28,7 @@ export const MyPage = () => {
 
   const handleModalCancel = () => {
     setShowModal(false)
+    setEditablePhoneNumber(phoneNumber)
   }
 
   const handleEditPhoneNumber = () => {
@@ -28,17 +36,48 @@ export const MyPage = () => {
   }
 
   const handleCompletePhoneNumber = () => {
-    //전화번호 변경 처리 로직
+    console.log(editPassword);
+    
+    const updateData: IUpdatePhoneNumberData = { phoneNumber: editablePhoneNumber }
+    updatePhoneNumber(updateData).then(
+      res => {
+        useUserStore.setState(updateData)
+        console.log(res.message)
+      },
+      error => {
+        console.log(error)
+      }
+    )
     setIsEditingPhoneNumber(false)
   }
 
+  const handlEditPassword = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const {name, value} = event.target
+    setEditPassword({
+      ...editPassword,
+      [name]: value
+    })
+    console.log(editPassword);
+  }
+
   const handleModalOk = () => {
-    // 비밀번호 변경 처리 로직
+    console.log(editPassword);
+    updatePassword(editPassword).then(
+      res => {
+        console.log(res.message);
+      },
+      error => {
+        console.log(error);
+        
+      }
+    )
     form.validateFields().then(values => {
       console.log('새 비밀번호:', values.newPassword)
       setShowModal(false)
     })
   }
+
+  const phoneNumberRegex = /^[0-9]{10,11}$/
 
   return (
     <>
@@ -57,7 +96,13 @@ export const MyPage = () => {
         </MyPageStyledFormItem>
         <MyPageStyledFormItemWrapper>
           {isEditingPhoneNumber ? (
-            <MyPageStyledFormItem label="전화번호" name="phoneNumber">
+            <MyPageStyledFormItem label="전화번호" name="phoneNumber" rules={[
+              { required: true, message: '전화번호를 입력하세요!' },
+              {
+                pattern: phoneNumberRegex,
+                message: '전화번호는 숫자만 입력 가능합니다!'
+              }
+            ]}>
               <Input
                 style={{ width: 330 }}
                 value={editablePhoneNumber}
@@ -90,21 +135,21 @@ export const MyPage = () => {
         <Form form={form}>
           <MyPageStyledFormItem
             label="기존 비밀번호"
-            name="currentPassword"
+            name="oldPassword"
             rules={[{ required: true, message: '기존 비밀번호를 입력하세요.' }]}>
-            <Input.Password />
+            <Input.Password name='oldPassword' value={editPassword.oldPassword} onChange={handlEditPassword}/>
           </MyPageStyledFormItem>
           <MyPageStyledFormItem
             label="새 비밀번호"
             name="newPassword"
-            rules={[{ required: true, message: '새 비밀번호를 입력하세요.' }]}>
-            <Input.Password />
+            rules={[{ required: true, message: '새 비밀번호를 입력하세요.' },{ min: 4, max: 20, message: '비밀번호는 4~20자리여야 합니다!' }]}>
+            <Input.Password name='newPassword' value={editPassword.newPassword} onChange={handlEditPassword}/>
           </MyPageStyledFormItem>
           <MyPageStyledFormItem
             label="새 비밀번호 확인"
             name="confirmPassword"
             rules={[
-              { required: true, message: '새 비밀번호를 확인하세요.' },
+              { required: true, message: '새 비밀번호를 확인하세요.' },{ min: 4, max: 20, message: '비밀번호는 4~20자리여야 합니다!' },
               ({ getFieldValue }) => ({
                 validator(_, value) {
                   if (!value || getFieldValue('newPassword') === value) {

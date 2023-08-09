@@ -81,5 +81,13 @@ export const resultModalDatas = {
     type: 1,
     okButton: '확인',
     okCallback: () => {}
+  },
+  LOGOUT_CONFIRM: {
+    title: '로그아웃',
+    content: '로그아웃하시겠습니까?',
+    type: 0,
+    okButton: '로그아웃',
+    cancelButton: '취소',
+    cancelCallback: () => {}
   }
 }
