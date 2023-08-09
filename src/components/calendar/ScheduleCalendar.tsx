@@ -76,7 +76,9 @@ export const ScheduleCalendar = React.memo(
         locale={locale}
         defaultValue={defaultDate}
         cellRender={cellRender}
-        headerRender={({ value, onChange }) => <CalendarHeader value={value} onChange={onChange} />}
+        headerRender={({ value, onChange }: { value: Dayjs; onChange: (date: Dayjs) => void }) => (
+          <CalendarHeader value={value} onChange={onChange} filteredList={filteredSchedules} />
+        )}
         onChange={handleDateChange}
         onSelect={handleSelecteDate}
       />
