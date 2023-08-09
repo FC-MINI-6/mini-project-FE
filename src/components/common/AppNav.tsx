@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import { NotificationPopup } from 'components/index'
 import { notificationRef } from '@/firebase'
 import { collection, getDocs, onSnapshot } from 'firebase/firestore'
@@ -6,6 +7,7 @@ import { INotificationData } from 'types/index'
 import { styled } from 'styled-components'
 import { Image, Menu, Button, Popover, Badge } from 'antd'
 import type { MenuProps } from 'antd'
+
 import {
   BellOutlined,
   HomeOutlined,
@@ -17,37 +19,43 @@ import {
   ExportOutlined
 } from '@ant-design/icons'
 
-type MenuItem = Required<MenuProps>['items'][number]
-
-function getItem(
-  label: React.ReactNode,
-  key: React.Key,
-  icon?: React.ReactNode,
-  children?: MenuItem[],
-  type?: 'group'
-): MenuItem {
-  return {
-    key,
-    icon,
-    children,
-    label,
-    type
-  } as MenuItem
-}
-
-const items: MenuItem[] = [
-  getItem('홈', '1', <HomeOutlined />),
-  getItem('내 정보', '2', <UserOutlined />),
-  getItem('휴가', '3', <CoffeeOutlined />),
-  getItem('당직', '4', <LaptopOutlined />),
-  getItem('휴가/당직 관리', '5', <ProfileOutlined />),
-  getItem('사원 관리', '6', <IdcardOutlined />)
+const items: MenuProps['items'] = [
+  {
+    label: <Link to={'/'}>홈</Link>,
+    key: '/',
+    icon: <HomeOutlined />
+  },
+  {
+    label: <Link to={'/mypage'}>내 정보</Link>,
+    key: '/mypage',
+    icon: <UserOutlined />
+  },
+  {
+    label: <Link to={'/day_off'}>휴가</Link>,
+    key: '/day_off',
+    icon: <CoffeeOutlined />
+  },
+  {
+    label: <Link to={'/duty'}>당직</Link>,
+    key: '/duty',
+    icon: <LaptopOutlined />
+  },
+  {
+    label: <Link to={'/admin/schedule'}>휴가/당직 관리</Link>,
+    key: '/admin/schedule',
+    icon: <ProfileOutlined />
+  },
+  {
+    label: <Link to={'/admin/employee'}>사원관리</Link>,
+    key: '/admin/employee',
+    icon: <IdcardOutlined />
+  }
 ]
 
 export const AppNav = () => {
   const [newNotifications, setNewNotifications] = useState<INotificationData[]>([])
   const newNotificationCount = useMemo(() => newNotifications.length, [newNotifications])
-
+  const path = useLocation().pathname
   // 실시간 알림 변경사항 구독
   useEffect(() => {
     onSnapshot(collection(notificationRef, 'userid1', 'notiList'), snapshot => {
@@ -87,7 +95,9 @@ export const AppNav = () => {
 
   return (
     <Container>
-      <Logo />
+      <Link to={'/'}>
+        <Logo />
+      </Link>
       <Profile>
         <Image
           alt="profileImage"
@@ -110,7 +120,7 @@ export const AppNav = () => {
           </Badge>
         </Popover>
       </Profile>
-      <Menu defaultSelectedKeys={['1']} defaultOpenKeys={['sub1']} theme="dark" items={items} />
+      <Menu defaultSelectedKeys={['/']} theme="dark" items={items} selectedKeys={[path]} />
       <Button
         icon={<ExportOutlined />}
         style={{
