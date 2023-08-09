@@ -1,7 +1,7 @@
 import React from 'react'
 import { UserDropdown } from 'components/index'
-import { Col, Row, Select, Typography } from 'antd'
-
+import { Col, Row, Select, Typography, Button } from 'antd'
+import { DownloadOutlined } from '@ant-design/icons'
 import dayjs from 'dayjs'
 import type { Dayjs } from 'dayjs'
 import dayLocaleData from 'dayjs/plugin/localeData'
@@ -72,6 +72,11 @@ export const CalendarHeader = React.memo(
           </Col>
           <Col>
             <UserDropdown />
+          </Col>
+          <Col style={{ flexGrow: 1, display: 'flex', justifyContent: 'end' }}>
+            <Button type="primary" icon={<DownloadOutlined />} onClick={() => {}}>
+              엑셀 다운로드
+            </Button>
           </Col>
         </Row>
       </div>
