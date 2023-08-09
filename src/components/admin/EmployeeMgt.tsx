@@ -173,9 +173,10 @@ export const EmployeeMgt = () => {
   return (
     <>
       <Search
-        placeholder="Search"
+        placeholder="이름 또는 이메일 검색"
         onSearch={onSearch}
         onChange={resetEmployeeList}
+        allowClear={true}
         style={{ width: '50%' }}
       />
       <Table
@@ -184,6 +185,10 @@ export const EmployeeMgt = () => {
         onRow={record => ({
           onClick: () => handleRowClick(record)
         })}
+        pagination={{
+          position: ['bottomCenter'],
+          pageSizeOptions: ['10', '20', '30', '40']
+        }}
       />
       <Modal
         title="사원 세부 정보"
@@ -200,11 +205,11 @@ export const EmployeeMgt = () => {
         {selectedRowData && (
           <Container>
             <Item>
-              <h3>이름</h3>
+              <h3>∙ 이름</h3>
               <h4>{selectedRowData.username}</h4>
             </Item>
             <Item>
-              <h3>직급</h3>
+              <h3>∙ 직급</h3>
               <Select
                 value={getPositionLabel(selectedRowData?.position)}
                 onChange={handlePositionChange}
@@ -218,16 +223,16 @@ export const EmployeeMgt = () => {
               </Select>
             </Item>
             <Item>
-              <h3>이메일</h3>
+              <h3>∙ 이메일</h3>
               <h4>{selectedRowData.email}</h4>
             </Item>
 
             <Item>
-              <h3>입사일</h3>
+              <h3>∙ 입사일</h3>
               <h4>{selectedRowData.joinDate}</h4>
             </Item>
             <Item>
-              <h3>연락처</h3>
+              <h3>∙ 연락처</h3>
               <Input
                 value={selectedRowData.phoneNumber || ''}
                 onChange={handlePhoneChange}
@@ -237,7 +242,7 @@ export const EmployeeMgt = () => {
               />
             </Item>
             <Item>
-              <h3>권한</h3>
+              <h3>∙ 권한</h3>
               <Select
                 value={selectedRowData.roles === 0 ? '일반' : '관리자'}
                 onChange={handleRoleChange}
@@ -277,5 +282,11 @@ const Item = styled.div`
   h3 {
     font-size: 16px;
     font-weight: 400;
+  }
+`
+
+const CustomSearch = styled(Input.Search)`
+  .ant-input {
+    height: 50px;
   }
 `
