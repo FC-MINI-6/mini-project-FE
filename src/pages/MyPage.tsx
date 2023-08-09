@@ -6,9 +6,10 @@ import {
   MyPageStyledFormItem,
   MyPageStyledFormItemWrapper
 } from 'components/index'
-import { useUserStore } from '@/stores'
+import { modalStore, useUserStore } from '@/stores'
 import { updatePassword, updatePhoneNumber } from '@/apis'
 import { IUpdatePasswordData, IUpdatePhoneNumberData } from '@/types'
+import { resultModalDatas } from '@/constants'
 
 export const MyPage = () => {
   const [form] = Form.useForm()
@@ -16,6 +17,7 @@ export const MyPage = () => {
   const [editablePhoneNumber, setEditablePhoneNumber] = useState<string>('')
   const [isEditingPhoneNumber, setIsEditingPhoneNumber] = useState(false)
   const { userInfo, setUserInfo } = useUserStore()
+  const { openModal } = modalStore()
   const [editPassword, setEditPassword] = useState<IUpdatePasswordData>({
     userId: '',
     oldPassword: '',
@@ -45,10 +47,17 @@ export const MyPage = () => {
             ...userInfo,
             phoneNumber: editablePhoneNumber
           })
+          openModal({
+            ...resultModalDatas.EDIT_PHONENUMBER_SUCCESS,
+            okCallback: () => {}
+          })
           console.log(res.message)
         },
         error => {
-          console.log(error)
+          openModal({
+            ...resultModalDatas.SIGNUP_FAILURE,
+            content: error.message || resultModalDatas.EDIT_PHONENUMBER_FAILURE.content
+          })
         }
       )
     }
@@ -71,15 +80,28 @@ export const MyPage = () => {
     console.log(editPassword)
     updatePassword(editPassword).then(
       res => {
+        openModal({
+          ...resultModalDatas.EDIT_PASSWORD_SUCCESS,
+          okCallback: () => {}
+        })
         console.log(res.message)
       },
       error => {
+        openModal({
+          ...resultModalDatas.EDIT_PASSWORD_FAILURE,
+          content: error.message || resultModalDatas.EDIT_PASSWORD_FAILURE.content
+        })
         console.log(error)
       }
     )
     form.validateFields().then(values => {
       console.log('새 비밀번호:', values.newPassword)
       setShowModal(false)
+      setEditPassword({
+        ...editPassword,
+        oldPassword: '',
+        newPassword: ''
+      })
     })
   }
 

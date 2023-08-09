@@ -110,6 +110,34 @@ export const resultModalDatas = {
     type: 1,
     okButton: '확인',
     okCallback: () => {}
+  },
+  EDIT_PASSWORD_SUCCESS: {
+    title: '비밀번호 변경 완료',
+    content: '비밀번호 변경에 성공했습니다.',
+    type: 1,
+    okButton: '확인',
+    okCallback: () => {}
+  },
+  EDIT_PASSWORD_FAILURE: {
+    title: '비밀번호 변경 실패',
+    content: '비밀번호 변경에 실패했습니다.',
+    type: 1,
+    okButton: '확인',
+    okCallback: () => {}
+  },
+  EDIT_PHONENUMBER_SUCCESS: {
+    title: '전화번호 변경 성공',
+    content: '전화번호 변경에 성공했습니다.',
+    type: 1,
+    okButton: '확인',
+    okCallback: () => {}
+  },
+  EDIT_PHONENUMBER_FAILURE: {
+    title: '전화번호 변경 실패',
+    content: '전화번호 변경에 실패했습니다.',
+    type: 1,
+    okButton: '확인',
+    okCallback: () => {}
   }
 }
 
