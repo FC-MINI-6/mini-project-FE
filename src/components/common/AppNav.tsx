@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { NotificationPopup } from 'components/index'
 import { notificationRef } from '@/firebase'
 import { collection, getDocs, onSnapshot } from 'firebase/firestore'
@@ -7,7 +7,7 @@ import { INotificationData } from 'types/index'
 import { styled } from 'styled-components'
 import { Image, Menu, Button, Popover, Badge } from 'antd'
 import type { MenuProps } from 'antd'
-import { navTabStore } from 'stores/index'
+
 import {
   BellOutlined,
   HomeOutlined,
@@ -19,40 +19,43 @@ import {
   ExportOutlined
 } from '@ant-design/icons'
 
-type MenuItem = Required<MenuProps>['items'][number]
-
-function getItem(
-  label: React.ReactNode,
-  key: React.Key,
-  url: React.ReactNode,
-  icon?: React.ReactNode,
-  children?: MenuItem[],
-  type?: 'group'
-): MenuItem {
-  return {
-    key,
-    icon,
-    children,
-    label,
-    type,
-    url
-  } as MenuItem
-}
-
-const items: MenuItem[] = [
-  getItem('홈', '1', '', <HomeOutlined />),
-  getItem('내 정보', '2', 'mypage', <UserOutlined />),
-  getItem('휴가', '3', 'day_off', <CoffeeOutlined />),
-  getItem('당직', '4', 'duty', <LaptopOutlined />),
-  getItem('휴가/당직 관리', '5', 'admin/schedule', <ProfileOutlined />),
-  getItem('사원 관리', '6', 'admin/employee', <IdcardOutlined />)
+const items: MenuProps['items'] = [
+  {
+    label: <Link to={'/'}>홈</Link>,
+    key: '/',
+    icon: <HomeOutlined />
+  },
+  {
+    label: <Link to={'/mypage'}>내 정보</Link>,
+    key: '/mypage',
+    icon: <UserOutlined />
+  },
+  {
+    label: <Link to={'/day_off'}>휴가</Link>,
+    key: '/day_off',
+    icon: <CoffeeOutlined />
+  },
+  {
+    label: <Link to={'/duty'}>당직</Link>,
+    key: '/duty',
+    icon: <LaptopOutlined />
+  },
+  {
+    label: <Link to={'/admin/schedule'}>휴가/당직 관리</Link>,
+    key: '/admin/schedule',
+    icon: <ProfileOutlined />
+  },
+  {
+    label: <Link to={'/admin/employee'}>사원관리</Link>,
+    key: '/admin/employee',
+    icon: <IdcardOutlined />
+  }
 ]
 
 export const AppNav = () => {
   const [newNotifications, setNewNotifications] = useState<INotificationData[]>([])
   const newNotificationCount = useMemo(() => newNotifications.length, [newNotifications])
-  const { tabNumber, setTabNumber } = navTabStore()
-
+  const path = useLocation().pathname
   // 실시간 알림 변경사항 구독
   useEffect(() => {
     onSnapshot(collection(notificationRef, 'userid1', 'notiList'), snapshot => {
@@ -86,17 +89,15 @@ export const AppNav = () => {
     }
   }
 
-  const handleTabNumber = key => {
-    setTabNumber(Number(key))
-  }
-  console.log(tabNumber)
   useEffect(() => {
     fetchNoti()
   }, [])
 
   return (
     <Container>
-      <Logo />
+      <Link to={'/'}>
+        <Logo />
+      </Link>
       <Profile>
         <Image
           alt="profileImage"
@@ -119,13 +120,7 @@ export const AppNav = () => {
           </Badge>
         </Popover>
       </Profile>
-      <Menu defaultSelectedKeys={tabNumber || ['1']} theme="dark">
-        {items.map(item => (
-          <Menu.Item key={item.key} icon={item.icon} onClick={() => handleTabNumber(item.key)}>
-            <Link to={`/${item.url}`}>{item.label}</Link>
-          </Menu.Item>
-        ))}
-      </Menu>
+      <Menu defaultSelectedKeys={['/']} theme="dark" items={items} selectedKeys={[path]} />
       <Button
         icon={<ExportOutlined />}
         style={{
