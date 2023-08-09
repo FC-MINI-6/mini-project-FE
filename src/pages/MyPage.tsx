@@ -56,8 +56,9 @@ export const MyPage = () => {
         error => {
           openModal({
             ...resultModalDatas.SIGNUP_FAILURE,
-            content: error.message || resultModalDatas.EDIT_PHONENUMBER_FAILURE.content
+            content: resultModalDatas.EDIT_PHONENUMBER_FAILURE.content
           })
+          console.log(error)
         }
       )
     }
@@ -89,7 +90,7 @@ export const MyPage = () => {
       error => {
         openModal({
           ...resultModalDatas.EDIT_PASSWORD_FAILURE,
-          content: error.message || resultModalDatas.EDIT_PASSWORD_FAILURE.content
+          content: resultModalDatas.EDIT_PASSWORD_FAILURE.content
         })
         console.log(error)
       }
