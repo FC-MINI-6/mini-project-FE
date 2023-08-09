@@ -9,11 +9,11 @@ import {
   SignUpStyleddiv,
   SignUpStyledButton
 } from 'components/index'
-import { signUpRequest } from '@/apis'
-import { ISignUpData } from '@/types'
+import { signUpRequest } from 'apis/index'
+import { ISignUpData } from 'types/index'
 import { useNavigate } from 'react-router-dom'
-import { modalStore } from '@/stores'
-import { resultModalDatas } from '@/constants'
+import { modalStore } from 'stores/index'
+import { resultModalDatas } from 'constants/index'
 
 export const SignUp = () => {
   const [passwordConfirm, setPasswordConfirm] = useState<string>('')
@@ -77,17 +77,19 @@ export const SignUp = () => {
         res => {
           console.log('API 호출 성공!')
           console.log(res)
-          navigate('/login')
+
           openModal({
             ...resultModalDatas.SIGNUP_SUCCESS,
-            okCallback: () => {}
+            okCallback: () => {
+              navigate('/login')
+            }
           })
         },
         error => {
-          console.log(error);
+          console.log(error)
           openModal({
             ...resultModalDatas.SIGNUP_FAILURE,
-            content: error.message || resultModalDatas.LOGIN_FAILURE.content
+            content: error.message || resultModalDatas.SIGNUP_FAILURE.content
           })
           console.error('API 호출 실패!')
           console.error(error)

@@ -99,7 +99,7 @@ export const resultModalDatas = {
   },
   SIGNUP_FAILURE: {
     title: '회원가입 실패',
-    content: '로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.',
+    content: '회원가입에 실패했습니다. 정보를 확인해주세요.',
     type: 1,
     okButton: '확인',
     okCallback: () => {}

@@ -9,9 +9,9 @@ import {
 } from 'components/index'
 import { Link, useNavigate } from 'react-router-dom'
 import { modalStore, useUserStore } from 'stores/index'
-import { loginRequest } from '@/apis'
+import { loginRequest } from 'apis/index'
 import { ILoginData } from 'types/index'
-import { resultModalDatas } from '@/constants'
+import { resultModalDatas } from 'constants/index'
 
 export const Login = () => {
   const [loginData, setLoginData] = useState<ILoginData>({ email: '', password: '' })

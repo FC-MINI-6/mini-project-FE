@@ -6,10 +6,10 @@ import {
   MyPageStyledFormItem,
   MyPageStyledFormItemWrapper
 } from 'components/index'
-import { modalStore, useUserStore } from '@/stores'
-import { updatePassword, updatePhoneNumber } from '@/apis'
-import { IUpdatePasswordData, IUpdatePhoneNumberData } from '@/types'
-import { resultModalDatas } from '@/constants'
+import { modalStore, useUserStore } from 'stores/index'
+import { updatePassword, updatePhoneNumber } from 'apis/index'
+import { IUpdatePasswordData, IUpdatePhoneNumberData } from 'types/index'
+import { resultModalDatas } from 'constants/index'
 
 export const MyPage = () => {
   const [form] = Form.useForm()
