@@ -7,7 +7,7 @@ export interface DayOff {
   endDate: string
   reasons: string
   type: number
-  status: string
+  status: number
 }
 
 export interface Duty {

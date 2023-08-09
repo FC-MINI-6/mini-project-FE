@@ -1,7 +1,7 @@
 import { client } from 'apis/index'
 import { IBaseResponse, IDataResponse, DayOff, Duty } from 'types/index'
 
-export const getDayOffList = async (): Promise<IDataResponse<DayOff[]>> => {
+export const getDayOffList = async (): Promise<DayOff[]> => {
   const response = await client.get('/admin/status')
   return response.data.data.dayOffList
 }
@@ -14,7 +14,7 @@ export const approveOrRejectDayOff = async (
   return response.data
 }
 
-export const getDutyList = async (): Promise<IDataResponse<Duty[]>> => {
+export const getDutyList = async (): Promise<Duty[]> => {
   const response = await client.get('/admin/status')
   return response.data.data.dutyList
 }
