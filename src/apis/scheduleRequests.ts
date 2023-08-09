@@ -28,30 +28,16 @@ export const fetchScheduleCalendar = async (
 
 // 연차 신청
 export const insertDayOff = async (params: IDayOffRequest): Promise<IBaseResponse> => {
-  const response = await client.post('/mypage/dayoff/register', params, {
-    headers: {
-      // TODO : 토큰 값 수정
-      Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMDFAYWRtaW4uY29tIiwicm9sZSI6IuydvOuwmCIsImlkIjoxMiwiZXhwIjoxNjkxMjk4OTk5fQ.lu3OkypFGrYJ5BofmO89eE7T8r3sjLRpkdnUbUvuRsvKd5y7z5ImW-0ZPnUUEKn0Sf0Omon6EhJPsO5QlZ4DWQ`
-    }
-  })
+  const response = await client.post('/mypage/dayoff/register', params)
   return response.data
 }
 
 // 연차 신청/사용 내역 조회
 export const fetchDayOffList = async () => {
-  const requestNumOfDayOff = await client.get('/mypage/dayoff/my', {
-    headers: {
-      // TODO : 토큰 값 수정
-      Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMDFAYWRtaW4uY29tIiwicm9sZSI6IuydvOuwmCIsImlkIjoxMiwiZXhwIjoxNjkxNTU0NzU5fQ._jwEMhWFm5erS6SB8o6DqjzU_TnpsZ1gjsQtZXT20mgWNMS3qm09GWo21wuNHcEze4GKd8JQxwafKLD4RVGl4A`
-    }
-  })
+  console.log(client.defaults.headers)
+  const requestNumOfDayOff = await client.get('/mypage/dayoff/my')
 
-  const requestDayOffList = await client.get('/mypage/dayoffList', {
-    headers: {
-      // TODO : 토큰 값 수정
-      Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMDFAYWRtaW4uY29tIiwicm9sZSI6IuydvOuwmCIsImlkIjoxMiwiZXhwIjoxNjkxNTU0NzU5fQ._jwEMhWFm5erS6SB8o6DqjzU_TnpsZ1gjsQtZXT20mgWNMS3qm09GWo21wuNHcEze4GKd8JQxwafKLD4RVGl4A`
-    }
-  })
+  const requestDayOffList = await client.get('/mypage/dayoffList')
 
   return await axios.all([requestNumOfDayOff.data, requestDayOffList.data]).then(res => {
     return {
@@ -63,11 +49,6 @@ export const fetchDayOffList = async () => {
 
 // 휴가 취소
 export const deleteDayOff = async (dayoffId: number): Promise<IBaseResponse> => {
-  const response = await client.delete(`/mypage/dayoff/${dayoffId}`, {
-    headers: {
-      // TODO : 토큰 값 수정
-      Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMDFAYWRtaW4uY29tIiwicm9sZSI6IuydvOuwmCIsImlkIjoxMiwiZXhwIjoxNjkxNTU0NzU5fQ._jwEMhWFm5erS6SB8o6DqjzU_TnpsZ1gjsQtZXT20mgWNMS3qm09GWo21wuNHcEze4GKd8JQxwafKLD4RVGl4A`
-    }
-  })
+  const response = await client.delete(`/mypage/dayoff/${dayoffId}`)
   return response.data
 }

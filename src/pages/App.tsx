@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useNavigate } from 'react-router-dom'
 import { NavLayout } from 'components/index'
 import {
   DayOff,
@@ -10,16 +10,19 @@ import {
   Login,
   MyPage
 } from 'pages/index'
-import { modalStore } from 'stores/index'
+import { modalStore, useUserStore } from 'stores/index'
+import { useAxiosInterceptor } from 'hooks/index'
 
 import GlobalStyle from '@/GlobalStyle'
 import { ConfigProvider, Modal } from 'antd'
 import { config } from '@/GlobalThemeConfig'
 import locale from 'antd/lib/locale/ko_KR'
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 
 export const App = () => {
+  const { userInfo } = useUserStore()
   const { modal, closeModal } = modalStore()
+  const navigate = useNavigate()
 
   const handleClickModalOk = useCallback(() => {
     modal.okCallback()
@@ -32,6 +35,14 @@ export const App = () => {
     }
     closeModal()
   }, [modal, closeModal])
+
+  useAxiosInterceptor()
+
+  useEffect(() => {
+    if (userInfo === null) {
+      navigate('/login', { replace: true })
+    }
+  }, [userInfo])
 
   return (
     <>

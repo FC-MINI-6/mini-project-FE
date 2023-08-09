@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import type { ColumnsType } from 'antd/es/table'
 import { Table, Button, message, Popconfirm } from 'antd'
 import { addDoc, collection } from 'firebase/firestore'
@@ -57,7 +57,7 @@ export const DutyMgt = () => {
           value: 2
         }
       ],
-      onFilter: (value: number, record) => record.status === value,
+      onFilter: (value, record) => record.status === value,
       render: (_, record) => (
         <>
           {record.status === 0 ? (
@@ -112,7 +112,7 @@ export const DutyMgt = () => {
 
   const getDutyListAll = () => {
     getDutyList().then(res => {
-      const dutyWithKeys = res.map(duty => ({
+      const dutyWithKeys = res.data.map(duty => ({
         ...duty,
         key: duty.id
       }))
@@ -120,12 +120,12 @@ export const DutyMgt = () => {
     })
   }
 
-  const confirmApproval = record => {
-    approveOrRejectDuty(1, record.key).then(getDutyListAll)
+  const confirmApproval = (record: Duty) => {
+    approveOrRejectDuty(1, record.id).then(getDutyListAll)
     message.success('처리 완료')
   }
-  const confirmRejection = record => {
-    approveOrRejectDuty(2, record.key).then(getDutyListAll)
+  const confirmRejection = (record: Duty) => {
+    approveOrRejectDuty(2, record.id).then(getDutyListAll)
     message.success('처리 완료')
   }
 
