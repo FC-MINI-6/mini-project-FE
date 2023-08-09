@@ -104,7 +104,17 @@ export const ScheduleMgt = () => {
           value: 2
         }
       ],
-      onFilter: (value, record) => record.status === value,
+      onFilter: (value: number, record) => record.status === value,
+      defaultSortOrder: 'ascend',
+      sorter: (a, b) => {
+        if (a.status === 0 && b.status !== 0) {
+          return -1
+        } else if (a.status !== 0 && b.status === 0) {
+          return 1
+        } else {
+          return a.status - b.status
+        }
+      },
       render: (_, record) => (
         <>
           {record.status === 0 ? (
@@ -160,7 +170,7 @@ export const ScheduleMgt = () => {
 
   const getScheduleListAll = () => {
     getDayOffList().then(res => {
-      const dayOffWithKeys = res.map(dayOff => ({
+      const dayOffWithKeys = res?.map(dayOff => ({
         ...dayOff,
         key: dayOff.id
       }))
@@ -179,5 +189,15 @@ export const ScheduleMgt = () => {
     message.success('처리 완료')
   }
 
-  return <Table columns={columns} dataSource={dayOffList} sticky />
+  return (
+    <Table
+      columns={columns}
+      dataSource={dayOffList}
+      sticky
+      pagination={{
+        position: ['bottomCenter'],
+        pageSizeOptions: ['10', '20', '30', '40']
+      }}
+    />
+  )
 }

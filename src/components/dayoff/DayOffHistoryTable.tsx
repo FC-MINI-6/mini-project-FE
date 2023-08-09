@@ -15,6 +15,7 @@ const getDayOffHistoryColumns = (): ColumnsType<IDayOffResponse> => [
     width: '15%',
     title: '신청 상태',
     dataIndex: 'status',
+    align: 'center',
     key: 'stauts',
     render: (status: number) => (
       <StatusWrapper>
@@ -47,6 +48,7 @@ const getDayOffHistoryColumns = (): ColumnsType<IDayOffResponse> => [
     width: '15%',
     title: '휴가 타입',
     dataIndex: 'type',
+    align: 'center',
     key: 'type',
     render: (type: number) => (
       <Type>
@@ -75,6 +77,7 @@ const getDayOffHistoryColumns = (): ColumnsType<IDayOffResponse> => [
     width: '30%',
     title: '휴가 일자',
     dataIndex: ['startDate', 'endDate'],
+    align: 'center',
     key: 'date',
     render: (_, { startDate, endDate }) => (
       <span>
@@ -90,6 +93,7 @@ const getDayOffHistoryColumns = (): ColumnsType<IDayOffResponse> => [
     width: '40%',
     title: '사유',
     dataIndex: 'reason',
+    align: 'center',
     key: 'reason',
     render: (_, { reason, type, endDate, startDate }) => (
       <ReasonCellWrapper>

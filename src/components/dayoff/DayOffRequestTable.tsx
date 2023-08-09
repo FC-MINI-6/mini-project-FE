@@ -16,6 +16,7 @@ const getDayOffRequestColumns = (menuClick: (id: number) => void): ColumnsType<I
     width: '15%',
     title: '신청 상태',
     dataIndex: 'status',
+    align: 'center',
     key: 'stauts',
     render: (status: number) => (
       <StatusWrapper>
@@ -51,6 +52,7 @@ const getDayOffRequestColumns = (menuClick: (id: number) => void): ColumnsType<I
     width: '15%',
     title: '휴가 타입',
     dataIndex: 'type',
+    align: 'center',
     key: 'type',
     render: (type: number) => (
       <Type>
@@ -79,6 +81,7 @@ const getDayOffRequestColumns = (menuClick: (id: number) => void): ColumnsType<I
     width: '70%',
     title: '휴가 일자',
     dataIndex: ['startDate', 'endDate'],
+    align: 'center',
     key: 'date',
     render: (_, { startDate, endDate, type, id }) => (
       <DateCellWrapper>
