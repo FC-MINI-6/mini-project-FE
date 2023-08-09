@@ -7,13 +7,12 @@ export interface ILoginData {
 //로그인 응답
 export interface ILoginUser {
   id: string
-  name: string
+  username: string
   email: string
   position: string
   joinDate: string
   phoneNumber: string
   roles: string
-
   accessToken: string
 }
 
@@ -35,6 +34,6 @@ export interface IUpdatePasswordData {
 }
 
 //핸드폰번호 변경 요청
-export interface IUpdatePhoneNumberData{
+export interface IUpdatePhoneNumberData {
   phoneNumber: string
 }
