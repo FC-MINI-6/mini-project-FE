@@ -5,10 +5,11 @@ import { addDoc, collection } from 'firebase/firestore'
 import { notificationRef } from '@/firebase'
 import dayjs from 'dayjs'
 import { getDutyList, approveOrRejectDuty } from 'apis/index'
-import { dutyListStore } from 'stores/index'
+import { dutyListStore, useUserStore } from 'stores/index'
 import { Duty } from 'types/index'
 
 export const DutyMgt = () => {
+  const { userInfo } = useUserStore()
   const { dutyList, setDutyList } = dutyListStore()
 
   const columns: ColumnsType<Duty> = [
@@ -98,9 +99,8 @@ export const DutyMgt = () => {
   }, [])
 
   // 당직 승인 반려 알림 푸시
-  // *  호출 예시 >> pushDutyStatusNotification('REJECT')
-  const pushDutyStatusNotification = async (status: string) => {
-    const userNotiRef = collection(notificationRef, 'userid1', 'notiList')
+  const pushDutyStatusNotification = async (userId: number, status: string) => {
+    const userNotiRef = collection(notificationRef, `${userId}`, 'notiList')
     await addDoc(userNotiRef, {
       date: dayjs().format('YYYY-MM-DD'),
       message: `당직 신청이 ${status === 'APPROVE' ? '승인' : '반려'}되었습니다.`,
@@ -112,7 +112,7 @@ export const DutyMgt = () => {
 
   const getDutyListAll = () => {
     getDutyList().then(res => {
-      const dutyWithKeys = res.data.map(duty => ({
+      const dutyWithKeys = res.map(duty => ({
         ...duty,
         key: duty.id
       }))
@@ -122,10 +122,12 @@ export const DutyMgt = () => {
 
   const confirmApproval = (record: Duty) => {
     approveOrRejectDuty(1, record.id).then(getDutyListAll)
+    pushDutyStatusNotification(record.userId, 'APPROVE')
     message.success('처리 완료')
   }
   const confirmRejection = (record: Duty) => {
     approveOrRejectDuty(2, record.id).then(getDutyListAll)
+    pushDutyStatusNotification(record.userId, 'REJECT')
     message.success('처리 완료')
   }
 
