@@ -8,17 +8,13 @@ import {
   SignUpStyledForm,
   SignUpStyleddiv,
   SignUpStyledButton,
-  SignUpStyledLogo,
-  SignUpStyledHeaderText,
-  SignUpStyledSeparator,
-  SignUpStyledLogoContainer
+  SignUpStyledSeparator
 } from 'components/index'
 import { signUpRequest } from 'apis/index'
 import { ISignUpData } from 'types/index'
 import { useNavigate } from 'react-router-dom'
 import { modalStore } from 'stores/index'
 import { resultModalDatas } from 'constants/index'
-import signupImage from 'public/signup_image2.png'
 
 export const SignUp = () => {
   const [passwordConfirm, setPasswordConfirm] = useState<string>('')
