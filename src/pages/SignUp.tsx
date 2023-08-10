@@ -14,7 +14,6 @@ import { ISignUpData } from 'types/index'
 import { useNavigate } from 'react-router-dom'
 import { modalStore } from 'stores/index'
 import { resultModalDatas } from 'constants/index'
-import logoImage from 'public/logo.png'
 
 export const SignUp = () => {
   const [passwordConfirm, setPasswordConfirm] = useState<string>('')
@@ -107,9 +106,6 @@ export const SignUp = () => {
   return (
     <SignUpStyleddiv>
       <SignUpStyledForm name="basic" autoComplete="off">
-      <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-      <img src={logoImage} alt="로고" style={{ maxWidth: '100%', maxHeight: '150px' }} />
-      </div>
         <SignUpStyledFormItemWrapper>
           <SignUpStyledFormItem
             label="이름"
