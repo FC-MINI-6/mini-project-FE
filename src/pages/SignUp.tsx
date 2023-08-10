@@ -65,13 +65,42 @@ export const SignUp = () => {
   }
 
   const handleSubmit = async () => {
-    //이메일 유효성검사
+    if (
+      !signUpData.username ||
+      !signUpData.position ||
+      !signUpData.email ||
+      !signUpData.joinDate ||
+      !signUpData.password ||
+      !signUpData.phoneNumber
+    ) {
+      openModal({
+        ...resultModalDatas.SIGNUP_FAILURE,
+        content: '모든 필드를 입력하세요.'
+      })
+      return
+    }
+
+    // 이메일 유효성 검사
     const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/
     if (!emailRegex.test(signUpData.email)) {
       setEmailError('유효한 이메일 주소를 입력하세요.')
       return
     }
-    //비밀번호확인 유효성검사
+
+    // 비밀번호 유효성 검사
+    if (signUpData.password !== passwordConfirm) {
+      setPasswordMismatch(true)
+      return
+    }
+
+    // 핸드폰번호 유효성 검사
+    if (!phoneNumberRegex.test(signUpData.phoneNumber)) {
+      openModal({
+        ...resultModalDatas.SIGNUP_FAILURE,
+        content: '유효한 전화번호를 입력하세요.'
+      })
+      return
+    }
     if (signUpData.password === passwordConfirm) {
       console.log(signUpData)
       signUpRequest(signUpData).then(
