@@ -1,17 +1,30 @@
 import React from 'react'
 import { UserDropdown } from 'components/index'
-import { Col, Row, Select, Typography } from 'antd'
+import { EXCEL_HEADERS } from 'constants/index'
+import { parseExcelDatas } from 'utils/index'
+import { ICalendarScheduleByDate } from 'types/index'
 
+import { Col, Row, Select, Typography, Button } from 'antd'
+import { DownloadOutlined } from '@ant-design/icons'
 import dayjs from 'dayjs'
 import type { Dayjs } from 'dayjs'
 import dayLocaleData from 'dayjs/plugin/localeData'
 import 'dayjs/locale/ko'
+import { CSVLink } from 'react-csv'
 
 dayjs.extend(dayLocaleData)
 dayjs.locale('ko')
 
 export const CalendarHeader = React.memo(
-  ({ value, onChange }: { value: Dayjs; onChange: (date: Dayjs) => void }) => {
+  ({
+    value,
+    onChange,
+    filteredList
+  }: {
+    value: Dayjs
+    onChange: (date: Dayjs) => void
+    filteredList: ICalendarScheduleByDate[]
+  }) => {
     const start = 0
     const end = 12
     const monthOptions = []
@@ -72,6 +85,16 @@ export const CalendarHeader = React.memo(
           </Col>
           <Col>
             <UserDropdown />
+          </Col>
+          <Col style={{ flexGrow: 1, display: 'flex', justifyContent: 'end' }}>
+            <CSVLink
+              headers={EXCEL_HEADERS}
+              data={parseExcelDatas(filteredList)}
+              filename={`일정표_${dayjs().format('YYYYMMDD')}`}>
+              <Button type="primary" icon={<DownloadOutlined />}>
+                엑셀 다운로드
+              </Button>
+            </CSVLink>
           </Col>
         </Row>
       </div>
