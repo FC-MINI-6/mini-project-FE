@@ -17,9 +17,7 @@ export const UserDropdown = React.memo(() => {
     setSelectedId(value)
   }
 
-  const onSearch = (value: string) => {
-    console.log('search:', value)
-  }
+  const onSearch = (value: string) => {}
 
   return (
     <Select

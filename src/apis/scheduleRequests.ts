@@ -34,7 +34,6 @@ export const insertDayOff = async (params: IDayOffRequest): Promise<IBaseRespons
 
 // 연차 신청/사용 내역 조회
 export const fetchDayOffList = async () => {
-  console.log(client.defaults.headers)
   const requestNumOfDayOff = await client.get('/mypage/dayoff/my')
 
   const requestDayOffList = await client.get('/mypage/dayoffList')
