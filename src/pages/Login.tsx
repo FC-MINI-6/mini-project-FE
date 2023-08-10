@@ -31,8 +31,7 @@ export const Login = () => {
     })
   }
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
+  const handleSubmit = async () => {
     //이메일 유효성 검사
     const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/
     if (!emailRegex.test(loginData.email)) {
@@ -46,6 +45,7 @@ export const Login = () => {
       },
       error => {
         openModal({
+          ...resultModalDatas.LOGIN_FAILURE,
           ...resultModalDatas.LOGIN_FAILURE,
           okCallback: () => {}
         })

@@ -77,7 +77,6 @@ export const SignUp = () => {
         res => {
           console.log('API 호출 성공!')
           console.log(res)
-
           openModal({
             ...resultModalDatas.SIGNUP_SUCCESS,
             okCallback: () => {
