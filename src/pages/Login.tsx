@@ -43,7 +43,7 @@ export const Login = () => {
       },
       error => {
         openModal({
-          ...resultModalDatas.LOGIN_FAILURE, 
+          ...resultModalDatas.LOGIN_FAILURE,
           okCallback: () => {}
         })
         console.log(error)
@@ -85,9 +85,9 @@ export const Login = () => {
         </LoginStyledFormItem>
 
         <LoginStyledFormItemWrapper>
-          <p>
+          <LoginStyledFormItem>
             <Link to="/signup">회원가입</Link>
-          </p>
+          </LoginStyledFormItem>
           <LoginStyledButton type="primary" onClick={handleSubmit}>
             로그인
           </LoginStyledButton>
