@@ -7,7 +7,7 @@ import { notificationRef } from '@/firebase'
 import { collection, getDocs, onSnapshot } from 'firebase/firestore'
 import { INotificationData } from 'types/index'
 import { styled } from 'styled-components'
-import { Image, Menu, Button, Popover, Badge, Empty } from 'antd'
+import { Image, Menu, Button, Popover, Badge, Empty, Avatar } from 'antd'
 import type { MenuProps } from 'antd'
 
 import {
@@ -118,13 +118,9 @@ export const AppNav = () => {
         <Logo />
       </Link>
       <Profile>
-        <Image
-          alt="profileImage"
-          width={40}
-          src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
-          style={{ borderRadius: '70%' }}
-          preview={false}
-        />
+        <Avatar style={{ backgroundColor: 'orange', verticalAlign: 'middle' }} size="large" gap={4}>
+          {userInfo?.username.slice(-2)}
+        </Avatar>
         <span className="user">
           <p>{userInfo?.username ?? '게스트'} 님</p>
           <p>

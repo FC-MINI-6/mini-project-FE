@@ -32,9 +32,7 @@ export const SignUp = () => {
     phoneNumber: ''
   })
 
-  useEffect(() => {
-    console.log(signUpData)
-  }, [signUpData])
+  useEffect(() => {}, [signUpData])
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
@@ -73,11 +71,8 @@ export const SignUp = () => {
     }
     //비밀번호확인 유효성검사
     if (signUpData.password === passwordConfirm) {
-      console.log(signUpData)
       signUpRequest(signUpData).then(
         res => {
-          console.log('API 호출 성공!')
-          console.log(res)
           openModal({
             ...resultModalDatas.SIGNUP_SUCCESS,
             okCallback: () => {
@@ -96,7 +91,6 @@ export const SignUp = () => {
         }
       )
     } else {
-      console.log('비밀번호 확인 실패!')
       setPasswordMismatch(true)
     }
   }
