@@ -7,13 +7,18 @@ import {
   SignUpStyledFormItemWrapper,
   SignUpStyledForm,
   SignUpStyleddiv,
-  SignUpStyledButton
+  SignUpStyledButton,
+  SignUpStyledLogo,
+  SignUpStyledHeaderText,
+  SignUpStyledSeparator,
+  SignUpStyledLogoContainer
 } from 'components/index'
 import { signUpRequest } from 'apis/index'
 import { ISignUpData } from 'types/index'
 import { useNavigate } from 'react-router-dom'
 import { modalStore } from 'stores/index'
 import { resultModalDatas } from 'constants/index'
+import signupImage from 'public/signup_image2.png'
 
 export const SignUp = () => {
   const [passwordConfirm, setPasswordConfirm] = useState<string>('')
@@ -106,6 +111,12 @@ export const SignUp = () => {
   return (
     <SignUpStyleddiv>
       <SignUpStyledForm name="basic" autoComplete="off">
+      <SignUpStyledLogoContainer>
+      <SignUpStyledLogo src={signupImage} alt="Logo" />
+
+      </SignUpStyledLogoContainer>
+      <SignUpStyledHeaderText>회원가입</SignUpStyledHeaderText>
+      <SignUpStyledSeparator/>
         <SignUpStyledFormItemWrapper>
           <SignUpStyledFormItem
             label="이름"
