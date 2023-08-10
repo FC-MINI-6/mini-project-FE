@@ -1,13 +1,5 @@
 import { create } from 'zustand'
-
-interface Employee {
-  userId?: number
-  userName: string
-  userEmail: string
-  userPhone: string
-  userJoinedDate: string
-  userPosition: string
-}
+import { Employee } from 'types/index'
 
 interface EmployeeList {
   employeeList: Employee[]

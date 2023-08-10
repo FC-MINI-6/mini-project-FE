@@ -8,7 +8,7 @@ import { Employee, EmployeeUpdate } from 'types/index'
 const { Search } = Input
 const { Option } = Select
 
-const getPositionLabel = position => {
+const getPositionLabel = (position: number) => {
   switch (position) {
     case 0:
       return '사원'
@@ -52,7 +52,8 @@ const columns: ColumnsType<Employee> = [
     title: '입사일',
     dataIndex: 'joinDate',
     key: 'joinDate',
-    sorter: (a, b) => new Date(a.joinDate).getTime() - new Date(b.joinDate).getTime(),
+    sorter: (a: Employee, b: Employee) =>
+      new Date(a.joinDate).getTime() - new Date(b.joinDate).getTime(),
     sortDirections: ['descend'],
     align: 'center'
   },
@@ -87,19 +88,18 @@ const columns: ColumnsType<Employee> = [
         value: 5
       }
     ],
-    onFilter: (value: number, record) => record.position === value,
-    render: position => getPositionLabel(position)
+    onFilter: (value: string | number | boolean, record: Employee) => record.position === value,
+    render: (position: number) => getPositionLabel(position)
   }
 ]
 
 export const EmployeeMgt = () => {
   const { employeeList, setEmployeeList } = employeeListStore()
-  const [selectedRowData, setSelectedRowData] = useState<Employee | null>(null)
-  const [updatedRowData, setUpdatedRowData] = useState<EmployeeUpdate | null>(null)
-
+  const [selectedRowData, setSelectedRowData] = useState<null | Employee>(null)
+  const [updatedRowData, setUpdatedRowData] = useState<null | EmployeeUpdate>(null)
   const onSearch = (value: string) => {
     const filteredEmployeeList = employeeList.filter(
-      employee => employee.username.includes(value) || employee.email.includes(value)
+      (employee: Employee) => employee.username.includes(value) || employee.email.includes(value)
     )
     setEmployeeList(filteredEmployeeList)
   }
@@ -111,11 +111,11 @@ export const EmployeeMgt = () => {
   const getUserList = () => {
     getEmployeeList().then(
       res => {
-        const employeesWithKeys = res.data.map(employee => ({
+        const employeeWithKeys = res.data.map(employee => ({
           ...employee,
           key: employee.userId
         }))
-        setEmployeeList(employeesWithKeys)
+        setEmployeeList(employeeWithKeys)
       },
       error => {
         console.log(error.message)
@@ -140,20 +140,23 @@ export const EmployeeMgt = () => {
   }
 
   const handleUpdate = () => {
-    updateEmployee(updatedRowData, selectedRowData.userId).then(getUserList)
+    if (updatedRowData !== null && selectedRowData) {
+      updateEmployee(updatedRowData, selectedRowData.userId).then(getUserList)
+    }
+    // updateEmployee(updatedRowData, selectedRowData.userId).then(getUserList)
     setUpdatedRowData(null)
     handleCloseModal()
   }
   const handlePositionChange = (value: string) => {
-    if (selectedRowData) {
+    if (updatedRowData !== null && selectedRowData) {
       setSelectedRowData({ ...selectedRowData, position: parseInt(value) })
-      setUpdatedRowData({ ...updatedRowData, position: value })
+      setUpdatedRowData({ ...updatedRowData, position: parseInt(value) })
     }
   }
   const handleRoleChange = (value: string) => {
-    if (selectedRowData) {
+    if (updatedRowData !== null && selectedRowData) {
       setSelectedRowData({ ...selectedRowData, roles: parseInt(value) })
-      setUpdatedRowData({ ...updatedRowData, roles: value })
+      setUpdatedRowData({ ...updatedRowData, roles: parseInt(value) })
     }
   }
   const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -162,7 +165,7 @@ export const EmployeeMgt = () => {
     const truncatedValue = numericValue.slice(0, 11)
     const isValid = /^\d{0,11}$/.test(truncatedValue)
 
-    if (isValid) {
+    if (updatedRowData !== null && isValid && selectedRowData) {
       setSelectedRowData({ ...selectedRowData, phoneNumber: truncatedValue })
       setUpdatedRowData({ ...updatedRowData, phoneNumber: truncatedValue })
     } else {
@@ -182,7 +185,7 @@ export const EmployeeMgt = () => {
       <Table
         columns={columns}
         dataSource={employeeList}
-        onRow={record => ({
+        onRow={(record: Employee) => ({
           onClick: () => handleRowClick(record)
         })}
         pagination={{
@@ -282,11 +285,5 @@ const Item = styled.div`
   h3 {
     font-size: 16px;
     font-weight: 400;
-  }
-`
-
-const CustomSearch = styled(Input.Search)`
-  .ant-input {
-    height: 50px;
   }
 `
