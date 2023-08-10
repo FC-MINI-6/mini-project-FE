@@ -17,8 +17,6 @@ export const UserDropdown = React.memo(() => {
     setSelectedId(value)
   }
 
-  const onSearch = (value: string) => {}
-
   return (
     <Select
       style={{ minWidth: 100 }}
@@ -27,7 +25,6 @@ export const UserDropdown = React.memo(() => {
       value={selectedId}
       optionFilterProp="children"
       onChange={onChange}
-      onSearch={onSearch}
       filterOption={(input, option) => (option?.label ?? '').includes(input)}
       options={options}
     />

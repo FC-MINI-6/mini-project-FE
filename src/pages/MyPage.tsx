@@ -52,12 +52,14 @@ export const MyPage = () => {
             ...resultModalDatas.EDIT_PHONENUMBER_SUCCESS,
             okCallback: () => {}
           })
+          console.log(res.message)
         },
         error => {
           openModal({
             ...resultModalDatas.SIGNUP_FAILURE,
             content: resultModalDatas.EDIT_PHONENUMBER_FAILURE.content
           })
+          console.log(error)
         }
       )
     }
@@ -82,15 +84,18 @@ export const MyPage = () => {
           ...resultModalDatas.EDIT_PASSWORD_SUCCESS,
           okCallback: () => {}
         })
+        console.log(res.message)
       },
       error => {
         openModal({
           ...resultModalDatas.EDIT_PASSWORD_FAILURE,
           content: resultModalDatas.EDIT_PASSWORD_FAILURE.content
         })
+        console.log(error)
       }
     )
     form.validateFields().then(values => {
+      console.log('새 비밀번호:', values.newPassword)
       setShowModal(false)
       setEditPassword({
         ...editPassword,

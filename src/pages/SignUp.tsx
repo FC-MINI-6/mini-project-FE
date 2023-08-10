@@ -79,6 +79,7 @@ export const SignUp = () => {
               navigate('/login')
             }
           })
+          console.log(res.message)
         },
         error => {
           console.log(error)
@@ -86,7 +87,6 @@ export const SignUp = () => {
             ...resultModalDatas.SIGNUP_FAILURE,
             content: error.message || resultModalDatas.SIGNUP_FAILURE.content
           })
-          console.error('API 호출 실패!')
           console.error(error)
         }
       )
