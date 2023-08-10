@@ -8,7 +8,7 @@ import { Employee, EmployeeUpdate } from 'types/index'
 const { Search } = Input
 const { Option } = Select
 
-const getPositionLabel = position => {
+const getPositionLabel = (position: number) => {
   switch (position) {
     case 0:
       return '사원'
