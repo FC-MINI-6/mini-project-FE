@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import type { ColumnsType } from 'antd/es/table'
 import { addDoc, collection } from 'firebase/firestore'
 import { notificationRef } from '@/firebase'
@@ -56,8 +56,8 @@ export const ScheduleMgt = () => {
           value: 2
         }
       ],
-      onFilter: (value, record) => record.type === value,
-      render: type => getTypeLabel(type)
+      onFilter: (value: string | number | boolean, record: DayOff) => record.type === value,
+      render: (type: number) => getTypeLabel(type)
     },
     {
       title: '시작일',
@@ -65,7 +65,8 @@ export const ScheduleMgt = () => {
       width: 60,
       dataIndex: 'startDate',
       key: 'startDate',
-      sorter: (a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime(),
+      sorter: (a: DayOff, b: DayOff) =>
+        new Date(a.startDate).getTime() - new Date(b.startDate).getTime(),
       sortDirections: ['ascend'],
       fixed: 'left'
     },
@@ -104,9 +105,9 @@ export const ScheduleMgt = () => {
           value: 2
         }
       ],
-      onFilter: (value: number, record) => record.status === value,
+      onFilter: (value: string | number | boolean, record: DayOff) => record.status === value,
       defaultSortOrder: 'ascend',
-      sorter: (a, b) => {
+      sorter: (a: DayOff, b: DayOff) => {
         if (a.status === 0 && b.status !== 0) {
           return -1
         } else if (a.status !== 0 && b.status === 0) {
@@ -115,7 +116,7 @@ export const ScheduleMgt = () => {
           return a.status - b.status
         }
       },
-      render: (_, record) => (
+      render: (record: DayOff) => (
         <>
           {record.status === 0 ? (
             <>

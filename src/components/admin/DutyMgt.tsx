@@ -5,11 +5,10 @@ import { addDoc, collection } from 'firebase/firestore'
 import { notificationRef } from '@/firebase'
 import dayjs from 'dayjs'
 import { getDutyList, approveOrRejectDuty } from 'apis/index'
-import { dutyListStore, useUserStore } from 'stores/index'
+import { dutyListStore } from 'stores/index'
 import { Duty } from 'types/index'
 
 export const DutyMgt = () => {
-  const { userInfo } = useUserStore()
   const { dutyList, setDutyList } = dutyListStore()
   const columns: ColumnsType<Duty> = [
     {
@@ -26,7 +25,7 @@ export const DutyMgt = () => {
       width: 50,
       dataIndex: 'date',
       key: 'date',
-      sorter: (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+      sorter: (a: Duty, b: Duty) => new Date(a.date).getTime() - new Date(b.date).getTime(),
       sortDirections: ['ascend'],
       fixed: 'left'
     },
@@ -57,9 +56,9 @@ export const DutyMgt = () => {
           value: 2
         }
       ],
-      onFilter: (value, record) => record.status === value,
+      onFilter: (value: string | number | boolean, record: Duty) => record.status === Number(value),
       defaultSortOrder: 'ascend',
-      sorter: (a, b) => {
+      sorter: (a: Duty, b: Duty) => {
         if (a.status === 0 && b.status !== 0) {
           return -1
         } else if (a.status !== 0 && b.status === 0) {
@@ -68,7 +67,7 @@ export const DutyMgt = () => {
           return a.status - b.status
         }
       },
-      render: (_, record) => (
+      render: (record: Duty) => (
         <>
           {record.status === 0 ? (
             <>

@@ -1,5 +1,5 @@
 import { client } from 'apis/index'
-import { IBaseResponse, IDataResponse, DayOff, Duty } from 'types/index'
+import { IBaseResponse, DayOff, Duty } from 'types/index'
 
 export const getDayOffList = async (): Promise<DayOff[]> => {
   const response = await client.get('/admin/status')
