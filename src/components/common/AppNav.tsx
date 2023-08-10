@@ -7,7 +7,7 @@ import { notificationRef } from '@/firebase'
 import { collection, getDocs, onSnapshot } from 'firebase/firestore'
 import { INotificationData } from 'types/index'
 import { styled } from 'styled-components'
-import { Image, Menu, Button, Popover, Badge, Empty, Avatar } from 'antd'
+import { Menu, Button, Popover, Badge, Empty, Avatar } from 'antd'
 import type { MenuProps } from 'antd'
 
 import {
