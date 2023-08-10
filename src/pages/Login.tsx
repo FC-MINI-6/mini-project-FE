@@ -4,14 +4,16 @@ import {
   LoginStyleddiv,
   LoginStyledForm,
   LoginStyledFormItem,
-  LoginStyledFormItemWrapper,
-  LoginStyledButton
+  LoginStyledButton,
+  LoginWrapper
 } from 'components/index'
 import { Link, useNavigate } from 'react-router-dom'
 import { modalStore, useUserStore } from 'stores/index'
 import { loginRequest } from 'apis/index'
 import { ILoginData } from 'types/index'
 import { resultModalDatas } from 'constants/index'
+import { styled } from 'styled-components'
+import loginImage from '/public/login_image.png'
 
 export const Login = () => {
   const [loginData, setLoginData] = useState<ILoginData>({ email: '', password: '' })
@@ -44,7 +46,7 @@ export const Login = () => {
       },
       error => {
         openModal({
-          ...resultModalDatas.LOGIN_FAILURE, 
+          ...resultModalDatas.LOGIN_FAILURE,
           okCallback: () => {}
         })
         console.log(error)
@@ -54,48 +56,81 @@ export const Login = () => {
 
   return (
     <LoginStyleddiv>
-      <LoginStyledForm name="basic" autoComplete="off" onFinish={handleSubmit}>
-        <LoginStyledFormItem
-          label="이메일"
-          name="이메일"
-          rules={[{ required: true, message: '이메일을 입력하세요!' }]}
-          validateStatus={emailError ? 'error' : ''}
-          help={emailError}>
-          <Input
-            style={{ width: 400 }}
-            name="email"
-            onChange={handleChange}
-            value={loginData.email}
-          />
-        </LoginStyledFormItem>
-
-        <LoginStyledFormItem
-          label="비밀번호"
-          name="비밀번호"
-          rules={[
-            { required: true, message: '비밀번호를 입력하세요!' },
-            { min: 4, max: 20, message: '비밀번호는 4~20자리여야 합니다!' }
-          ]}>
-          <Input.Password
-            style={{ width: 400 }}
-            name="password"
-            onChange={handleChange}
-            value={loginData.password}
-            onPressEnter={handleSubmit}
-          />
-        </LoginStyledFormItem>
-
-        <LoginStyledFormItemWrapper>
-          <LoginStyledFormItem>
-            <p>
-              <Link to="/signup">회원가입</Link>
-            </p>
+      <LoginWrapper>
+        <LoginImage>
+          <img src={loginImage} />
+        </LoginImage>
+        <LoginStyledForm name="basic" autoComplete="off" onFinish={handleSubmit}>
+          <LoginStyledFormItem
+            labelCol={{ span: 6 }}
+            labelAlign="left"
+            wrapperCol={{ span: 18 }}
+            label="이메일"
+            name="이메일"
+            rules={[{ required: true, message: '이메일을 입력하세요!' }]}
+            validateStatus={emailError ? 'error' : ''}
+            help={emailError}>
+            <Input
+              style={{ width: '100%' }}
+              name="email"
+              onChange={handleChange}
+              value={loginData.email}
+            />
           </LoginStyledFormItem>
+
+          <LoginStyledFormItem
+            labelCol={{ span: 6 }}
+            labelAlign="left"
+            wrapperCol={{ span: 18 }}
+            label="비밀번호"
+            name="비밀번호"
+            rules={[
+              { required: true, message: '비밀번호를 입력하세요!' },
+              { min: 4, max: 20, message: '비밀번호는 4~20자리여야 합니다!' }
+            ]}>
+            <Input.Password
+              style={{ width: '100%' }}
+              name="password"
+              onChange={handleChange}
+              value={loginData.password}
+              onPressEnter={handleSubmit}
+            />
+          </LoginStyledFormItem>
+
+          <JoinWrapper>
+            <p>아직 회원이 아니신가요?</p>
+
+            <Link to="/signup">회원가입</Link>
+          </JoinWrapper>
+
           <LoginStyledButton type="primary" onClick={handleSubmit}>
             로그인
           </LoginStyledButton>
-        </LoginStyledFormItemWrapper>
-      </LoginStyledForm>
+        </LoginStyledForm>
+      </LoginWrapper>
     </LoginStyleddiv>
   )
 }
+
+const LoginImage = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  background-color: var(--color-primary);
+
+  img {
+    width: 100%;
+    padding: 40px;
+  }
+`
+
+const JoinWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+
+  p {
+    color: #555;
+  }
+`
