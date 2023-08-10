@@ -8,7 +8,7 @@ import { Employee, EmployeeUpdate } from 'types/index'
 const { Search } = Input
 const { Option } = Select
 
-const getPositionLabel = (position: number) => {
+const getPositionLabel = position => {
   switch (position) {
     case 0:
       return '사원'
@@ -111,10 +111,16 @@ export const EmployeeMgt = () => {
   const getUserList = () => {
     getEmployeeList().then(
       res => {
-        const employeeWithKeys = res.data.map(employee => ({
-          ...employee,
-          key: employee.userId
-        }))
+        const employeeWithKeys = res.data
+          .map(employee => ({
+            ...employee,
+            key: employee.userId
+          }))
+          .sort((a, b) => {
+            if (a.roles === 1) return -1
+            if (b.roles === 1) return 1
+            return 0
+          })
         setEmployeeList(employeeWithKeys)
       },
       error => {
@@ -182,12 +188,13 @@ export const EmployeeMgt = () => {
         allowClear={true}
         style={{ width: '50%' }}
       />
-      <Table
+      <CustomTable
         columns={columns}
         dataSource={employeeList}
         onRow={(record: Employee) => ({
           onClick: () => handleRowClick(record)
         })}
+        rowClassName={(record: Employee) => (record.roles === 1 ? 'highlighted-row' : '')}
         pagination={{
           position: ['bottomCenter'],
           pageSizeOptions: ['10', '20', '30', '40']
@@ -285,5 +292,11 @@ const Item = styled.div`
   h3 {
     font-size: 16px;
     font-weight: 400;
+  }
+`
+const CustomTable = styled(Table)`
+  .highlighted-row {
+    background-color: #2bb375;
+    font-weight: bold;
   }
 `
