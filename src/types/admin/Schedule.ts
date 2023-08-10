@@ -23,3 +23,8 @@ export interface Duty {
 export interface StatusChange {
   status: number
 }
+
+export interface AdminStatus {
+  dayOffList: DayOff[]
+  dutyList: Duty[]
+}

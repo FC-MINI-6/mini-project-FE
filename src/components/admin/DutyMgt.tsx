@@ -120,7 +120,7 @@ export const DutyMgt = () => {
 
   const getDutyListAll = () => {
     getDutyList().then(res => {
-      const dutyWithKeys = res.data.map(duty => ({
+      const dutyWithKeys = res.data.dutyList.map(duty => ({
         ...duty,
         key: duty.id
       }))
