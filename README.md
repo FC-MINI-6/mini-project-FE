@@ -84,7 +84,7 @@ Github : [프론트엔드](https://github.com/FC-MINI-6/mini-project-FE), [백�
 - Email,핸드폰,비밀번호 확인 유효성 검사
 - 중복값 존재 등 API 다양한 통신 에러 예외처리 기능
 - 회원가입 -> 로그인화면 이동
-- 
+  
 ## 내 정보 Page
 
 - 로그인 시 저장된 유저값을 가져와서 사용
