@@ -1,4 +1,4 @@
-import { Button, Form,} from 'antd'
+import { Button, Form } from 'antd'
 import styled from 'styled-components'
 
 export const MyPageStyleddiv = styled.div`
@@ -10,7 +10,7 @@ export const MyPageStyledForm = styled(Form)`
   padding: 40px;
   border: 1px solid #ddd;
   border-radius: 10px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
 `
 
 export const MyPageStyledFormItemWrapper = styled.div`
@@ -26,4 +26,18 @@ export const MyPageStyledFormItem = styled(Form.Item)`
 
 export const MyPageStyledButton = styled(Button)`
   margin-left: 8px;
+`
+export const MyPageStyledHeaderText = styled.h2`
+  font-size: 28px;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #333;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+`
+export const MypageStyledSeparator = styled.div`
+  width: 100%;
+  height: 1px;
+  background-color: #dddddd;
+  margin: 40px 0;
 `

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { DatePicker, Input, Select, Space } from 'antd'
+import { DatePicker, Input, Select, Space, Form } from 'antd'
 import { Dayjs } from 'dayjs'
 
 import {
@@ -7,7 +7,8 @@ import {
   SignUpStyledFormItemWrapper,
   SignUpStyledForm,
   SignUpStyleddiv,
-  SignUpStyledButton
+  SignUpStyledButton,
+  SignUpStyledSeparator
 } from 'components/index'
 import { signUpRequest } from 'apis/index'
 import { ISignUpData } from 'types/index'
@@ -105,22 +106,26 @@ export const SignUp = () => {
 
   return (
     <SignUpStyleddiv>
-      <SignUpStyledForm name="basic" autoComplete="off">
+      <SignUpStyledForm name="basic" autoComplete="off" layout="vertical">
+        <h1>Sign Up</h1>
+        <SignUpStyledSeparator />
         <SignUpStyledFormItemWrapper>
           <SignUpStyledFormItem
             label="이름"
             name="이름"
             rules={[{ required: true, message: '이름을 입력하세요!' }]}>
             <Input
-              style={{ width: 250 }}
+              style={{ flexGrow: 1 }}
               name="username"
               onChange={handleChange}
               value={signUpData.username}
+              placeholder="이름을 입력해주세요."
             />
           </SignUpStyledFormItem>
 
           <Space wrap>
-            <SignUpStyledFormItem
+            <Form.Item
+              label="직급"
               name="직급"
               rules={[{ required: true, message: '직급을 입력하세요!' }]}>
               <Select
@@ -135,7 +140,7 @@ export const SignUp = () => {
                   { value: '차장', label: '차장' }
                 ]}
               />
-            </SignUpStyledFormItem>
+            </Form.Item>
           </Space>
         </SignUpStyledFormItemWrapper>
 
@@ -147,13 +152,14 @@ export const SignUp = () => {
             validateStatus={emailError ? 'error' : ''}
             help={emailError}>
             <Input
-              style={{ width: 250 }}
               name="email"
               onChange={handleChange}
               value={signUpData.email}
+              placeholder="이메일 형식으로 입력해주세요."
             />
           </SignUpStyledFormItem>
-          <SignUpStyledFormItem
+          <Form.Item
+            label="입사일"
             name="입사일"
             rules={[{ required: true, message: '입사일을 입력하세요!' }]}>
             <DatePicker
@@ -163,7 +169,7 @@ export const SignUp = () => {
               value={date}
               onChange={handleDatePickerChange}
             />
-          </SignUpStyledFormItem>
+          </Form.Item>
         </SignUpStyledFormItemWrapper>
 
         <SignUpStyledFormItem
@@ -174,10 +180,10 @@ export const SignUp = () => {
             { min: 4, max: 20, message: '비밀번호는 4~20자리여야 합니다!' }
           ]}>
           <Input.Password
-            style={{ width: 400 }}
             name="password"
             onChange={handleChange}
             value={signUpData.password}
+            placeholder="4~20자리로 입력해주세요."
           />
         </SignUpStyledFormItem>
 
@@ -191,10 +197,10 @@ export const SignUp = () => {
           validateStatus={passwordMismatch ? 'error' : ''}
           help={passwordMismatch ? '비밀번호가 일치하지 않습니다.' : ''}>
           <Input.Password
-            style={{ width: 400 }}
             name="passwordConfirm"
             onChange={handlePasswordConfirmChange}
             value={passwordConfirm}
+            placeholder="4~20자리로 입력해주세요."
           />
         </SignUpStyledFormItem>
 
@@ -209,10 +215,10 @@ export const SignUp = () => {
             }
           ]}>
           <Input
-            style={{ width: 350 }}
             name="phoneNumber"
             onChange={handleChange}
             value={signUpData.phoneNumber}
+            placeholder="- 제외한 숫자만 입력해주세요."
           />
         </SignUpStyledFormItem>
 

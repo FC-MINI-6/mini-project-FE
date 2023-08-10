@@ -4,7 +4,9 @@ import {
   MyPageStyledButton,
   MyPageStyledForm,
   MyPageStyledFormItem,
-  MyPageStyledFormItemWrapper
+  MyPageStyledFormItemWrapper,
+  MyPageStyledHeaderText,
+  MypageStyledSeparator
 } from 'components/index'
 import { modalStore, useUserStore } from 'stores/index'
 import { updatePassword, updatePhoneNumber } from 'apis/index'
@@ -111,6 +113,8 @@ export const MyPage = () => {
   return (
     <>
       <MyPageStyledForm form={form}>
+        <MyPageStyledHeaderText>내 정보</MyPageStyledHeaderText>
+      <MypageStyledSeparator/>
         <MyPageStyledFormItem label="이름" name="name">
           <Input style={{ width: 400 }} readOnly defaultValue={userInfo?.username} />
         </MyPageStyledFormItem>
