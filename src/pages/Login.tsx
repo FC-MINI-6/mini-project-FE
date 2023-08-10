@@ -29,8 +29,7 @@ export const Login = () => {
     })
   }
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
+  const handleSubmit = async () => {
     //이메일 유효성 검사
     const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/
     if (!emailRegex.test(loginData.email)) {
@@ -54,7 +53,7 @@ export const Login = () => {
 
   return (
     <LoginStyleddiv>
-      <LoginStyledForm name="basic" autoComplete="off" onFinish={handleSubmit}>
+      <LoginStyledForm name="basic" autoComplete="off">
         <LoginStyledFormItem
           label="이메일"
           name="이메일"
@@ -81,16 +80,14 @@ export const Login = () => {
             name="password"
             onChange={handleChange}
             value={loginData.password}
-            onPressEnter={handleSubmit}
+            onPressEnter={handleSubmit} // 여기에서만 사용하도록 수정
           />
         </LoginStyledFormItem>
 
         <LoginStyledFormItemWrapper>
-          <LoginStyledFormItem>
-            <p>
-              <Link to="/signup">회원가입</Link>
-            </p>
-          </LoginStyledFormItem>
+          <p>
+            <Link to="/signup">회원가입</Link>
+          </p>
           <LoginStyledButton type="primary" onClick={handleSubmit}>
             로그인
           </LoginStyledButton>
