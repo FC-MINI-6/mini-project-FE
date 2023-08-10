@@ -55,8 +55,8 @@ export const App = () => {
             <Route path="/mypage" element={<MyPage />} />
             <Route path="/day_off" element={<DayOff />} />
             <Route path="/duty" element={<Duty />} />
-            <Route path="/admin/schedule" element={<AdminSchedule />} />
-            <Route path="/admin/employee" element={<AdminEmployee />} />
+            <Route path="/admin_schedule" element={<AdminSchedule />} />
+            <Route path="/admin_employee" element={<AdminEmployee />} />
           </Route>
           {/* Nav 필요없는 페이지는 아래 바로 Route 추가 */}
           <Route path="/signup" element={<SignUp />} />

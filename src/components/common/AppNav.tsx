@@ -44,13 +44,13 @@ const items: MenuProps['items'] = [
     icon: <LaptopOutlined />
   },
   {
-    label: <Link to={'/admin/schedule'}>휴가/당직 관리</Link>,
-    key: '/admin/schedule',
+    label: <Link to={'/admin_schedule'}>휴가/당직 관리</Link>,
+    key: '/admin_schedule',
     icon: <ProfileOutlined />
   },
   {
-    label: <Link to={'/admin/employee'}>사원관리</Link>,
-    key: '/admin/employee',
+    label: <Link to={'/admin_employee'}>사원관리</Link>,
+    key: '/admin_employee',
     icon: <IdcardOutlined />
   }
 ]
