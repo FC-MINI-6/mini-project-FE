@@ -89,5 +89,55 @@ export const resultModalDatas = {
     okButton: '로그아웃',
     cancelButton: '취소',
     cancelCallback: () => {}
+  },
+  LOGIN_FAILURE: {
+    title: '로그인 실패',
+    content: '로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.',
+    type: 1,
+    okButton: '확인',
+    okCallback: () => {}
+  },
+  SIGNUP_FAILURE: {
+    title: '회원가입 실패',
+    content: '회원가입에 실패했습니다. 정보를 확인해주세요.',
+    type: 1,
+    okButton: '확인',
+    okCallback: () => {}
+  },
+  SIGNUP_SUCCESS: {
+    title: '회원가입 성공',
+    content: '회원가입에 성공했습니다. 로그인을 진행해주세요.',
+    type: 1,
+    okButton: '확인',
+    okCallback: () => {}
+  },
+  EDIT_PASSWORD_SUCCESS: {
+    title: '비밀번호 변경 완료',
+    content: '비밀번호 변경에 성공했습니다.',
+    type: 1,
+    okButton: '확인',
+    okCallback: () => {}
+  },
+  EDIT_PASSWORD_FAILURE: {
+    title: '비밀번호 변경 실패',
+    content: '비밀번호 변경에 실패했습니다.',
+    type: 1,
+    okButton: '확인',
+    okCallback: () => {}
+  },
+  EDIT_PHONENUMBER_SUCCESS: {
+    title: '전화번호 변경 성공',
+    content: '전화번호 변경에 성공했습니다.',
+    type: 1,
+    okButton: '확인',
+    okCallback: () => {}
+  },
+  EDIT_PHONENUMBER_FAILURE: {
+    title: '전화번호 변경 실패',
+    content: '전화번호 변경에 실패했습니다.',
+    type: 1,
+    okButton: '확인',
+    okCallback: () => {}
   }
 }
+

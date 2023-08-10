@@ -6,21 +6,23 @@ import {
   MyPageStyledFormItem,
   MyPageStyledFormItemWrapper
 } from 'components/index'
-import { useUserStore } from '@/stores'
-import { updatePassword, updatePhoneNumber } from '@/apis'
-import { IUpdatePasswordData, IUpdatePhoneNumberData } from '@/types'
+import { modalStore, useUserStore } from 'stores/index'
+import { updatePassword, updatePhoneNumber } from 'apis/index'
+import { IUpdatePasswordData, IUpdatePhoneNumberData } from 'types/index'
+import { resultModalDatas } from 'constants/index'
 
 export const MyPage = () => {
   const [form] = Form.useForm()
   const [showModal, setShowModal] = useState(false)
   const [editablePhoneNumber, setEditablePhoneNumber] = useState<string>('')
   const [isEditingPhoneNumber, setIsEditingPhoneNumber] = useState(false)
+  const { userInfo, setUserInfo } = useUserStore()
+  const { openModal } = modalStore()
   const [editPassword, setEditPassword] = useState<IUpdatePasswordData>({
     userId: '',
     oldPassword: '',
     newPassword: ''
   })
-  const { name, email, position, joinDate, phoneNumber } = useUserStore()
 
   const handlePasswordChange = () => {
     setShowModal(true)
@@ -28,52 +30,79 @@ export const MyPage = () => {
 
   const handleModalCancel = () => {
     setShowModal(false)
-    setEditablePhoneNumber(phoneNumber)
+    // setEditablePhoneNumber(userInfo?.phoneNumber)
   }
 
   const handleEditPhoneNumber = () => {
     setIsEditingPhoneNumber(true)
   }
 
-  const handleCompletePhoneNumber = () => {
-    console.log(editPassword);
-    
+  const handleCompletePhoneNumber = async () => {
     const updateData: IUpdatePhoneNumberData = { phoneNumber: editablePhoneNumber }
-    updatePhoneNumber(updateData).then(
-      res => {
-        useUserStore.setState(updateData)
-        console.log(res.message)
-      },
-      error => {
-        console.log(error)
-      }
-    )
+    console.log(updateData)
+    if (userInfo) {
+      updatePhoneNumber(updateData).then(
+        res => {
+          setUserInfo({
+            ...userInfo,
+            phoneNumber: editablePhoneNumber
+          })
+          openModal({
+            ...resultModalDatas.EDIT_PHONENUMBER_SUCCESS,
+            okCallback: () => {}
+          })
+          console.log(res.message)
+        },
+        error => {
+          openModal({
+            ...resultModalDatas.SIGNUP_FAILURE,
+            content: resultModalDatas.EDIT_PHONENUMBER_FAILURE.content
+          })
+          console.log(error)
+        }
+      )
+    }
     setIsEditingPhoneNumber(false)
   }
 
   const handlEditPassword = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const {name, value} = event.target
-    setEditPassword({
-      ...editPassword,
-      [name]: value
-    })
-    console.log(editPassword);
+    const { name, value } = event.target
+    if (userInfo) {
+      setEditPassword({
+        ...editPassword,
+        [name]: value,
+        userId: userInfo.id
+      })
+    }
+    console.log(editPassword)
   }
 
-  const handleModalOk = () => {
-    console.log(editPassword);
+  const handleModalOk = async () => {
+    console.log(editPassword)
     updatePassword(editPassword).then(
       res => {
-        console.log(res.message);
+        openModal({
+          ...resultModalDatas.EDIT_PASSWORD_SUCCESS,
+          okCallback: () => {}
+        })
+        console.log(res.message)
       },
       error => {
-        console.log(error);
-        
+        openModal({
+          ...resultModalDatas.EDIT_PASSWORD_FAILURE,
+          content: resultModalDatas.EDIT_PASSWORD_FAILURE.content
+        })
+        console.log(error)
       }
     )
     form.validateFields().then(values => {
       console.log('새 비밀번호:', values.newPassword)
       setShowModal(false)
+      setEditPassword({
+        ...editPassword,
+        oldPassword: '',
+        newPassword: ''
+      })
     })
   }
 
@@ -83,26 +112,29 @@ export const MyPage = () => {
     <>
       <MyPageStyledForm form={form}>
         <MyPageStyledFormItem label="이름" name="name">
-          <Input style={{ width: 400 }} readOnly defaultValue={name} />
+          <Input style={{ width: 400 }} readOnly defaultValue={userInfo?.username} />
         </MyPageStyledFormItem>
         <MyPageStyledFormItem label="이메일" name="email">
-          <Input style={{ width: 400 }} readOnly defaultValue={email} />
+          <Input style={{ width: 400 }} readOnly defaultValue={userInfo?.email} />
         </MyPageStyledFormItem>
         <MyPageStyledFormItem label="직급" name="position">
-          <Input style={{ width: 400 }} readOnly defaultValue={position} />
+          <Input style={{ width: 400 }} readOnly defaultValue={userInfo?.position} />
         </MyPageStyledFormItem>
         <MyPageStyledFormItem label="입사일" name="joinDate">
-          <Input style={{ width: 400 }} readOnly defaultValue={joinDate} />
+          <Input style={{ width: 400 }} readOnly defaultValue={userInfo?.joinDate} />
         </MyPageStyledFormItem>
         <MyPageStyledFormItemWrapper>
           {isEditingPhoneNumber ? (
-            <MyPageStyledFormItem label="전화번호" name="phoneNumber" rules={[
-              { required: true, message: '전화번호를 입력하세요!' },
-              {
-                pattern: phoneNumberRegex,
-                message: '전화번호는 숫자만 입력 가능합니다!'
-              }
-            ]}>
+            <MyPageStyledFormItem
+              label="전화번호"
+              name="phoneNumber"
+              rules={[
+                { required: true, message: '전화번호를 입력하세요!' },
+                {
+                  pattern: phoneNumberRegex,
+                  message: '전화번호는 숫자만 입력 가능합니다!'
+                }
+              ]}>
               <Input
                 style={{ width: 330 }}
                 value={editablePhoneNumber}
@@ -111,7 +143,7 @@ export const MyPage = () => {
             </MyPageStyledFormItem>
           ) : (
             <MyPageStyledFormItem label="전화번호" name="phoneNumber">
-              <Input style={{ width: 330 }} readOnly defaultValue={phoneNumber} />
+              <Input style={{ width: 330 }} readOnly defaultValue={userInfo?.phoneNumber} />
             </MyPageStyledFormItem>
           )}
           {isEditingPhoneNumber ? (
@@ -137,19 +169,31 @@ export const MyPage = () => {
             label="기존 비밀번호"
             name="oldPassword"
             rules={[{ required: true, message: '기존 비밀번호를 입력하세요.' }]}>
-            <Input.Password name='oldPassword' value={editPassword.oldPassword} onChange={handlEditPassword}/>
+            <Input.Password
+              name="oldPassword"
+              value={editPassword.oldPassword}
+              onChange={handlEditPassword}
+            />
           </MyPageStyledFormItem>
           <MyPageStyledFormItem
             label="새 비밀번호"
             name="newPassword"
-            rules={[{ required: true, message: '새 비밀번호를 입력하세요.' },{ min: 4, max: 20, message: '비밀번호는 4~20자리여야 합니다!' }]}>
-            <Input.Password name='newPassword' value={editPassword.newPassword} onChange={handlEditPassword}/>
+            rules={[
+              { required: true, message: '새 비밀번호를 입력하세요.' },
+              { min: 4, max: 20, message: '비밀번호는 4~20자리여야 합니다!' }
+            ]}>
+            <Input.Password
+              name="newPassword"
+              value={editPassword.newPassword}
+              onChange={handlEditPassword}
+            />
           </MyPageStyledFormItem>
           <MyPageStyledFormItem
             label="새 비밀번호 확인"
             name="confirmPassword"
             rules={[
-              { required: true, message: '새 비밀번호를 확인하세요.' },{ min: 4, max: 20, message: '비밀번호는 4~20자리여야 합니다!' },
+              { required: true, message: '새 비밀번호를 확인하세요.' },
+              { min: 4, max: 20, message: '비밀번호는 4~20자리여야 합니다!' },
               ({ getFieldValue }) => ({
                 validator(_, value) {
                   if (!value || getFieldValue('newPassword') === value) {
