@@ -171,7 +171,7 @@ export const ScheduleMgt = () => {
 
   const getScheduleListAll = () => {
     getDayOffList().then(res => {
-      const dayOffWithKeys = res?.map(dayOff => ({
+      const dayOffWithKeys = res.data.dayOffList.map(dayOff => ({
         ...dayOff,
         key: dayOff.id
       }))
