@@ -1,5 +1,5 @@
 export interface EmployeeUpdate {
   phoneNumber: string
-  position: string
-  roles: string
+  position: number
+  roles: number
 }
