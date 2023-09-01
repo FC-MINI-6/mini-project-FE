@@ -8,6 +8,7 @@ import { getDayOffList, approveOrRejectDayOff } from 'apis/index'
 import { dayOffListStore, useUserStore } from 'stores/index'
 import { DayOff } from 'types/index'
 import { DAYOFF_TYPE } from 'constants/index'
+import { styled } from 'styled-components'
 
 export const ScheduleMgt = () => {
   const { userInfo } = useUserStore()
@@ -119,7 +120,7 @@ export const ScheduleMgt = () => {
       render: (record: DayOff) => (
         <>
           {record.status === 0 ? (
-            <>
+            <YesOrNoButton>
               <Popconfirm
                 title="요청 승인 ✅"
                 description="해당 요청을 승인처리 하시겠습니까?"
@@ -136,7 +137,7 @@ export const ScheduleMgt = () => {
                 cancelText="취소">
                 <Button danger>반려</Button>
               </Popconfirm>
-            </>
+            </YesOrNoButton>
           ) : record.status === 1 ? (
             <Button type="primary" disabled>
               승인처리 완료
@@ -202,3 +203,9 @@ export const ScheduleMgt = () => {
     />
   )
 }
+
+const YesOrNoButton = styled.div`
+  .ant-btn + .ant-btn {
+    margin-left: 7px;
+  }
+`

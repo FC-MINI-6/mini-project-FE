@@ -7,6 +7,7 @@ import dayjs from 'dayjs'
 import { getDutyList, approveOrRejectDuty } from 'apis/index'
 import { dutyListStore } from 'stores/index'
 import { Duty } from 'types/index'
+import { styled } from 'styled-components'
 
 export const DutyMgt = () => {
   const { dutyList, setDutyList } = dutyListStore()
@@ -70,7 +71,7 @@ export const DutyMgt = () => {
       render: (record: Duty) => (
         <>
           {record.status === 0 ? (
-            <>
+            <YesOrNoButton>
               <Popconfirm
                 title="요청 승인 ✅"
                 description="해당 요청을 승인처리 하시겠습니까?"
@@ -87,7 +88,7 @@ export const DutyMgt = () => {
                 cancelText="취소">
                 <Button danger>반려</Button>
               </Popconfirm>
-            </>
+            </YesOrNoButton>
           ) : record.status === 1 ? (
             <Button type="primary" disabled>
               승인처리 완료
@@ -151,3 +152,9 @@ export const DutyMgt = () => {
     />
   )
 }
+
+const YesOrNoButton = styled.div`
+  .ant-btn + .ant-btn {
+    margin-left: 7px;
+  }
+`

@@ -41,7 +41,6 @@ export const MyPage = () => {
 
   const handleCompletePhoneNumber = async () => {
     const updateData: IUpdatePhoneNumberData = { phoneNumber: editablePhoneNumber }
-    console.log(updateData)
     if (userInfo) {
       updatePhoneNumber(updateData).then(
         res => {
@@ -76,11 +75,9 @@ export const MyPage = () => {
         userId: userInfo.id
       })
     }
-    console.log(editPassword)
   }
 
   const handleModalOk = async () => {
-    console.log(editPassword)
     updatePassword(editPassword).then(
       res => {
         openModal({
@@ -114,7 +111,7 @@ export const MyPage = () => {
     <>
       <MyPageStyledForm form={form}>
         <MyPageStyledHeaderText>내 정보</MyPageStyledHeaderText>
-      <MypageStyledSeparator/>
+        <MypageStyledSeparator />
         <MyPageStyledFormItem label="이름" name="name">
           <Input style={{ width: 400 }} readOnly defaultValue={userInfo?.username} />
         </MyPageStyledFormItem>
