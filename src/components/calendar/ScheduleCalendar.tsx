@@ -1,15 +1,14 @@
 import React, { useCallback, useMemo } from 'react'
 import { CalendarHeader } from 'components/index'
 import { userSelectedStore } from 'stores/index'
-import { CALENDER_TYPE, USER_POSITION } from 'constants/index'
 import { ICalendarScheduleByDate, ICalendarSchedule } from 'types/index'
 
-import type { TagProps } from 'antd'
-import { Tag, Calendar } from 'antd'
+import { Calendar } from 'antd'
 import locale from 'antd/es/calendar/locale/ko_KR'
 
 import dayjs, { Dayjs } from 'dayjs'
 import { styled } from 'styled-components'
+import { DateCellRender } from './DateCellRender'
 
 type TScheduleCalendar = {
   schdules: ICalendarScheduleByDate[]
@@ -43,26 +42,8 @@ export const ScheduleCalendar = React.memo(
       [onClickDate]
     )
 
-    const dateCellRender = (value: Dayjs) => {
-      const listData =
-        filteredSchedules.find(
-          schedule => dayjs(schedule.date).format('YYYY-MM-DD') === value.format('YYYY-MM-DD')
-        )?.schedules ?? []
-      return (
-        <EventUl>
-          {listData.map((item, index) => (
-            <li key={index}>
-              <Tag color={item.color as TagProps['color']}>
-                {CALENDER_TYPE[item.type]} {item.username} {USER_POSITION[item.position]}
-              </Tag>
-            </li>
-          ))}
-        </EventUl>
-      )
-    }
-
     const cellRender = (current: Dayjs) => {
-      return dateCellRender(current)
+      return DateCellRender(current, filteredSchedules)
     }
 
     const handleDateChange = (date: Dayjs) => {
@@ -72,7 +53,7 @@ export const ScheduleCalendar = React.memo(
     return (
       <StyledCalendar
         style={{ padding: 20, borderRadius: 6 }}
-        mode={'month'}
+        mode="month"
         locale={locale}
         defaultValue={defaultDate}
         cellRender={cellRender}
@@ -94,10 +75,4 @@ const StyledCalendar = styled(Calendar)`
   table tbody tr > td.ant-picker-cell-in-view:nth-child(7) {
     color: var(--color-blue-3);
   }
-`
-
-const EventUl = styled.ul`
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
 `

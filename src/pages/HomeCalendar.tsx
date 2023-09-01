@@ -45,7 +45,7 @@ export const HomeCalendar = () => {
             ...duty,
             endDate: duty.date,
             startDate: duty.date,
-            color: colorOfType(3),
+            color: colorOfType[3] ?? 'oragnge',
             type: 3
           }
         })

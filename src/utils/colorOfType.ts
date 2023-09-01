@@ -1,12 +1,10 @@
-export const colorOfType = (type: number) => {
-  switch (type) {
-    case 0:
-      return 'geekblue'
-    case 1:
-      return 'cyan'
-    case 2:
-      return 'green'
-    default:
-      return 'orange'
-  }
+interface IColorType {
+  [key: number]: string
+}
+
+export const colorOfType: IColorType = {
+  0: 'geekblue',
+  1: 'cyan',
+  2: 'green',
+  3: 'orange'
 }

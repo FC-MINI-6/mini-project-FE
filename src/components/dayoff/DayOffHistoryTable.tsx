@@ -52,7 +52,7 @@ const getDayOffHistoryColumns = (): ColumnsType<IDayOffResponse> => [
     key: 'type',
     render: (type: number) => (
       <Type>
-        <Tag color={colorOfType(type)} style={{ minWidth: 60, textAlign: 'center' }}>
+        <Tag color={colorOfType[type] ?? 'orange'} style={{ minWidth: 60, textAlign: 'center' }}>
           {DAYOFF_TYPE[type]}
         </Tag>
       </Type>

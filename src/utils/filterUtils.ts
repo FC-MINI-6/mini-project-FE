@@ -7,26 +7,21 @@ import dayjs from 'dayjs'
 export const getFilteredDayOffRequestList = (dayOffList: IDayOffResponse[]) => {
   const filteredList = [] as IDayOffResponse[]
 
-  dayOffList.map(data => {
+  dayOffList.forEach(data => {
+    const dateDiff = dayjs().startOf('date').diff(data.startDate)
     switch (data.type) {
       case 0:
-        if (dayjs().startOf('date').diff(data.startDate) < 0) {
+        if (dateDiff < 0) {
           filteredList.push(data)
         }
         break
       case 1:
-        if (
-          dayjs().startOf('date').diff(data.startDate) < 0 ||
-          (dayjs().startOf('date').diff(data.startDate) === 0 && dayjs().get('hour') < 9)
-        ) {
+        if (dateDiff < 0 || (dateDiff === 0 && dayjs().get('hour') < 9)) {
           filteredList.push(data)
         }
         break
       case 2:
-        if (
-          dayjs().startOf('date').diff(data.startDate) < 0 ||
-          (dayjs().startOf('date').diff(data.startDate) === 0 && dayjs().get('hour') < 14)
-        ) {
+        if (dateDiff < 0 || (dateDiff === 0 && dayjs().get('hour') < 14)) {
           filteredList.push(data)
         }
         break
@@ -43,26 +38,21 @@ export const getFilteredDayOffRequestList = (dayOffList: IDayOffResponse[]) => {
 export const getFilteredDayOffHistoryList = (dayOffList: IDayOffResponse[]) => {
   const filteredList = [] as IDayOffResponse[]
 
-  dayOffList.map(data => {
+  dayOffList.forEach(data => {
+    const dateDiff = dayjs().startOf('date').diff(data.startDate)
     switch (data.type) {
       case 0:
-        if (dayjs().startOf('date').diff(data.startDate) >= 0) {
+        if (dateDiff >= 0) {
           filteredList.push(data)
         }
         break
       case 1:
-        if (
-          dayjs().startOf('date').diff(data.startDate) >= 0 ||
-          (dayjs().startOf('date').diff(data.startDate) === 0 && dayjs().get('hour') >= 9)
-        ) {
+        if (dateDiff >= 0 || (dateDiff === 0 && dayjs().get('hour') >= 9)) {
           filteredList.push(data)
         }
         break
       case 2:
-        if (
-          dayjs().startOf('date').diff(data.startDate) >= 0 ||
-          (dayjs().startOf('date').diff(data.startDate) === 0 && dayjs().get('hour') >= 14)
-        ) {
+        if (dateDiff >= 0 || (dateDiff === 0 && dayjs().get('hour') >= 14)) {
           filteredList.push(data)
         }
         break
@@ -98,14 +88,14 @@ export const parseCalendarDayOffList = (dayoffList: ICalendarDayOff[]) => {
         if (date.get('day') !== 0 && date.get('day') !== 6) {
           dayOffSchedules.push({
             ...dayoff,
-            color: colorOfType(dayoff.type),
+            color: colorOfType[dayoff.type] ?? 'orage',
             startDate: date.format('YYYY-MM-DD')
           })
         }
         date = date.add(1, 'day')
       }
     } else {
-      dayOffSchedules.push({ ...dayoff, color: colorOfType(dayoff.type) })
+      dayOffSchedules.push({ ...dayoff, color: colorOfType[dayoff.type] ?? 'orage' })
     }
   })
   return dayOffSchedules

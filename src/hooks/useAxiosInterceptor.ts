@@ -25,9 +25,9 @@ export const useAxiosInterceptor = () => {
     if (accessToken) {
       if (error.response?.status === 401 && error.config!.url !== '/login') {
         // 로그아웃 처리
-        alert('로그인 세션이 만료되었습니다. 다시 로그인해주세요.')
         location.replace('/login')
         logout()
+        alert('로그인 세션이 만료되었습니다. 다시 로그인해주세요.')
         return
       }
     }
